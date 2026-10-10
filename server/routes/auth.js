@@ -413,27 +413,37 @@ router.post('/oauth/google', async (req, res) => {
     const tokenToCheck = credential || idToken || googleToken;
     let verified = null;
 
-    // Only attempt Google TokenInfo verification if it looks like a real Google JWT or access token
-    const isDirectClientToken = tokenToCheck && (String(tokenToCheck).startsWith('verified_client') || String(tokenToCheck).startsWith('direct_auth'));
-    if ((tokenToCheck && !isDirectClientToken) || accessToken) {
+    // Cryptographically verify Google ID Token or Access Token via Google APIs
+    if (tokenToCheck || accessToken) {
       verified = await verifyGoogleCredential(tokenToCheck, accessToken);
-      if (verified && verified.error && !clientEmail) {
+      if (verified && verified.error) {
         return res.status(401).json({ success: false, message: verified.error });
       }
     }
 
-    // Provision account for verified Google credentials, client flow, or origin-resilient logins
-    if (!verified && clientEmail && clientEmail.includes('@')) {
-      const trimmedClientName = (clientName && String(clientName).trim()) || clientEmail.split('@')[0];
-      verified = {
-        email: clientEmail.trim().toLowerCase(),
-        name: trimmedClientName,
-        given_name: clientGiven || (trimmedClientName ? trimmedClientName.split(' ')[0] : ''),
-        family_name: clientFamily || (trimmedClientName && trimmedClientName.includes(' ') ? trimmedClientName.split(' ').slice(1).join(' ') : ''),
-        picture: clientPic || 'https://lh3.googleusercontent.com/a/default-user=s96-c',
-        sub: clientSub || ('usr-google-' + Date.now()),
-        emailVerified: true
-      };
+    // In production, reject unverified manually passed emails as per security requirements
+    const isProd = process.env.NODE_ENV === 'production' && process.env.VITE_ENABLE_MOCK_FALLBACK !== 'true';
+    if (!verified) {
+      if (isProd) {
+        return res.status(401).json({
+          success: false,
+          message: 'Google authentication token is required and could not be verified by Google.'
+        });
+      }
+
+      // Safe local test/development environment fallback
+      if (clientEmail && clientEmail.includes('@')) {
+        const trimmedClientName = (clientName && String(clientName).trim()) || clientEmail.split('@')[0];
+        verified = {
+          email: clientEmail.trim().toLowerCase(),
+          name: trimmedClientName,
+          given_name: clientGiven || (trimmedClientName ? trimmedClientName.split(' ')[0] : ''),
+          family_name: clientFamily || (trimmedClientName && trimmedClientName.includes(' ') ? trimmedClientName.split(' ').slice(1).join(' ') : ''),
+          picture: clientPic || 'https://lh3.googleusercontent.com/a/default-user=s96-c',
+          sub: clientSub || ('usr-google-' + Date.now()),
+          emailVerified: true
+        };
+      }
     }
 
     if (!verified || !verified.email) {
@@ -450,6 +460,9 @@ router.post('/oauth/google', async (req, res) => {
     const picture = verified.picture || '';
     const googleId = verified.sub || '';
 
+    // Security Requirement 8: Never automatically grant the Admin role to OAuth users
+    const safeRole = (role === 'admin') ? 'customer' : (role || 'customer');
+
     const db = readDb();
     let user = db.users.find(u => (googleId && u.googleId === googleId) || (u.email && u.email.toLowerCase() === email));
 
@@ -461,13 +474,14 @@ router.post('/oauth/google', async (req, res) => {
         firstName: firstName,
         lastName: lastName,
         email: email,
-        role: role || 'customer',
+        role: safeRole,
         googleId: googleId,
         profilePicture: picture,
         avatar: picture || '',
         authProvider: 'google',
         oauthProvider: 'google',
         emailVerified: true,
+        isProfileComplete: (safeRole !== 'customer'), // Customers must complete additional app profile info
         notificationPreferences: { sms: true, email: true, whatsapp: true },
         createdAt: new Date().toISOString()
       };

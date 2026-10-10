@@ -114,30 +114,55 @@
 
                 // Send to backend OAuth JIT provisioning
                 let result = null;
+                const safeRole = (role === 'admin') ? 'customer' : role;
+                const backendPayload = {
+                    accessToken: accessToken,
+                    token: accessToken,
+                    email: profile.email,
+                    name: profile.name || [profile.given_name, profile.family_name].filter(Boolean).join(' ') || profile.email.split('@')[0],
+                    given_name: profile.given_name || '',
+                    family_name: profile.family_name || '',
+                    picture: profile.picture || '',
+                    sub: profile.sub || '',
+                    email_verified: profile.email_verified,
+                    role: safeRole
+                };
+
                 if (window.FTF_API && window.FTF_API.auth && window.FTF_API.auth.loginWithGoogle) {
-                    result = await window.FTF_API.auth.loginWithGoogle({
-                        token: accessToken,
-                        email: profile.email,
-                        name: profile.name || profile.given_name || profile.email.split('@')[0],
-                        picture: profile.picture,
-                        role: role
+                    result = await window.FTF_API.auth.loginWithGoogle(backendPayload);
+                } else {
+                    const backendOrigin = (window.VITE_API_URL !== undefined && window.VITE_API_URL !== '')
+                        ? window.VITE_API_URL.replace(/\/+$/, '')
+                        : (window.location.hostname === 'localhost' ? 'http://localhost:5000' : '');
+                    const raw = await fetch(`${backendOrigin}/api/auth/oauth/google`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(backendPayload)
                     });
+                    result = await raw.json();
                 }
 
-                // Fallback local persistence if needed
-                const user = (result && result.user) ? result.user : {
+                // Verify result
+                if (!result || !result.success) {
+                    throw new Error(result ? result.message : 'Backend Google authentication could not be completed.');
+                }
+
+                const user = result.user || {
                     name: profile.name || profile.email.split('@')[0],
                     email: profile.email,
-                    role: role,
+                    role: safeRole,
                     avatar: profile.picture
                 };
 
                 localStorage.setItem('userName', user.name);
                 localStorage.setItem('userEmail', user.email);
-                localStorage.setItem('userRole', user.role || role);
+                localStorage.setItem('userRole', user.role || safeRole);
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('farmToForkUser', JSON.stringify(user));
                 if (result && result.token) localStorage.setItem('farmToForkToken', result.token);
+                if (user.profilePicture || user.avatar) localStorage.setItem('userAvatar', user.profilePicture || user.avatar);
+                if (user.googleId) localStorage.setItem('userGoogleId', user.googleId);
+                localStorage.setItem('authProvider', 'google');
 
                 // If opened in popup, notify opener
                 if (window.opener && !window.opener.closed) {
@@ -154,13 +179,24 @@
                     }
                 }
 
-                // Normal redirect
+                // Check profile completion for first-time customers
+                const isCustomer = (user.role === 'customer');
+                const needsCompletion = isCustomer && (result.isProfileComplete === false);
+
                 spinner.style.display = 'none';
                 statusIcon.style.display = 'block';
                 statusIcon.innerHTML = '✅';
                 statusTitle.textContent = `Welcome, ${user.name}!`;
-                statusMsg.textContent = 'Redirecting to your dashboard...';
 
+                if (needsCompletion) {
+                    statusMsg.textContent = 'Please complete your customer profile details...';
+                    setTimeout(() => {
+                        window.location.href = 'complete-profile.html';
+                    }, 1000);
+                    return;
+                }
+
+                statusMsg.textContent = 'Redirecting to your dashboard...';
                 setTimeout(() => {
                     let dash = 'dashboard-customer.html';
                     if (user.role === 'farmer') dash = 'dashboard-farmer.html';

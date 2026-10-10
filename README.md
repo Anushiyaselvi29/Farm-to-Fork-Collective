@@ -122,6 +122,26 @@ npm run dev:all
 
 ---
 
+## 🔐 Google OAuth 2.0 Official Integration
+
+The platform uses genuine **Google Identity Services (GIS)** with OAuth 2.0 authorization at `accounts.google.com`:
+- **Interactive Account Chooser**: When clicking **Continue with Google**, the application immediately triggers Google's official account chooser (`prompt: 'select_account'`) displaying all accounts available in the user's browser.
+- **Cryptographic Backend Verification**: Tokens are validated cryptographically against Google's `oauth2.googleapis.com/tokeninfo` and `www.googleapis.com/oauth2/v3/userinfo` APIs.
+- **Role Security**: Newly registered Google accounts are provisioned as `customer` (never auto-promoted to `admin`). Incomplete customer profiles are seamlessly guided to `pages/complete-profile.html`.
+
+### Google Cloud Console Configuration:
+- **Client ID**: `939090047671-otlai1n75lvc9mgass18jd721dpp8f36.apps.googleusercontent.com`
+- **Authorized JavaScript origins**:
+  - `http://localhost:5173` (Vite dev server)
+  - `http://localhost:5000` (Node.js fullstack server)
+  - `https://farm-to-fork-collective.vercel.app` (Vercel production deployment)
+- **Authorized redirect URIs**:
+  - `http://localhost:5173/pages/oauth-callback.html`
+  - `http://localhost:5000/pages/oauth-callback.html`
+  - `https://farm-to-fork-collective.vercel.app/pages/oauth-callback.html`
+
+---
+
 ## 🧪 Automated Verification & Self-Test Suite
 
 The repository includes a comprehensive automated audit script testing all features:

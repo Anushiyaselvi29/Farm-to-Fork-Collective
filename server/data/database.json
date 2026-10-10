@@ -42,12 +42,12 @@
       "name": "Priya Sharma",
       "username": "priya_s",
       "email": "priya@example.com",
-      "password": "scrypt$937d558e9dcda458fd299c9dffd40b15$fd883055dbaf283e0efc02c424d40306a38b7cbf3a7a6792044fbf5652ac2cf3f39130abcb7057c52d50c845c4182bc581852f4423646750a99d1763829014f2",
+      "password": "scrypt$8bd37a06ee4dcb43643efbc16dfa4096$67e0c3718e8df4bd5a40e53cc061dd6b9e0b35b0a795a9560115e49290189be6737a3ec32b7b10dd9a05e5a13f20f331438a2c374271a9023ab21ab0c299a6d5",
       "role": "customer",
       "phone": "+91 98765 43210",
       "address": "42, 4th Avenue, Anna Nagar West, Chennai - 600040",
       "createdAt": "2024-02-01T12:00:00.000Z",
-      "updatedAt": "2026-10-10T13:16:07.191Z",
+      "updatedAt": "2026-10-10T15:10:51.452Z",
       "notificationPreferences": {
         "sms": true,
         "email": true,
@@ -58,7 +58,7 @@
       "passwordResetOtpAttempts": 0,
       "passwordResetTokenHash": null,
       "passwordResetTokenExpiresAt": null,
-      "passwordResetOtpLastSentAt": "2026-10-10T13:16:03.404Z"
+      "passwordResetOtpLastSentAt": "2026-10-10T15:10:47.444Z"
     },
     {
       "id": "usr-cust-2",
@@ -107,9 +107,9 @@
       "oauthProvider": "google",
       "avatar": "https://lh3.googleusercontent.com/a/default-user=s96-c",
       "createdAt": "2026-09-17T09:10:52.842Z",
-      "googleId": "usr-google-1791638162928",
+      "googleId": "usr-google-1791645047277",
       "emailVerified": true,
-      "updatedAt": "2026-10-10T13:16:02.928Z",
+      "updatedAt": "2026-10-10T15:10:47.277Z",
       "firstName": "Dr.",
       "lastName": "K. Arumugam Organic",
       "authProvider": "google",
@@ -280,7 +280,7 @@
         "whatsapp": false
       },
       "createdAt": "2026-10-06T18:42:06.182Z",
-      "updatedAt": "2026-10-08T13:26:54.955Z",
+      "updatedAt": "2026-10-10T14:11:55.153Z",
       "phone": "+91 98765 99999",
       "address": "Coimbatore, Tamil Nadu",
       "city": "Chennai",
@@ -308,6 +308,27 @@
       "passwordResetOtpAttempts": 0,
       "passwordResetOtpLastSentAt": null,
       "createdAt": "2026-10-10T04:29:32.163Z"
+    },
+    {
+      "id": "usr-google-1791644883090",
+      "name": "Attacker Attempting Admin",
+      "firstName": "Attacker",
+      "lastName": "Attempting Admin",
+      "email": "test_security_role_escalation@gmail.com",
+      "role": "customer",
+      "googleId": "usr-google-1791644883090",
+      "profilePicture": "https://lh3.googleusercontent.com/a/default-user=s96-c",
+      "avatar": "https://lh3.googleusercontent.com/a/default-user=s96-c",
+      "authProvider": "google",
+      "oauthProvider": "google",
+      "emailVerified": true,
+      "isProfileComplete": false,
+      "notificationPreferences": {
+        "sms": true,
+        "email": true,
+        "whatsapp": true
+      },
+      "createdAt": "2026-10-10T15:08:03.090Z"
     }
   ],
   "products": [

@@ -1,6 +1,31 @@
 const assert = require('assert');
+const http = require('http');
+const path = require('path');
+const { fork } = require('child_process');
+
+function checkServer() {
+  return new Promise((resolve) => {
+    const req = http.get('http://localhost:5000/api/health', (res) => {
+      resolve(res.statusCode === 200);
+    });
+    req.on('error', () => resolve(false));
+    req.setTimeout(1000, () => { req.destroy(); resolve(false); });
+  });
+}
+
+async function ensureServerRunning() {
+  const isUp = await checkServer();
+  if (isUp) return null;
+  const proc = fork(path.join(__dirname, '..', 'server', 'server.js'), [], { stdio: 'ignore' });
+  for (let i = 0; i < 40; i++) {
+    await new Promise(r => setTimeout(r, 250));
+    if (await checkServer()) return proc;
+  }
+  return proc;
+}
 
 async function runTest() {
+  const serverProc = await ensureServerRunning();
   console.log('Testing Google OAuth customer login and profile verification...');
 
   // 1. Test POST /api/auth/oauth/google with verified Google account: Anushiya Selvi
@@ -81,6 +106,7 @@ async function runTest() {
   assert.strictEqual(updateData.user.phone, '+91 98765 99999', 'Phone updated');
 
   console.log('✅ ALL GOOGLE IDENTITY AND PROFILE TESTS PASSED PERFECTLY!');
+  process.exit(0);
 }
 
 runTest().catch(e => {
