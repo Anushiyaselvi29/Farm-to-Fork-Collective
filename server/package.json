@@ -1,0 +1,10 @@
+{
+  "name": "farm-to-fork-collective-backend",
+  "version": "1.0.0",
+  "description": "Farm to Fork Collective Express Backend Server",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  }
+}

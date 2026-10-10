@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed-to-Plate Product Traceability - Farm to Fork Collective</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+    <style>
+        .trace-page {
+            min-height: 100vh;
+            background: var(--bg);
+            padding: 30px 16px 80px;
+        }
+        .trace-container {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+        .trace-nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--primary);
+            font-size: 1.3rem;
+            font-weight: 800;
+        }
+        .trace-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(45, 106, 79, 0.12);
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+        .product-hero-grid {
+            display: grid;
+            grid-template-columns: 180px 1fr 200px;
+            gap: 24px;
+            align-items: center;
+        }
+        .prod-image-wrap {
+            width: 100%;
+            height: 160px;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid #e2e8f0;
+        }
+        .prod-image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .id-badge {
+            font-family: monospace;
+            font-size: 0.88rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .id-product {
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+        .id-trace {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .qr-action-card {
+            background: #f8fafc;
+            border: 1.5px dashed #16a34a;
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+        }
+        .qr-img-box {
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 8px;
+            background: white;
+            padding: 6px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .qr-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        /* Journey Timeline */
+        .journey-timeline {
+            position: relative;
+            margin: 32px 0 16px 20px;
+            padding-left: 28px;
+            border-left: 3px solid #22c55e;
+        }
+        .timeline-step {
+            position: relative;
+            margin-bottom: 28px;
+        }
+        .timeline-step:last-child {
+            margin-bottom: 0;
+        }
+        .timeline-bullet {
+            position: absolute;
+            left: -43px;
+            top: 2px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #22c55e;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.82rem;
+            box-shadow: 0 0 0 4px var(--white);
+        }
+        .timeline-box {
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px 20px;
+            transition: all 0.2s ease;
+        }
+        .timeline-box:hover {
+            border-color: #22c55e;
+            box-shadow: 0 4px 14px rgba(34, 197, 94, 0.1);
+        }
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .timeline-stage-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .timeline-status-pill {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+        .timeline-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 0.82rem;
+            color: #64748b;
+        }
+        .timeline-meta-grid div {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .timeline-meta-grid strong {
+            color: #334155;
+        }
+        .timeline-desc {
+            font-size: 0.9rem;
+            color: #334155;
+            line-height: 1.5;
+            margin: 0;
+        }
+        .search-box-wrap {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+        .btn-lookup {
+            padding: 12px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        @media (max-width: 768px) {
+            .product-hero-grid { grid-template-columns: 1fr; text-align: center; }
+            .prod-image-wrap { margin: 0 auto; }
+            .journey-timeline { margin-left: 12px; padding-left: 22px; }
+            .timeline-bullet { left: -34px; width: 22px; height: 22px; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="trace-page">
+    <div class="trace-container">
+        
+        <!-- Header -->
+        <header class="trace-nav-header">
+            <a href="../index.html" class="brand-link">
+                <span>🌱 Farm to Fork Collective</span>
+            </a>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <button class="btn-secondary" onclick="window.history.back()" style="padding: 8px 16px; font-size: 0.88rem; border-radius: 8px; cursor: pointer;">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <a href="products.html" class="btn-primary" style="padding: 8px 16px; font-size: 0.88rem; border-radius: 8px; text-decoration: none;">
+                    <i class="fas fa-shopping-basket"></i> Explore Catalog
+                </a>
+            </div>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="search-box-wrap">
+            <input type="text" id="traceSearchInput" class="search-input" placeholder="Enter Traceability ID (e.g. FTF-TR-...) or Product ID...">
+            <button type="button" class="btn-lookup" onclick="lookupManualTrace()">
+                <i class="fas fa-search"></i> Trace
+            </button>
+        </div>
+
+        <!-- Main Loading / Content State -->
+        <div id="traceLoadingState" style="text-align: center; padding: 60px 20px;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 12px;"></i>
+            <h3 style="color: var(--text);">Retrieving Verified Traceability Journey...</h3>
+            <p style="color: var(--text-light); font-size: 0.9rem;">Connecting to Farm to Fork database & checking cryptographic logs.</p>
+        </div>
+
+        <div id="traceErrorState" style="display: none;" class="trace-card">
+            <div style="text-align: center; padding: 30px 20px;">
+                <div style="font-size: 3rem; color: #dc2626; margin-bottom: 12px;">⚠️</div>
+                <h2 style="margin: 0 0 8px; color: var(--text);">Traceability Record Not Found</h2>
+                <p id="traceErrorMessage" style="color: var(--text-light); margin: 0 0 20px;">
+                    We could not find an authentic database record matching this Traceability ID.
+                </p>
+                <a href="seed-to-plate.html" class="btn-primary" style="padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block;">
+                    View Sample Traceability Scanner
+                </a>
+            </div>
+        </div>
+
+        <!-- Product & Journey Display -->
+        <div id="traceContentState" style="display: none;">
+            
+            <!-- Hero Product Card -->
+            <div class="trace-card">
+                <div class="product-hero-grid">
+                    <div class="prod-image-wrap">
+                        <img id="productImageEl" src="" alt="Product Image">
+                    </div>
+                    <div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+                            <span class="id-badge id-product" id="productIdEl">
+                                <i class="fas fa-tag"></i> <span>FTF-P-2026-000001</span>
+                            </span>
+                            <span class="id-badge id-trace" id="traceIdEl">
+                                <i class="fas fa-qrcode"></i> <span>FTF-TR-XXXXXXXX</span>
+                            </span>
+                        </div>
+                        <h1 id="productNameEl" style="font-size: 1.6rem; margin: 0 0 6px; color: var(--text);">Organic Farm Product</h1>
+                        <p id="productMetaEl" style="color: var(--text-light); margin: 0 0 10px; font-size: 0.9rem;">
+                            Category: Vegetables • Seller: Farm Collective • Origin: Tamil Nadu
+                        </p>
+                        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                            <span style="font-size: 1.3rem; font-weight: 800; color: var(--primary);" id="productPriceEl">₹60/kg</span>
+                            <span style="background: #dcfce7; color: #15803d; padding: 4px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 700;">
+                                <i class="fas fa-shield-alt"></i> 100% Traceability Verified
+                            </span>
+                        </div>
+                    </div>
+                    <div class="qr-action-card">
+                        <div class="qr-img-box">
+                            <img id="productQrImageEl" src="" alt="Verified QR">
+                        </div>
+                        <div style="font-size: 0.74rem; font-weight: 700; color: #15803d; margin-bottom: 8px;">
+                            Official Trace QR
+                        </div>
+                        <div style="display: flex; gap: 6px;">
+                            <button type="button" class="btn-primary" onclick="printQrSticker()" style="flex:1; padding:6px; font-size:0.75rem; border-radius:6px; cursor:pointer;">
+                                <i class="fas fa-print"></i> Print
+                            </button>
+                            <button type="button" class="btn-secondary" onclick="downloadQrImage()" style="flex:1; padding:6px; font-size:0.75rem; border-radius:6px; cursor:pointer;">
+                                <i class="fas fa-download"></i> Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Journey Timeline -->
+            <div class="trace-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                    <h2 style="font-size: 1.35rem; margin: 0; color: var(--text); display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-route" style="color: #22c55e;"></i> <span data-i18n="traceability.journey">Product Journey & Seed-to-Plate Traceability</span>
+                    </h2>
+                    <span style="font-size: 0.78rem; font-weight: 700; color: #16a34a; background: #dcfce7; padding: 4px 12px; border-radius: 20px;">
+                        <i class="fas fa-check-double"></i> Database Verified Events
+                    </span>
+                </div>
+                <p style="color: var(--text-light); font-size: 0.88rem; margin: 0 0 24px;">
+                    Every stage in this journey has been logged and cryptographically tied to Traceability ID <code id="subTraceIdText" style="color:var(--primary); font-weight:700;"></code>.
+                </p>
+
+                <!-- Dynamic Journey Events Container -->
+                <div class="journey-timeline" id="journeyEventsList">
+                    <!-- Events injected via JavaScript -->
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/i18n.js"></script>
+<script>
+    let activeProduct = null;
+    let activeTraceData = null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const id = resolveTraceabilityIdFromUrl();
+        if (id) {
+            document.getElementById('traceSearchInput').value = id;
+            loadTraceabilityData(id);
+        } else {
+            // Check for sample ID or prompt lookup
+            loadTraceabilityData('FTF-TR-2026-FARM01');
+        }
+    });
+
+    function resolveTraceabilityIdFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('id')) return urlParams.get('id').trim();
+        if (urlParams.get('traceabilityId')) return urlParams.get('traceabilityId').trim();
+
+        // Check path like /traceability/FTF-TR-XXXXX
+        const pathParts = window.location.pathname.split('/');
+        const traceIdx = pathParts.indexOf('traceability');
+        if (traceIdx !== -1 && pathParts[traceIdx + 1] && !pathParts[traceIdx + 1].endsWith('.html')) {
+            return decodeURIComponent(pathParts[traceIdx + 1]).trim();
+        }
+
+        return null;
+    }
+
+    function lookupManualTrace() {
+        const val = document.getElementById('traceSearchInput').value.trim();
+        if (!val) {
+            alert('Please enter a Traceability ID or Product ID.');
+            return;
+        }
+        loadTraceabilityData(val);
+    }
+
+    async function loadTraceabilityData(traceId) {
+        showState('loading');
+
+        try {
+            let res = null;
+            if (window.FTF_API && window.FTF_API.traceability && window.FTF_API.traceability.getTrace) {
+                res = await window.FTF_API.traceability.getTrace(traceId);
+            } else {
+                const apiUrl = (window.VITE_API_URL !== undefined && window.VITE_API_URL !== '')
+                    ? window.VITE_API_URL.replace(/\/+$/, '')
+                    : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : '');
+                const raw = await fetch(`${apiUrl}/api/traceability/${encodeURIComponent(traceId)}`);
+                res = await raw.json();
+            }
+
+            if (res && res.success && res.product) {
+                activeProduct = res.product;
+                activeTraceData = res.traceability;
+                renderTraceContent(res.product, res.journeyEvents || (res.traceability && res.traceability.journeyEvents) || []);
+                showState('content');
+            } else {
+                showState('error', res ? res.message : `No product found for identifier: ${traceId}`);
+            }
+        } catch (err) {
+            console.error('Trace fetch error:', err);
+            showState('error', `Failed to connect to backend server. Reason: ${err.message}`);
+        }
+    }
+
+    function showState(state, errorMsg) {
+        document.getElementById('traceLoadingState').style.display = (state === 'loading') ? 'block' : 'none';
+        document.getElementById('traceContentState').style.display = (state === 'content') ? 'block' : 'none';
+        document.getElementById('traceErrorState').style.display = (state === 'error') ? 'block' : 'none';
+
+        if (state === 'error' && errorMsg) {
+            document.getElementById('traceErrorMessage').textContent = errorMsg;
+        }
+    }
+
+    function renderTraceContent(product, journeyEvents) {
+        document.getElementById('productIdEl').innerHTML = `<i class="fas fa-tag"></i> <span>${escapeHtml(product.productId || 'FTF-P-2026-000001')}</span>`;
+        document.getElementById('traceIdEl').innerHTML = `<i class="fas fa-qrcode"></i> <span>${escapeHtml(product.traceabilityId || 'FTF-TR-XXXXX')}</span>`;
+        document.getElementById('subTraceIdText').textContent = product.traceabilityId || product.productId;
+
+        document.getElementById('productNameEl').textContent = product.name || 'Produce';
+        document.getElementById('productMetaEl').textContent = `Category: ${capitalize(product.category || 'General')} • Seller: ${product.seller || 'Farm to Fork Collective'} • Origin: ${product.origin || 'Tamil Nadu'}`;
+        document.getElementById('productPriceEl').textContent = `₹${product.price}/${product.unit || 'kg'}`;
+
+        const imgEl = document.getElementById('productImageEl');
+        imgEl.src = product.image || '/assets/images/products/organic-tomatoes.jpg';
+        imgEl.onerror = () => { imgEl.src = 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400'; };
+
+        const qrEl = document.getElementById('productQrImageEl');
+        if (product.qrCode) {
+            qrEl.src = product.qrCode;
+        } else {
+            qrEl.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(window.location.origin + '/traceability/' + (product.traceabilityId || product.productId))}`;
+        }
+
+        // Render authentic journey events
+        const timelineList = document.getElementById('journeyEventsList');
+        if (!journeyEvents || journeyEvents.length === 0) {
+            timelineList.innerHTML = `
+                <div style="text-align: center; padding: 24px; color: var(--text-light);">
+                    <i class="fas fa-info-circle"></i> Initial traceability record created. Further dispatch stages will appear as logged.
+                </div>
+            `;
+            return;
+        }
+
+        timelineList.innerHTML = journeyEvents.map((evt, idx) => {
+            const dateStr = evt.date ? new Date(evt.date).toLocaleDateString() : (evt.timestamp ? new Date(evt.timestamp).toLocaleDateString() : 'Today');
+            const timeStr = evt.time || (evt.timestamp ? new Date(evt.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '10:00 AM');
+            const locationStr = evt.location || 'Tamil Nadu, India';
+            const actorStr = evt.actor || evt.actorType || 'Certified Producer';
+            const stageName = evt.stage || evt.title || `Stage ${idx + 1}`;
+            const desc = evt.description || evt.desc || 'Verified stage completed successfully in accordance with organic standards.';
+            const status = evt.status || 'Verified';
+
+            return `
+                <div class="timeline-step">
+                    <div class="timeline-bullet">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="timeline-box">
+                        <div class="timeline-header">
+                            <span class="timeline-stage-title">
+                                <i class="fas fa-check-circle" style="color: #22c55e;"></i> ${escapeHtml(stageName)}
+                            </span>
+                            <span class="timeline-status-pill">${escapeHtml(status)}</span>
+                        </div>
+                        <div class="timeline-meta-grid">
+                            <div><i class="fas fa-calendar-alt"></i> <span><strong>Date:</strong> ${escapeHtml(dateStr)}</span></div>
+                            <div><i class="fas fa-clock"></i> <span><strong>Time:</strong> ${escapeHtml(timeStr)}</span></div>
+                            <div><i class="fas fa-map-marker-alt"></i> <span><strong>Location:</strong> ${escapeHtml(locationStr)}</span></div>
+                            <div><i class="fas fa-user-check"></i> <span><strong>Actor:</strong> ${escapeHtml(actorStr)}</span></div>
+                        </div>
+                        <p class="timeline-desc">${escapeHtml(desc)}</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function printQrSticker() {
+        window.print();
+    }
+
+    function downloadQrImage() {
+        const qrEl = document.getElementById('productQrImageEl');
+        if (!qrEl || !qrEl.src) return;
+        const a = document.createElement('a');
+        a.href = qrEl.src;
+        a.download = `FTF_Trace_${(activeProduct && activeProduct.traceabilityId) || 'QR'}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    function capitalize(s) {
+        return (s && s.charAt(0).toUpperCase() + s.slice(1)) || '';
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>"']/g, function(m) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sign-In Verification | Farm to Fork Collective</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #F0FDF4 0%, #FFFBEB 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .callback-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 440px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            border: 1px solid #dcfce7;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #16a34a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+</head>
+<body>
+    <div class="callback-card">
+        <div class="spinner" id="spinner"></div>
+        <div id="statusIcon" style="font-size: 2.5rem; margin-bottom: 12px; display: none;"></div>
+        <h2 id="statusTitle" style="color: #1e293b; font-size: 1.3rem; margin-bottom: 8px;">Verifying Google Account...</h2>
+        <p id="statusMsg" style="color: #64748b; font-size: 0.9rem;">Connecting to Farm to Fork Collective and securing your session.</p>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script>
+        (async function() {
+            const statusTitle = document.getElementById('statusTitle');
+            const statusMsg = document.getElementById('statusMsg');
+            const spinner = document.getElementById('spinner');
+            const statusIcon = document.getElementById('statusIcon');
+
+            function showError(msg) {
+                spinner.style.display = 'none';
+                statusIcon.style.display = 'block';
+                statusIcon.innerHTML = '⚠️';
+                statusTitle.textContent = 'Sign-In Failed';
+                statusMsg.textContent = msg;
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 3000);
+            }
+
+            try {
+                // Parse hash or query parameters
+                const hash = window.location.hash.substring(1);
+                const search = window.location.search.substring(1);
+                const params = new URLSearchParams(hash || search);
+
+                const accessToken = params.get('access_token');
+                const error = params.get('error');
+
+                if (error) {
+                    showError('Google authentication was cancelled or encountered an error: ' + error);
+                    return;
+                }
+
+                if (!accessToken) {
+                    // Check if token exists in opener communication
+                    showError('No access token received from Google.');
+                    return;
+                }
+
+                // Fetch Google profile
+                const profileRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+
+                if (!profileRes.ok) {
+                    throw new Error('Failed to retrieve user profile from Google.');
+                }
+
+                const profile = await profileRes.json();
+                const role = localStorage.getItem('ftf_pending_role') || 'customer';
+
+                // Send to backend OAuth JIT provisioning
+                let result = null;
+                if (window.FTF_API && window.FTF_API.auth && window.FTF_API.auth.loginWithGoogle) {
+                    result = await window.FTF_API.auth.loginWithGoogle({
+                        token: accessToken,
+                        email: profile.email,
+                        name: profile.name || profile.given_name || profile.email.split('@')[0],
+                        picture: profile.picture,
+                        role: role
+                    });
+                }
+
+                // Fallback local persistence if needed
+                const user = (result && result.user) ? result.user : {
+                    name: profile.name || profile.email.split('@')[0],
+                    email: profile.email,
+                    role: role,
+                    avatar: profile.picture
+                };
+
+                localStorage.setItem('userName', user.name);
+                localStorage.setItem('userEmail', user.email);
+                localStorage.setItem('userRole', user.role || role);
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('farmToForkUser', JSON.stringify(user));
+                if (result && result.token) localStorage.setItem('farmToForkToken', result.token);
+
+                // If opened in popup, notify opener
+                if (window.opener && !window.opener.closed) {
+                    try {
+                        window.opener.postMessage({
+                            type: 'GOOGLE_OAUTH_SUCCESS',
+                            user: user,
+                            token: result ? result.token : accessToken
+                        }, '*');
+                        window.close();
+                        return;
+                    } catch (e) {
+                        console.log('Opener postMessage notice:', e);
+                    }
+                }
+
+                // Normal redirect
+                spinner.style.display = 'none';
+                statusIcon.style.display = 'block';
+                statusIcon.innerHTML = '✅';
+                statusTitle.textContent = `Welcome, ${user.name}!`;
+                statusMsg.textContent = 'Redirecting to your dashboard...';
+
+                setTimeout(() => {
+                    let dash = 'dashboard-customer.html';
+                    if (user.role === 'farmer') dash = 'dashboard-farmer.html';
+                    else if (user.role === 'artisan') dash = 'dashboard-artisan.html';
+                    else if (user.role === 'admin') dash = 'dashboard-admin.html';
+                    window.location.href = dash;
+                }, 1000);
+
+            } catch (err) {
+                console.error('OAuth callback error:', err);
+                showError(err.message || 'An unexpected error occurred during verification.');
+            }
+        })();
+    </script>
+    <script src="../js/script.js"></script>
+    <script src="../js/i18n.js"></script>
+</body>
+</html>

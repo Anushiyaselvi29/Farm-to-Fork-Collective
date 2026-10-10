@@ -1,0 +1,10 @@
+{
+  "name": "farm-to-fork-collective-frontend",
+  "version": "1.0.0",
+  "description": "Farm to Fork Collective Vite Frontend Server",
+  "scripts": {
+    "dev": "vite ..",
+    "start": "vite ..",
+    "build": "vite build .."
+  }
+}

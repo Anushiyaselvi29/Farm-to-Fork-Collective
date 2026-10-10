@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Farm to Fork Collective</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/respnsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .checkout-page { padding: 40px 0 80px; }
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1.8fr 1.2fr;
+            gap: 40px;
+        }
+        .checkout-section-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+        .checkout-section-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        .slot-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .slot-option {
+            padding: 14px;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .slot-option.active {
+            border-color: var(--primary);
+            background: #E8F5E9;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .payment-method-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .payment-method-card.active {
+            border-color: var(--primary);
+            background: #F1F8E9;
+        }
+        .order-summary-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 100px;
+        }
+        .summary-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            font-size: 0.95rem;
+        }
+        .summary-total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0 0;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .carbon-badge {
+            background: #E8F5E9;
+            color: var(--primary-dark);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+        }
+    </style>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+    <div class="container">
+        <div class="top-bar-left">
+            <span><i class="fas fa-leaf"></i> 100% Organic</span>
+            <span><i class="fas fa-truck"></i> Free Delivery on ₹500+</span>
+            <span><i class="fas fa-shield-alt"></i> Secure 256-bit Checkout</span>
+        </div>
+        <div class="top-bar-right">
+            <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar glass">
+    <div class="container">
+        <div class="nav-brand">
+            <a href="../index.html">
+                <div class="brand-icon"><i class="fas fa-seedling"></i></div>
+                <div class="brand-text">
+                    <span class="brand-main">Farm to Fork</span>
+                    <span class="brand-sub">Collective</span>
+                </div>
+            </a>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="../index.html">Home</a>
+            <a href="products.html">Shop</a>
+            <a href="community-kitchen.html">Community Kitchen</a>
+            <a href="group-buying.html">Group Buying</a>
+            <a href="seed-to-plate.html">Seed to Plate</a>
+        </div>
+        <div class="nav-actions">
+            <a href="cart.html" class="cart-btn">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-badge" id="cartBadge">0</span>
+            </a>
+            <a href="login.html" class="btn-login">Login</a>
+            <a href="register.html" class="btn-signup">Sign Up</a>
+        </div>
+    </div>
+</nav>
+
+<!-- CHECKOUT PAGE -->
+<section class="checkout-page">
+    <div class="container">
+        <div class="section-header" style="text-align: left; margin-bottom: 30px;">
+            <span class="section-tag">🔒 Fast & Secure</span>
+            <h2>Complete Your <span class="gradient-text">Order</span></h2>
+        </div>
+
+        <form id="checkoutForm" onsubmit="handlePlaceOrder(event)">
+            <div class="checkout-grid">
+                <!-- LEFT FORM COLUMN -->
+                <div class="checkout-main">
+                    <!-- Step 1: Delivery Address -->
+                    <div class="checkout-section-card">
+                        <h3><i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> 1. Delivery Details</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Full Name *</label>
+                                <input type="text" id="custName" required placeholder="e.g. Priya Sharma" />
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number *</label>
+                                <input type="tel" id="custPhone" required placeholder="+91 98765 43210" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address *</label>
+                            <input type="email" id="custEmail" required placeholder="you@example.com" />
+                        </div>
+                        <div class="form-group">
+                            <label>Street Address / Flat No. *</label>
+                            <input type="text" id="custAddress" required placeholder="Apartment, Street name, Locality" />
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>City *</label>
+                                <input type="text" id="custCity" required value="Chennai" />
+                            </div>
+                            <div class="form-group">
+                                <label>Pin Code *</label>
+                                <input type="text" id="custPincode" required placeholder="600040" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Time Slot -->
+                    <div class="checkout-section-card">
+                        <h3><i class="fas fa-clock" style="color: var(--primary);"></i> 2. Choose Delivery Slot</h3>
+                        <div class="slot-options">
+                            <div class="slot-option active" onclick="selectSlot(this, 'Morning (7:00 AM - 10:00 AM)')">
+                                🌅 <strong>Morning</strong>
+                                <div style="font-size: 0.8rem; margin-top: 4px;">7:00 AM - 10:00 AM</div>
+                            </div>
+                            <div class="slot-option" onclick="selectSlot(this, 'Evening (5:00 PM - 8:00 PM)')">
+                                🌆 <strong>Evening</strong>
+                                <div style="font-size: 0.8rem; margin-top: 4px;">5:00 PM - 8:00 PM</div>
+                            </div>
+                            <div class="slot-option" onclick="selectSlot(this, 'Express Eco-Van (Within 2 Hours)')">
+                                ⚡ <strong>Express</strong>
+                                <div style="font-size: 0.8rem; margin-top: 4px;">Within 2 Hours</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Payment Method -->
+                    <div class="checkout-section-card">
+                        <h3><i class="fas fa-credit-card" style="color: var(--primary);"></i> 3. Payment Method</h3>
+                        <div class="payment-methods">
+                            <div class="payment-method-card active" onclick="selectPayment(this, 'UPI')">
+                                <input type="radio" name="payment" checked />
+                                <i class="fas fa-mobile-alt" style="font-size: 1.4rem; color: var(--primary);"></i>
+                                <div style="flex: 1;">
+                                    <strong>UPI Instant Pay (Google Pay / PhonePe / Paytm / QR)</strong>
+                                    <div style="font-size: 0.8rem; color: var(--text-light);">Instant confirmation with 0% extra fee</div>
+                                </div>
+                            </div>
+                            <div class="payment-method-card" onclick="selectPayment(this, 'Card')">
+                                <input type="radio" name="payment" />
+                                <i class="fas fa-credit-card" style="font-size: 1.4rem; color: #1976D2;"></i>
+                                <div style="flex: 1;">
+                                    <strong>Credit / Debit Card</strong>
+                                    <div style="font-size: 0.8rem; color: var(--text-light);">Visa, MasterCard, RuPay</div>
+                                </div>
+                            </div>
+                            <div class="payment-method-card" onclick="selectPayment(this, 'COD')">
+                                <input type="radio" name="payment" />
+                                <i class="fas fa-hand-holding-usd" style="font-size: 1.4rem; color: #FF6F00;"></i>
+                                <div style="flex: 1;">
+                                    <strong>Cash / QR on Delivery</strong>
+                                    <div style="font-size: 0.8rem; color: var(--text-light);">Pay at your doorstep after verifying produce</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT ORDER SUMMARY COLUMN -->
+                <div class="checkout-sidebar">
+                    <div class="order-summary-card">
+                        <h3 style="margin-bottom: 16px;">Order Summary (<span id="summaryItemCount">0</span> items)</h3>
+                        
+                        <div id="checkoutItemList" style="max-height: 240px; overflow-y: auto; margin-bottom: 16px;">
+                            <!-- Injected by JS -->
+                        </div>
+
+                        <!-- Coupon Code -->
+                        <div style="margin: 16px 0;">
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" id="couponInput" placeholder="Promo code (e.g. ORGANIC20)" style="flex: 1; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.85rem; text-transform: uppercase;" />
+                                <button type="button" onclick="applyCouponCode()" class="btn-secondary btn-small">Apply</button>
+                            </div>
+                            <div id="couponStatus"></div>
+                        </div>
+
+                        <div class="summary-item-row">
+                            <span>Subtotal</span>
+                            <span id="cartSubtotal">₹0</span>
+                        </div>
+                        <div class="summary-item-row">
+                            <span>Delivery Fee</span>
+                            <span id="cartDelivery">₹0</span>
+                        </div>
+                        <div class="summary-item-row">
+                            <span>Discount</span>
+                            <span id="cartDiscount" style="color: var(--primary);">-₹0</span>
+                        </div>
+                        <div class="summary-total-row">
+                            <span>Total Payable</span>
+                            <span id="cartTotal">₹0</span>
+                        </div>
+
+                        <div class="carbon-badge">
+                            <i class="fas fa-seedling" style="color: var(--primary); font-size: 1.2rem;"></i>
+                            <span>This order offsets <strong>1.8 kg CO₂</strong> & funds zero plastic delivery.</span>
+                        </div>
+
+                        <button type="submit" id="btnPlaceOrder" onclick="handlePlaceOrder(event)" class="btn-primary btn-large" style="width: 100%; justify-content: center; margin-top: 24px;">
+                            <i class="fas fa-lock"></i> Place Order Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- ORDER CONFIRMATION MODAL -->
+<div id="orderSuccessModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-box" style="text-align: center;">
+        <div style="font-size: 4rem; color: var(--primary); margin-bottom: 12px;">🎉</div>
+        <h2 style="font-size: 1.8rem; margin-bottom: 8px;">Order Placed Successfully!</h2>
+        <p style="color: var(--text-light); margin-bottom: 20px;">Thank you for supporting organic local farmers!</p>
+
+        <div style="background: var(--bg); padding: 18px; border-radius: 12px; text-align: left; margin-bottom: 20px; font-size: 0.9rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                <span style="color: var(--text-light);">Order ID:</span>
+                <strong id="confirmOrderId">#FTF-98214</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                <span style="color: var(--text-light);">Delivery Slot:</span>
+                <strong id="confirmSlot">Morning (7:00 AM - 10:00 AM)</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                <span style="color: var(--text-light);">Payment Mode:</span>
+                <strong id="confirmPayment">UPI Instant Pay</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding-top: 8px; border-top: 1px solid #ddd;">
+                <span>Total Paid:</span>
+                <strong id="confirmAmount" style="color: var(--primary); font-size: 1.1rem;">₹0</strong>
+            </div>
+        </div>
+
+        <!-- Real Multi-Channel Dispatch Actions -->
+        <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 14px; margin-bottom: 20px; text-align: left;">
+            <div style="font-size: 0.82rem; font-weight: 800; color: #1e293b; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                <i class="fas fa-paper-plane" style="color: var(--primary);"></i>
+                <span>Direct Receipts & Live Notifications:</span>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button type="button" id="btnOpenWhatsAppReceipt" style="flex: 1; min-width: 130px; padding: 9px 12px; background: #25D366; color: white; border: none; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i class="fab fa-whatsapp" style="font-size: 1rem;"></i> WhatsApp
+                </button>
+                <button type="button" id="btnOpenSmsReceipt" style="flex: 1; min-width: 120px; padding: 9px 12px; background: #0284c7; color: white; border: none; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i class="fas fa-sms" style="font-size: 1rem;"></i> SMS
+                </button>
+                <button type="button" id="btnOpenEmailReceipt" style="flex: 1; min-width: 120px; padding: 9px 12px; background: #ea4335; color: white; border: none; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i class="fas fa-envelope" style="font-size: 0.95rem;"></i> Email
+                </button>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: center;">
+            <a href="dashboard-customer.html" class="btn-primary"><i class="fas fa-truck"></i> Track in Dashboard</a>
+            <a href="../index.html" class="btn-secondary">Return Home</a>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="footer-logo"><i class="fas fa-seedling"></i><span>Farm to Fork Collective</span></div>
+                <p>Building a sustainable community through organic food, transparency, and collective action.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="products.html">Products</a>
+                <a href="community-kitchen.html">Community Kitchen</a>
+                <a href="group-buying.html">Group Buying</a>
+            </div>
+            <div class="footer-links">
+                <h4>Support</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Farm to Fork Collective. All rights reserved. 🌱</p>
+        </div>
+    </div>
+</footer>
+
+<script src="../js/script.js"></script>
+<script src="../js/cart.js"></script>
+<script src="../js/animation.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/notifications.js"></script>
+<script src="../js/i18n.js"></script>
+<script>
+    let selectedDeliverySlot = 'Morning (7:00 AM - 10:00 AM)';
+    let selectedPaymentMode = 'UPI Instant Pay';
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadCart();
+        renderCheckoutItems();
+        prefillUserDetails();
+    });
+
+    function prefillUserDetails() {
+        const user = getCurrentUser();
+        if (user) {
+            if (document.getElementById('custName')) document.getElementById('custName').value = user.name || '';
+            if (document.getElementById('custEmail')) document.getElementById('custEmail').value = user.email || '';
+            if (document.getElementById('custPhone')) document.getElementById('custPhone').value = user.phone || '';
+            if (document.getElementById('custAddress')) document.getElementById('custAddress').value = user.address || '';
+        }
+    }
+
+    function renderCheckoutItems() {
+        const list = document.getElementById('checkoutItemList');
+        const countEl = document.getElementById('summaryItemCount');
+        if (!list) return;
+
+        // Ensure cart is fresh from localStorage
+        try {
+            const saved = localStorage.getItem('farmToForkCart');
+            if (saved) {
+                cart = JSON.parse(saved);
+                window.cart = cart;
+            }
+        } catch(e) {}
+
+        if (!Array.isArray(cart) || cart.length === 0) {
+            list.innerHTML = `<div style="text-align: center; padding: 20px; color: var(--text-light);">No items in cart</div>`;
+            if (countEl) countEl.textContent = '0';
+            const subtotalEl = document.getElementById('cartSubtotal');
+            const deliveryEl = document.getElementById('cartDelivery');
+            const discountEl = document.getElementById('cartDiscount');
+            const totalEl = document.getElementById('cartTotal');
+            if (subtotalEl) subtotalEl.textContent = '₹0';
+            if (deliveryEl) deliveryEl.textContent = '₹0';
+            if (discountEl) discountEl.textContent = '₹0';
+            if (totalEl) totalEl.textContent = '₹0';
+            return;
+        }
+
+        const totalQty = cart.reduce((sum, item) => sum + (parseInt(item.quantity, 10) || 1), 0);
+        if (countEl) countEl.textContent = totalQty;
+
+        list.innerHTML = cart.map(item => {
+            const farmerName = item.farmerName || item.seller || 'Verified Farmer';
+            const farmName = item.farmName || item.seller || '';
+            const farmLoc = item.farmLocation ? ` (${item.farmLocation})` : '';
+            const price = parseFloat(item.price) || 0;
+            const qty = parseInt(item.quantity, 10) || 1;
+
+            return `
+            <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid rgba(0,0,0,0.06);">
+                <img src="${typeof getProductImagePath === 'function' ? getProductImagePath(item.image) : item.image}" alt="${item.name}" style="width: 48px; height: 48px; border-radius: 8px; object-fit: cover;" onerror="this.src='${item.backupImage || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=200'}'">
+                <div style="flex: 1;">
+                    <div style="font-weight: 600; font-size: 0.9rem;">${item.name}</div>
+                    <div style="font-size: 0.78rem; color: var(--primary); font-weight: 600;">
+                        <i class="fas fa-tractor"></i> ${farmerName} ${farmName ? '• ' + farmName : ''} ${farmLoc}
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-light);">Qty: ${qty} × ₹${price}</div>
+                </div>
+                <div style="font-weight: 700; font-size: 0.95rem; color: var(--primary);">₹${price * qty}</div>
+            </div>
+            `;
+        }).join('');
+
+        // Calculate and update totals dynamically
+        let totals = { subtotal: 0, deliveryFee: 0, discount: 0, total: 0 };
+        if (typeof calculateCartTotals === 'function') {
+            totals = calculateCartTotals();
+        } else {
+            const sub = cart.reduce((sum, item) => sum + ((parseFloat(item.price) || 0) * (parseInt(item.quantity, 10) || 1)), 0);
+            totals = {
+                subtotal: Math.round(sub),
+                deliveryFee: sub >= 500 || sub === 0 ? 0 : 50,
+                discount: 0,
+                total: Math.round(sub + (sub >= 500 || sub === 0 ? 0 : 50))
+            };
+        }
+
+        const subtotalEl = document.getElementById('cartSubtotal');
+        const deliveryEl = document.getElementById('cartDelivery');
+        const discountEl = document.getElementById('cartDiscount');
+        const totalEl = document.getElementById('cartTotal');
+
+        if (subtotalEl) subtotalEl.textContent = `₹${totals.subtotal}`;
+        if (deliveryEl) deliveryEl.innerHTML = totals.deliveryFee === 0 ? '<span style="color: var(--primary); font-weight: 700;">FREE</span>' : `₹${totals.deliveryFee}`;
+        if (discountEl) discountEl.textContent = totals.discount > 0 ? `-₹${totals.discount}` : '₹0';
+        if (totalEl) totalEl.textContent = `₹${totals.total}`;
+    }
+
+    function selectSlot(el, slot) {
+        document.querySelectorAll('.slot-option').forEach(s => s.classList.remove('active'));
+        el.classList.add('active');
+        selectedDeliverySlot = slot;
+    }
+
+    function selectPayment(el, method) {
+        document.querySelectorAll('.payment-method-card').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+        el.querySelector('input[type="radio"]').checked = true;
+        selectedPaymentMode = method === 'UPI' ? 'UPI Instant Pay' : (method === 'Card' ? 'Credit/Debit Card' : 'Cash on Delivery');
+    }
+
+    async function handlePlaceOrder(e) {
+        if (e && e.preventDefault) e.preventDefault();
+
+        // Ensure cart is freshly retrieved
+        try {
+            const saved = localStorage.getItem('farmToForkCart');
+            if (saved) {
+                cart = JSON.parse(saved);
+                window.cart = cart;
+            }
+        } catch(err) {}
+
+        if (!Array.isArray(cart) || cart.length === 0) {
+            showNotification('Cart is empty! Add products first.', 'fas fa-shopping-cart');
+            return;
+        }
+
+        const name = (document.getElementById('custName')?.value || '').trim() || 'Valued Customer';
+        const email = (document.getElementById('custEmail')?.value || '').trim() || 'customer@farmtofork.in';
+        const phone = (document.getElementById('custPhone')?.value || '').trim() || '9876543210';
+        const address = (document.getElementById('custAddress')?.value || '').trim() || 'Tamil Nadu';
+        const city = (document.getElementById('custCity')?.value || '').trim() || 'Chennai';
+        const pincode = (document.getElementById('custPincode')?.value || '').trim() || '600040';
+        const fullAddress = `${address}, ${city} - ${pincode}`;
+
+        let totals = { subtotal: 0, deliveryFee: 0, discount: 0, total: 0 };
+        if (typeof calculateCartTotals === 'function') {
+            totals = calculateCartTotals();
+        } else {
+            const sub = cart.reduce((sum, item) => sum + ((parseFloat(item.price) || 0) * (parseInt(item.quantity, 10) || 1)), 0);
+            totals = {
+                subtotal: Math.round(sub),
+                deliveryFee: sub >= 500 || sub === 0 ? 0 : 50,
+                discount: 0,
+                total: Math.round(sub + (sub >= 500 || sub === 0 ? 0 : 50))
+            };
+        }
+        const { subtotal, deliveryFee, discount, total } = totals;
+        let orderId = '#FTF-' + Math.floor(100000 + Math.random() * 900000);
+
+        const newOrder = {
+            id: orderId,
+            date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+            items: [...cart],
+            total: total,
+            subtotal: subtotal,
+            deliveryFee: deliveryFee,
+            discount: discount,
+            slot: selectedDeliverySlot,
+            paymentMode: selectedPaymentMode,
+            status: 'Processing',
+            address: fullAddress,
+            customerName: name,
+            customerEmail: email,
+            customerPhone: phone,
+            farmerNames: [...new Set(cart.map(i => i.farmerName || i.seller).filter(Boolean))],
+            farmerIds: [...new Set(cart.map(i => i.farmerId).filter(Boolean))]
+        };
+
+        // Call backend API if available
+        if (window.FTF_API && window.FTF_API.orders) {
+            try {
+                const res = await window.FTF_API.orders.create(newOrder);
+                if (res && res.success && res.order) {
+                    orderId = res.order.id;
+                    newOrder.id = res.order.id;
+                }
+            } catch (err) {
+                console.warn('Backend order recording fallback to local:', err);
+            }
+        }
+
+        // Save order to history
+        try {
+            const savedOrders = JSON.parse(localStorage.getItem('farmToForkOrders') || '[]');
+            savedOrders.unshift(newOrder);
+            localStorage.setItem('farmToForkOrders', JSON.stringify(savedOrders));
+        } catch (err) {
+            console.error(err);
+        }
+
+        // Show confirmation modal
+        document.getElementById('confirmOrderId').textContent = orderId;
+        document.getElementById('confirmSlot').textContent = selectedDeliverySlot;
+        document.getElementById('confirmPayment').textContent = selectedPaymentMode;
+        document.getElementById('confirmAmount').textContent = `₹${total}`;
+        document.getElementById('orderSuccessModal').style.display = 'flex';
+
+        // Bind Direct Multi-Channel Actions (WhatsApp, SMS, Email)
+        const cleanPhone = (phone || '').replace(/[^0-9]/g, '');
+        const fullPhone = cleanPhone.length === 10 ? '91' + cleanPhone : cleanPhone;
+        const itemsText = newOrder.items.map(i => `${i.quantity}x ${i.name} (₹${i.price})`).join(', ');
+        const receiptText = `🌱 *Farm to Fork Collective - Order Confirmation*\n` +
+            `Order ID: ${orderId}\n` +
+            `Customer: ${name}\n` +
+            `Items: ${itemsText}\n` +
+            `Subtotal: ₹${subtotal}\n` +
+            `Delivery Fee: ${deliveryFee === 0 ? 'FREE' : '₹' + deliveryFee}\n` +
+            `Total Paid: ₹${total}\n` +
+            `Slot: ${selectedDeliverySlot}\n` +
+            `Payment: ${selectedPaymentMode}\n\n` +
+            `Trace Produce Journey: ${window.location.origin}/pages/seed-to-plate.html`;
+
+        const btnWa = document.getElementById('btnOpenWhatsAppReceipt');
+        if (btnWa) {
+            btnWa.onclick = function() {
+                const target = fullPhone ? `https://api.whatsapp.com/send?phone=${fullPhone}&text=${encodeURIComponent(receiptText)}` : `https://api.whatsapp.com/send?text=${encodeURIComponent(receiptText)}`;
+                window.open(target, '_blank');
+            };
+        }
+
+        const btnSms = document.getElementById('btnOpenSmsReceipt');
+        if (btnSms) {
+            btnSms.onclick = function() {
+                window.location.href = `sms:${cleanPhone || ''}?body=${encodeURIComponent(receiptText)}`;
+            };
+        }
+
+        const btnMail = document.getElementById('btnOpenEmailReceipt');
+        if (btnMail) {
+            btnMail.onclick = function() {
+                window.location.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent('Farm to Fork Order Receipt ' + orderId)}&body=${encodeURIComponent(receiptText)}`;
+            };
+        }
+
+        // Trigger Smart Role-Based Notifications & SMS Alerts
+        if (window.FTF_NOTIFICATIONS && typeof window.FTF_NOTIFICATIONS.addNotification === 'function') {
+            const itemsSummary = newOrder.items.map(i => `${i.quantity}x ${i.name}`).join(', ');
+            
+            // 1. Customer Notification & SMS
+            window.FTF_NOTIFICATIONS.addNotification('customer', {
+                category: 'orders',
+                title: `📦 Order Confirmed ${orderId}`,
+                message: `Thank you, ${name}! Your order for ${itemsSummary} (₹${total}) has been placed. Scheduled for ${selectedDeliverySlot}.`,
+                actionUrl: 'dashboard-customer.html#orders',
+                actionText: 'Track Order',
+                smsText: `[FTF-ALERTS] Dear ${name}, your order ${orderId} (₹${total}) is confirmed! Scheduled for ${selectedDeliverySlot}. Track: https://farmtofork.in/trace`
+            });
+
+            // 2. Farmer Notification & SMS
+            window.FTF_NOTIFICATIONS.addNotification('farmer', {
+                category: 'orders',
+                title: `📦 New Order Received ${orderId}`,
+                message: `${name} placed an order for ${itemsSummary}. Scheduled for ${selectedDeliverySlot}. Prepare batch for dispatch.`,
+                actionUrl: 'dashboard-farmer.html#ordersModal',
+                actionText: 'View Order Details',
+                smsText: `[FTF-KISSAN] Vanakkam Sundaram! New Order ${orderId} received from ${name} for ${itemsSummary}. Prep morning harvest batch.`
+            });
+
+            // 3. Farmer Payment Notification & SMS
+            window.FTF_NOTIFICATIONS.addNotification('farmer', {
+                category: 'payments',
+                title: `💳 Payment Received: ₹${subtotal}.00 Credited`,
+                message: `Payment for Order ${orderId} settled via ${selectedPaymentMode} directly to your linked Canara Bank account. Zero deductions.`,
+                actionUrl: 'dashboard-farmer.html',
+                actionText: 'View Balance',
+                smsText: `[FTF-PAY] ₹${subtotal}.00 credited to Canara Bank A/c for Order ${orderId} via ${selectedPaymentMode}. Zero broker deductions.`
+            });
+
+            // 4. Artisan Notification if handmade items
+            const hasArtisan = newOrder.items.some(i => i.category === 'handmade' || (i.name && (i.name.includes('Honey') || i.name.includes('Soap') || i.name.includes('Oil'))));
+            if (hasArtisan) {
+                window.FTF_NOTIFICATIONS.addNotification('artisan', {
+                    category: 'orders',
+                    title: `📦 New Artisan Order ${orderId}`,
+                    message: `${name} ordered small-batch handcrafted goods (${itemsSummary}). Pack in eco-friendly bubble material.`,
+                    actionUrl: 'dashboard-artisan.html',
+                    actionText: 'Inspect Order',
+                    smsText: `[FTF-ARTISAN] New Order ${orderId} received for handcrafted goods from ${name}. Prepare eco packaging.`
+                });
+            }
+        }
+
+        // Clear cart
+        cart = [];
+        saveCart();
+        updateCartUI();
+
+        if (typeof triggerConfetti === 'function') triggerConfetti();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Shopping Cart - Farm to Fork Collective</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/respnsive.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <style>
+        .cart-page { padding: 40px 0 80px; }
+        .cart-grid {
+            display: grid;
+            grid-template-columns: 2fr 1.1fr;
+            gap: 40px;
+            align-items: start;
+        }
+        .cart-summary {
+            background: var(--white);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 100px;
+        }
+        .cart-summary h3 { margin-bottom: 20px; font-size: 1.25rem; }
+        .cart-summary .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            font-size: 0.95rem;
+        }
+        .cart-summary .total {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary);
+            padding-top: 16px;
+            border-bottom: none;
+        }
+        .checkout-btn { width: 100%; padding: 16px; margin-top: 20px; justify-content: center; }
+        .free-delivery-badge {
+            background: #E8F5E9;
+            color: var(--primary-dark);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+    <div class="container">
+        <div class="top-bar-left">
+            <span><i class="fas fa-leaf"></i> 100% Organic</span>
+            <span><i class="fas fa-truck"></i> Free Delivery on ₹500+</span>
+            <span><i class="fas fa-hand-holding-heart"></i> Zero Waste</span>
+        </div>
+        <div class="top-bar-right" style="display: flex; align-items: center;">
+            
+            <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar glass">
+    <div class="container">
+        <div class="nav-brand">
+            <a href="../index.html" class="brand-logo-link">
+                <div class="brand-icon-wrapper">
+                    <div class="brand-icon"><i class="fas fa-seedling"></i></div>
+                    <span class="brand-leaf-badge" title="100% Organic Produce"><i class="fas fa-leaf"></i></span>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-main">
+                        Farm to Fork
+                        <span class="brand-side-leaf" title="Fresh Organic"><i class="fas fa-leaf"></i></span>
+                    </span>
+                    <span class="brand-sub">Collective • 100% Organic</span>
+                </div>
+            </a>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="../index.html">Home</a>
+            <a href="products.html">Shop</a>
+            <a href="community-kitchen.html">Community Kitchen</a>
+            <a href="group-buying.html">Group Buying</a>
+            <a href="seed-to-plate.html">Seed to Plate</a>
+        </div>
+        <div class="nav-actions">
+            <!-- Language Pill in Navbar -->
+            
+            <a href="cart.html" class="cart-btn">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-badge" id="cartBadge">0</span>
+            </a>
+            <a href="login.html" class="btn-login">Login</a>
+            <a href="register.html" class="btn-signup">Sign Up</a>
+            <button class="hamburger" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+        </div>
+    </div>
+</nav>
+
+<!-- CART PAGE -->
+<section class="cart-page">
+    <div class="container">
+        <div class="section-header" style="text-align: left; margin-bottom: 30px;">
+            <span class="section-tag">🛒 Your Fresh Basket</span>
+            <h2>Shopping <span class="gradient-text">Cart</span></h2>
+        </div>
+
+        <div class="cart-grid">
+            <!-- CART ITEMS LIST -->
+            <div id="cartItems"></div>
+
+            <!-- CART SUMMARY -->
+            <div class="cart-summary">
+                <h3>Order Summary (<span id="cartCount">0</span> items)</h3>
+
+                <div class="free-delivery-badge">
+                    <i class="fas fa-truck" style="color: var(--primary);"></i>
+                    <span>Free Delivery on all orders over <strong>₹500</strong></span>
+                </div>
+
+                <!-- Coupon Input -->
+                <div style="margin-bottom: 16px;">
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="couponInput" placeholder="Enter coupon (e.g. ORGANIC20)" style="flex: 1; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.85rem; text-transform: uppercase;" />
+                        <button type="button" onclick="applyCouponCode()" class="btn-secondary btn-small">Apply</button>
+                    </div>
+                    <div id="couponStatus"></div>
+                </div>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="cartSubtotal">₹0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery Charges</span>
+                    <span id="cartDelivery">₹0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Discount</span>
+                    <span id="cartDiscount" style="color: var(--primary);">-₹0</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total Amount</span>
+                    <span id="cartTotal">₹0</span>
+                </div>
+
+                <button class="btn-primary checkout-btn" onclick="proceedToCheckout()">
+                    <i class="fas fa-lock"></i> Proceed to Checkout
+                </button>
+                <button class="btn-secondary" style="width: 100%; margin-top: 12px; justify-content: center;" onclick="clearCart()">
+                    <i class="fas fa-trash-alt"></i> Clear Cart
+                </button>
+                <div style="text-align: center; margin-top: 18px;">
+                    <a href="products.html" style="color: var(--primary); font-weight: 600; font-size: 0.9rem;">← Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="footer-logo"><i class="fas fa-seedling"></i><span>Farm to Fork Collective</span></div>
+                <p>Building a sustainable community through organic food, transparency, and collective action.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="products.html">Products</a>
+                <a href="community-kitchen.html">Community Kitchen</a>
+                <a href="group-buying.html">Group Buying</a>
+            </div>
+            <div class="footer-links">
+                <h4>Support</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Farm to Fork Collective. All rights reserved. 🌱</p>
+        </div>
+    </div>
+</footer>
+
+<script src="../js/api.js"></script>
+<script src="../js/script.js"></script>
+<script src="../js/cart.js"></script>
+<script src="../js/animation.js"></script>
+<script src="../js/notifications.js"></script>
+<script src="../js/i18n.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof loadCart === 'function') loadCart();
+        else if (typeof updateCartUI === 'function') updateCartUI();
+    });
+</script>
+</body>
+</html>

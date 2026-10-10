@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>My Wishlist - Farm to Fork Collective</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/respnsive.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <style>
+        .wishlist-page { padding: 40px 0 80px; min-height: 80vh; background: var(--bg); }
+        .wishlist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(0,0,0,0.06);
+        }
+        .wishlist-header h1 {
+            font-size: 2rem;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .wishlist-badge {
+            background: #fee2e2;
+            color: #ef4444;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .wishlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .wishlist-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            border: 1px solid rgba(0,0,0,0.06);
+            position: relative;
+        }
+        .wishlist-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+        .wishlist-img-box {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+            background: #f1f5f9;
+        }
+        .wishlist-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .wishlist-card:hover .wishlist-img-box img {
+            transform: scale(1.05);
+        }
+        .wishlist-btn-remove {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            color: #ef4444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: all 0.2s;
+        }
+        .wishlist-btn-remove:hover {
+            background: #ef4444;
+            color: white;
+            transform: scale(1.1);
+        }
+        .wishlist-category-tag {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--primary-dark);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .wishlist-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .wishlist-body h3 {
+            font-size: 1.15rem;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+        .wishlist-origin {
+            font-size: 0.82rem;
+            color: var(--text-light);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .wishlist-price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 16px;
+            margin-top: auto;
+        }
+        .wishlist-price {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .wishlist-orig-price {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            text-decoration: line-through;
+        }
+        .wishlist-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-move-cart {
+            flex: 1;
+            padding: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+        .btn-move-cart:hover {
+            opacity: 0.92;
+            transform: translateY(-2px);
+        }
+        .btn-trace-crop {
+            padding: 10px 14px;
+            background: var(--bg);
+            color: var(--primary-dark);
+            border: 1.5px solid var(--primary);
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+        .btn-trace-crop:hover {
+            background: #e8f5e9;
+        }
+        .empty-wishlist {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 550px;
+            margin: 40px auto;
+        }
+        .empty-wishlist i.heart-icon {
+            font-size: 3.5rem;
+            color: #cbd5e1;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+        .empty-wishlist h2 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        .empty-wishlist p {
+            color: var(--text-light);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+    </style>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+    <div class="container">
+        <div class="top-bar-left">
+            <span><i class="fas fa-leaf"></i> 100% Organic</span>
+            <span><i class="fas fa-truck"></i> Free Delivery on ₹500+</span>
+            <span><i class="fas fa-hand-holding-heart"></i> Zero Waste</span>
+        </div>
+        <div class="top-bar-right" style="display: flex; align-items: center; gap: 12px;">
+            
+            <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar glass">
+    <div class="container">
+        <div class="nav-brand">
+            <a href="../index.html" class="brand-logo-link">
+                <div class="brand-icon-wrapper">
+                    <div class="brand-icon"><i class="fas fa-seedling"></i></div>
+                    <span class="brand-leaf-badge" title="100% Organic Produce"><i class="fas fa-leaf"></i></span>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-main">
+                        Farm to Fork
+                        <span class="brand-side-leaf" title="Fresh Organic"><i class="fas fa-leaf"></i></span>
+                    </span>
+                    <span class="brand-sub">Collective • 100% Organic</span>
+                </div>
+            </a>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="../index.html">Home</a>
+            <a href="products.html">Shop</a>
+            <a href="dashboard-customer.html">Dashboard</a>
+            <a href="wishlist.html" class="active">Wishlist</a>
+            <a href="seed-to-plate.html">Seed to Plate</a>
+            <a href="cart.html">Cart</a>
+        </div>
+        <div class="nav-actions">
+            <a href="cart.html" class="cart-btn" title="View Cart">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-badge" id="cartBadge">0</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<section class="wishlist-page">
+    <div class="container">
+        <div class="wishlist-header">
+            <div>
+                <h1 id="wishlistTitle"><i class="fas fa-heart" style="color: #ef4444;"></i> <span id="txtWishlistHeading">My Organic Wishlist</span></h1>
+                <p style="color: var(--text-light); margin-top: 4px;" id="txtWishlistSub">
+                    Saved fresh crops, artisanal produce, and healthy essentials you love
+                </p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span class="wishlist-badge" id="wishlistCountBadge">0 Items</span>
+                <button onclick="clearAllWishlist()" class="btn-secondary btn-small" id="btnClearWishlist" style="border: 1px solid #ef4444; color: #ef4444;">
+                    <i class="fas fa-trash-alt"></i> Clear All
+                </button>
+            </div>
+        </div>
+
+        <div id="wishlistContainer" class="wishlist-grid">
+            <!-- Dynamically populated -->
+        </div>
+
+        <!-- Empty State Container -->
+        <div id="emptyWishlistState" class="empty-wishlist" style="display: none;">
+            <i class="fas fa-heart-broken heart-icon"></i>
+            <h2 id="txtEmptyTitle">Your Wishlist is Empty</h2>
+            <p id="txtEmptyDesc">You haven't saved any organic produce yet. Explore our farm fresh store to find fruits, vegetables, and artisanal goods!</p>
+            <a href="products.html" class="btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+                <i class="fas fa-shopping-basket"></i>
+                <span>Explore Fresh Products</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="footer-logo"><i class="fas fa-seedling"></i><span>Farm to Fork Collective</span></div>
+                <p>Building a sustainable community through organic food, transparency, and collective action.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="products.html">Products</a>
+                <a href="wishlist.html">Wishlist</a>
+                <a href="seed-to-plate.html">Seed to Plate</a>
+                <a href="cart.html">Cart</a>
+            </div>
+            <div class="footer-links">
+                <h4>Support</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Farm to Fork Collective. All rights reserved. 🌱</p>
+        </div>
+    </div>
+</footer>
+
+<script src="../js/api.js"></script>
+<script src="../js/cart.js"></script>
+<script src="../js/script.js"></script>
+<script src="../js/notifications.js"></script>
+<script src="../js/farmer-marketplace.js"></script>
+<script src="../js/i18n.js"></script>
+<script>
+    // Initial Curated Wishlist Items if user is fresh
+    const DEFAULT_WISHLIST_IDS = [1, 21, 23, 25]; // Tomatoes, Honey, Coconut Oil, Desi Ghee
+
+    function getStoredWishlistIds() {
+        try {
+            const raw = localStorage.getItem('farmToForkWishlist');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+            }
+        } catch (e) {}
+        
+        // Initialize default curated items
+        localStorage.setItem('farmToForkWishlist', JSON.stringify(DEFAULT_WISHLIST_IDS));
+        return DEFAULT_WISHLIST_IDS;
+    }
+
+    function renderWishlist() {
+        const container = document.getElementById('wishlistContainer');
+        const emptyState = document.getElementById('emptyWishlistState');
+        const countBadge = document.getElementById('wishlistCountBadge');
+        const clearBtn = document.getElementById('btnClearWishlist');
+
+        const ids = getStoredWishlistIds();
+
+        if (!ids || ids.length === 0) {
+            container.style.display = 'none';
+            emptyState.style.display = 'block';
+            if (countBadge) countBadge.textContent = '0 Items';
+            if (clearBtn) clearBtn.style.display = 'none';
+            return;
+        }
+
+        container.style.display = 'grid';
+        emptyState.style.display = 'none';
+        if (clearBtn) clearBtn.style.display = 'inline-flex';
+        if (countBadge) countBadge.textContent = `${ids.length} ${ids.length === 1 ? 'Item' : 'Items'} Saved`;
+
+        const items = ids.map(id => getProductById(id)).filter(Boolean);
+
+        container.innerHTML = items.map(p => {
+            const imgSrc = getProductImagePath(p.image);
+            const origPriceHtml = p.originalPrice ? `<span class="wishlist-orig-price">₹${p.originalPrice}</span>` : '';
+            const stock = p.stock !== undefined ? p.stock : 35;
+            
+            return `
+                <div class="wishlist-card" id="wishlist-item-${p.id}">
+                    <div class="wishlist-img-box">
+                        <img src="${imgSrc}" alt="${p.name}" onerror="this.src='${p.backupImage || '../assets/images/products/organic-honey.jpg'}'" />
+                        <button class="wishlist-btn-remove" onclick="removeFromWishlistPage(${p.id})" title="Remove from Wishlist">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                        <span class="wishlist-category-tag">${p.category}</span>
+                    </div>
+                    <div class="wishlist-body">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <span style="font-size:0.72rem; color: var(--primary); font-weight:700;"><i class="fas fa-bell"></i> Alerts Active</span>
+                            <span style="font-size:0.72rem; font-weight:700; color:${stock < 10 ? '#d97706' : '#15803d'};">
+                                ${stock < 10 ? `⚠️ Only ${stock} left` : `📦 In Stock`}
+                            </span>
+                        </div>
+                        <h3><a href="product-details.html?id=${p.id}" style="color:inherit; text-decoration:none;">${p.name}</a></h3>
+                        <div class="wishlist-origin">
+                            <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i>
+                            <span>${p.origin || p.seller || 'Tamil Nadu Farm'}</span>
+                        </div>
+                        <div class="wishlist-price-row">
+                            <span class="wishlist-price">₹${p.price}</span>
+                            <span style="font-size:0.85rem; color:var(--text-light);">/ ${p.unit}</span>
+                            ${origPriceHtml}
+                        </div>
+
+                        <!-- Multi-Farmer Quick Link -->
+                        <div style="margin: 8px 0;">
+                            <button type="button" class="btn-compare-farmers" onclick="openFarmerComparisonModal(${p.id}, '${p.name.replace(/'/g, "\\'")}')" style="font-size:0.75rem; padding:4px 8px;">
+                                <i class="fas fa-users"></i> Compare Multiple Farmers
+                            </button>
+                        </div>
+
+                        <div class="wishlist-actions">
+                            <button class="btn-move-cart" onclick="moveItemToCart(${p.id})">
+                                <i class="fas fa-cart-plus"></i>
+                                <span>Move to Cart</span>
+                            </button>
+                            <button class="btn-trace-crop" onclick="location.href='seed-to-plate.html?batch=' + (p.batchCode || 'FTF-TOM-2024-001')" title="Trace Farm Journey">
+                                <i class="fas fa-qrcode"></i>
+                                <span>Trace</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        if (window.FTF_NOTIFICATIONS && typeof window.FTF_NOTIFICATIONS.checkWishlistAlerts === 'function') {
+            window.FTF_NOTIFICATIONS.checkWishlistAlerts();
+        }
+    }
+
+    function removeFromWishlistPage(productId) {
+        let ids = getStoredWishlistIds();
+        ids = ids.filter(id => id !== productId);
+        localStorage.setItem('farmToForkWishlist', JSON.stringify(ids));
+        
+        const card = document.getElementById(`wishlist-item-${productId}`);
+        if (card) {
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                renderWishlist();
+            }, 250);
+        } else {
+            renderWishlist();
+        }
+
+        if (typeof showNotification === 'function') {
+            showNotification('Item removed from wishlist 💔', 'fas fa-heart-broken');
+        }
+    }
+
+    function moveItemToCart(productId) {
+        if (typeof addToCart === 'function') {
+            addToCart(productId, 1, true);
+        }
+        removeFromWishlistPage(productId);
+    }
+
+    function clearAllWishlist() {
+        if (confirm('Are you sure you want to clear your wishlist? / விருப்பப்பட்டியலை அழிக்க விரும்புகிறீர்களா?')) {
+            localStorage.setItem('farmToForkWishlist', JSON.stringify([]));
+            renderWishlist();
+            if (typeof showNotification === 'function') {
+                showNotification('Wishlist cleared ✅', 'fas fa-trash-alt');
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof loadCart === 'function') loadCart();
+        renderWishlist();
+    });
+</script>
+</body>
+</html>

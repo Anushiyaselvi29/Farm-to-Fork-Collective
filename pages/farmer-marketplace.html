@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Marketplace - Compare Multiple Farmers | Farm to Fork Collective</title>
+    <meta name="description" content="Direct multi-farmer organic marketplace. Compare farm-gate prices, distance, organic certifications, and buy directly from your preferred local farmer.">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/respnsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .marketplace-page {
+            padding: 40px 0 80px;
+            background: var(--bg);
+            min-height: 85vh;
+        }
+        .market-hero {
+            background: linear-gradient(135deg, rgba(22, 163, 74, 0.12), rgba(16, 185, 129, 0.05));
+            border: 1px solid rgba(22, 163, 74, 0.2);
+            border-radius: var(--radius);
+            padding: 36px 30px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .market-hero-content h1 {
+            font-size: 2.2rem;
+            color: var(--text);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .market-hero-content p {
+            color: var(--text-light);
+            font-size: 1.05rem;
+            max-width: 650px;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .crop-selector-bar {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 24px;
+        }
+        .crop-pill-btn {
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: var(--white);
+            border: 2px solid rgba(0,0,0,0.08);
+            color: var(--text);
+            font-weight: 700;
+            font-size: 0.92rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+        .crop-pill-btn:hover, .crop-pill-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+        }
+        .comparison-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 28px;
+        }
+        @media (max-width: 900px) {
+            .comparison-layout { grid-template-columns: 1fr; }
+        }
+        .market-filter-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 22px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.06);
+            height: fit-content;
+        }
+        .filter-section-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .market-results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+        .market-farmers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 24px;
+        }
+        @media (max-width: 500px) {
+            .market-farmers-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+    <div class="container">
+        <div class="top-bar-left">
+            <span><i class="fas fa-leaf"></i> 100% Certified Organic</span>
+            <span><i class="fas fa-tractor"></i> Direct Farm Gate Pricing</span>
+            <span><i class="fas fa-balance-scale"></i> Multi-Farmer Fair Trade</span>
+        </div>
+        <div class="top-bar-right" style="display: flex; align-items: center;">
+            
+            <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar glass">
+    <div class="container">
+        <div class="nav-brand">
+            <a href="../index.html" class="brand-logo-link">
+                <div class="brand-icon-wrapper">
+                    <div class="brand-icon"><i class="fas fa-seedling"></i></div>
+                    <span class="brand-leaf-badge" title="100% Organic Produce"><i class="fas fa-leaf"></i></span>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-main">
+                        Farm to Fork
+                        <span class="brand-side-leaf" title="Fresh Organic"><i class="fas fa-leaf"></i></span>
+                    </span>
+                    <span class="brand-sub">Collective • 100% Organic</span>
+                </div>
+            </a>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="../index.html" id="navMarketHome">Home</a>
+            <a href="products.html" id="navMarketShop">Shop</a>
+            <a href="farmer-marketplace.html" class="active" id="navMarketFarmers">Farmer Marketplace</a>
+            <a href="wishlist.html" id="navMarketWishlist">Wishlist</a>
+            <a href="seed-to-plate.html" id="navMarketSeed">Seed to Plate</a>
+            <a href="group-buying.html" id="navMarketGroup">Group Buying</a>
+            <a href="community-kitchen.html" id="navMarketKitchen">Community Kitchen</a>
+        </div>
+        <div class="nav-actions">
+            <!-- Notification bell is injected here by notifications.js -->
+            <a href="cart.html" class="cart-btn" aria-label="Shopping Cart">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-badge" id="cartBadge">0</span>
+            </a>
+            <a href="login.html" class="btn-login" id="navMarketLogin">Login</a>
+            <a href="register.html" class="btn-signup" id="navMarketSignup">Sign Up</a>
+        </div>
+    </div>
+</nav>
+
+<!-- MAIN MARKETPLACE -->
+<main class="marketplace-page">
+    <div class="container">
+        <!-- Hero Banner -->
+        <section class="market-hero">
+            <div class="market-hero-content">
+                <span class="status-pill status-delivered" style="margin-bottom: 10px; display: inline-flex;">
+                    <i class="fas fa-check-circle"></i> Direct From Source • No Middlemen Brokerage
+                </span>
+                <h1 id="heroMarketTitle">🌾 Multi-Farmer Marketplace</h1>
+                <p id="heroMarketDesc">
+                    Compare multiple certified local farmers selling the exact same organic produce. Evaluate live farm-gate prices, distance to your kitchen, organic certifications, and harvest timings before ordering!
+                </p>
+            </div>
+            <div style="background: var(--white); padding: 18px 24px; border-radius: var(--radius); border: 1.5px solid #bbf7d0; box-shadow: var(--shadow);">
+                <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-light); text-transform: uppercase;">Customer Empowerment</div>
+                <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary); margin: 4px 0;">34+ Active Farms</div>
+                <div style="font-size: 0.85rem; color: var(--text-light);"><i class="fas fa-map-pin"></i> Across Tamil Nadu Agro-Belts</div>
+            </div>
+        </section>
+
+        <!-- Crop Selector Tabs -->
+        <div class="crop-selector-bar" id="cropTabsBar">
+            <button class="crop-pill-btn active" onclick="selectMarketCrop(1)">
+                🍅 Organic Tomatoes (4 Farmers)
+            </button>
+            <button class="crop-pill-btn" onclick="selectMarketCrop(2)">
+                🥬 Organic Spinach (2 Farmers)
+            </button>
+            <button class="crop-pill-btn" onclick="selectMarketCrop(3)">
+                🥕 Organic Carrots (2 Farmers)
+            </button>
+            <button class="crop-pill-btn" onclick="selectMarketCrop(19)">
+                🍯 Raw Forest Honey (2 Artisans)
+            </button>
+        </div>
+
+        <!-- Comparison Layout -->
+        <div class="comparison-layout">
+            <!-- Sidebar Filters -->
+            <aside class="market-filter-card">
+                <div class="filter-section-title"><i class="fas fa-filter"></i> Refine Farmers</div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 6px;">Search Farmer or Crop:</label>
+                    <input type="text" id="marketSearchInput" placeholder="e.g. Sundaram, Pollachi, Ooty..." 
+                           style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1.5px solid rgba(0,0,0,0.1); background: var(--bg); color: var(--text);"
+                           oninput="filterMarketplace()">
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 6px;">Max Distance (km):</label>
+                    <input type="range" id="maxDistanceRange" min="10" max="100" value="80" step="5" style="width: 100%;" oninput="updateDistanceVal(this.value)">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-light); margin-top: 4px;">
+                        <span>10 km</span>
+                        <strong id="distValLabel" style="color: var(--primary);">Within 80 km</strong>
+                        <span>100 km</span>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 8px;">Organic Certification:</label>
+                    <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.88rem;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="certJaivik" checked onchange="filterMarketplace()"> Jaivik Bharat / India Organic
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="certPGS" checked onchange="filterMarketplace()"> PGS-India Green
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="certZBNF" checked onchange="filterMarketplace()"> Zero Budget Natural Farming (ZBNF)
+                        </label>
+                    </div>
+                </div>
+
+                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 14px; font-size: 0.82rem; color: #166534; line-height: 1.5;">
+                    <strong style="display: block; margin-bottom: 4px;"><i class="fas fa-shield-alt"></i> Direct Trace Guarantee</strong>
+                    Every farmer listed is personally verified with soil assays and GPS geo-stamps. You can scan the QR batch barcode on delivery to inspect their live 7-stage cultivation milestones.
+                </div>
+            </aside>
+
+            <!-- Results Section -->
+            <section>
+                <div class="market-results-header">
+                    <div>
+                        <h2 style="font-size: 1.5rem; margin: 0; color: var(--text);" id="activeCropTitle">Organic Tomatoes</h2>
+                        <span style="font-size: 0.85rem; color: var(--text-light);" id="farmerCountLabel">Displaying 4 verified farmers offering this crop</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <label style="font-size: 0.85rem; font-weight: 700; color: var(--text);">Sort By:</label>
+                        <select id="marketSortSelect" class="sort-select" onchange="sortMarketplace(this.value)">
+                            <option value="price-low">🏷️ Lowest Price</option>
+                            <option value="distance">📍 Nearest to Me</option>
+                            <option value="rating">⭐ Highest Rated</option>
+                            <option value="stock">📦 Available Stock</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Farmers Grid -->
+                <div class="market-farmers-grid" id="marketFarmersGrid">
+                    <!-- Populated dynamically by js/farmer-marketplace.js -->
+                </div>
+            </section>
+        </div>
+    </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <i class="fas fa-seedling"></i>
+                    <span>Farm to Fork Collective</span>
+                </div>
+                <p>Empowering local smallholder farmers and providing conscious households with verifiable, 100% residue-free organic food.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="products.html">All Products</a></li>
+                    <li><a href="farmer-marketplace.html">Farmer Marketplace</a></li>
+                    <li><a href="seed-to-plate.html">Seed to Plate QR Trace</a></li>
+                    <li><a href="group-buying.html">Group Buying Pools</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Verified Agriculture</h4>
+                <ul>
+                    <li><a href="#">Jaivik Bharat Certification</a></li>
+                    <li><a href="#">PGS-India Organic Protocol</a></li>
+                    <li><a href="#">FSSAI Lab Residue Standards</a></li>
+                    <li><a href="#">Panchagavya Organic Feeding</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Support & Alerts</h4>
+                <p><i class="fas fa-phone-alt"></i> +91 98401 23456</p>
+                <p><i class="fas fa-envelope"></i> support@farmtofork.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Tamil Nadu Organic Network</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Farm to Fork Collective. MIT Licensed. All Rights Reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="../js/api.js"></script>
+<script src="../js/notifications.js"></script>
+<script src="../js/farmer-marketplace.js"></script>
+<script src="../js/cart.js"></script>
+<script src="../js/i18n.js"></script>
+<script>
+    let activeCropId = 1;
+    let currentDistanceLimit = 80;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof loadCart === 'function') loadCart();
+        
+        // Read URL query parameter
+        const params = new URLSearchParams(window.location.search);
+        const cropParam = params.get('crop') || params.get('id');
+        if (cropParam) {
+            activeCropId = parseInt(cropParam, 10) || 1;
+        }
+
+        updateTabButtons();
+        renderMarketCrop(activeCropId);
+    });
+
+    function selectMarketCrop(cropId) {
+        activeCropId = cropId;
+        updateTabButtons();
+        renderMarketCrop(activeCropId);
+    }
+
+    function updateTabButtons() {
+        document.querySelectorAll('.crop-pill-btn').forEach((btn, idx) => {
+            const cropIds = [1, 2, 3, 19];
+            btn.classList.toggle('active', cropIds[idx] === activeCropId);
+        });
+    }
+
+    function renderMarketCrop(cropId) {
+        const grid = document.getElementById('marketFarmersGrid');
+        if (!grid) return;
+
+        let farmers = getFarmersForProduct(cropId);
+        if (!farmers || farmers.length === 0) {
+            grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-light);">No farmers found for this crop.</div>`;
+            return;
+        }
+
+        const cropName = farmers[0].productName;
+        document.getElementById('activeCropTitle').textContent = cropName;
+        document.getElementById('farmerCountLabel').textContent = `Displaying ${farmers.length} verified farmers offering this crop`;
+
+        grid.innerHTML = renderFarmerCardsHtml(farmers);
+    }
+
+    function updateDistanceVal(val) {
+        currentDistanceLimit = parseInt(val, 10);
+        document.getElementById('distValLabel').textContent = `Within ${val} km`;
+        filterMarketplace();
+    }
+
+    function filterMarketplace() {
+        const query = (document.getElementById('marketSearchInput').value || '').toLowerCase().trim();
+        const allowJaivik = document.getElementById('certJaivik').checked;
+        const allowPGS = document.getElementById('certPGS').checked;
+        const allowZBNF = document.getElementById('certZBNF').checked;
+
+        let farmers = getFarmersForProduct(activeCropId);
+        farmers = farmers.filter(f => {
+            if (f.distanceKm > currentDistanceLimit) return false;
+            if (query && !f.farmerName.toLowerCase().includes(query) && !f.farmName.toLowerCase().includes(query) && !f.formattedLocation.toLowerCase().includes(query)) return false;
+            
+            const certStr = (f.certifications || []).join(' ').toLowerCase();
+            const hasJaivik = certStr.includes('jaivik') || certStr.includes('india organic');
+            const hasPGS = certStr.includes('pgs');
+            const hasZBNF = certStr.includes('zbnf') || certStr.includes('zero chemical') || certStr.includes('zero pesticide');
+
+            let passCert = false;
+            if (allowJaivik && hasJaivik) passCert = true;
+            if (allowPGS && hasPGS) passCert = true;
+            if (allowZBNF && hasZBNF) passCert = true;
+            if (!allowJaivik && !allowPGS && !allowZBNF) passCert = true;
+
+            return passCert;
+        });
+
+        const grid = document.getElementById('marketFarmersGrid');
+        if (grid) {
+            if (farmers.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 50px 20px; background: var(--white); border-radius: var(--radius);">
+                        <i class="fas fa-search" style="font-size: 2.5rem; color: var(--text-light); opacity: 0.4; margin-bottom: 12px; display: block;"></i>
+                        <h3>No farmers match your filters</h3>
+                        <p style="color: var(--text-light); margin-bottom: 16px;">Try increasing the distance slider or selecting more certification options.</p>
+                        <button class="btn-primary" onclick="resetMarketFilters()">Reset Filters</button>
+                    </div>
+                `;
+            } else {
+                grid.innerHTML = renderFarmerCardsHtml(farmers);
+            }
+        }
+        document.getElementById('farmerCountLabel').textContent = `Displaying ${farmers.length} verified farmers`;
+    }
+
+    function sortMarketplace(criterion) {
+        let farmers = [...getFarmersForProduct(activeCropId)];
+        if (criterion === 'price-low') farmers.sort((a, b) => a.price - b.price);
+        else if (criterion === 'distance') farmers.sort((a, b) => a.distanceKm - b.distanceKm);
+        else if (criterion === 'rating') farmers.sort((a, b) => b.rating - a.rating);
+        else if (criterion === 'stock') farmers.sort((a, b) => b.stock - a.stock);
+
+        const grid = document.getElementById('marketFarmersGrid');
+        if (grid) {
+            grid.innerHTML = renderFarmerCardsHtml(farmers);
+        }
+    }
+
+    function resetMarketFilters() {
+        document.getElementById('marketSearchInput').value = '';
+        document.getElementById('maxDistanceRange').value = 80;
+        document.getElementById('distValLabel').textContent = 'Within 80 km';
+        currentDistanceLimit = 80;
+        document.getElementById('certJaivik').checked = true;
+        document.getElementById('certPGS').checked = true;
+        document.getElementById('certZBNF').checked = true;
+        renderMarketCrop(activeCropId);
+    }
+
+    function setMarketLanguage(lang) {
+        localStorage.setItem('ftf_lang', lang);
+        document.getElementById('btnMarketLangEn').classList.toggle('active', lang === 'en');
+        document.getElementById('btnMarketLangTa').classList.toggle('active', lang === 'ta');
+
+        if (lang === 'ta') {
+            document.getElementById('heroMarketTitle').innerHTML = '🌾 விவசாயிகள் நேரடி சந்தை';
+            document.getElementById('heroMarketDesc').textContent = 'ஒரே இயற்கை விளைபொருளுக்கு பல உள்ளூர் விவசாயிகளின் பண்ணை விலைகள், தூரம், சான்றிதழ்கள் மற்றும் அறுவடை நேரங்களை ஒப்பிட்டு உங்களுக்கு விருப்பமான விவசாயியிடமிருந்து நேரடியாக வாங்கவும்!';
+            document.getElementById('navMarketHome').textContent = 'முகப்பு';
+            document.getElementById('navMarketShop').textContent = 'விளைபொருட்கள்';
+            document.getElementById('navMarketFarmers').textContent = 'விவசாயிகள் சந்தை';
+            document.getElementById('navMarketWishlist').textContent = 'விருப்பப்பட்டியல்';
+            document.getElementById('navMarketSeed').textContent = 'விதையிலிருந்து தட்டு வரை';
+            document.getElementById('navMarketGroup').textContent = 'குழு கொள்முதல்';
+            document.getElementById('navMarketKitchen').textContent = 'சமுதாய சமையலறை';
+        } else {
+            document.getElementById('heroMarketTitle').innerHTML = '🌾 Multi-Farmer Marketplace';
+            document.getElementById('heroMarketDesc').textContent = 'Compare multiple certified local farmers selling the exact same organic produce. Evaluate live farm-gate prices, distance to your kitchen, organic certifications, and harvest timings before ordering!';
+            document.getElementById('navMarketHome').textContent = 'Home';
+            document.getElementById('navMarketShop').textContent = 'Shop';
+            document.getElementById('navMarketFarmers').textContent = 'Farmer Marketplace';
+            document.getElementById('navMarketWishlist').textContent = 'Wishlist';
+            document.getElementById('navMarketSeed').textContent = 'Seed to Plate';
+            document.getElementById('navMarketGroup').textContent = 'Group Buying';
+            document.getElementById('navMarketKitchen').textContent = 'Community Kitchen';
+        }
+    }
+</script>
+    <script src="../js/script.js"></script>
+</body>
+</html>

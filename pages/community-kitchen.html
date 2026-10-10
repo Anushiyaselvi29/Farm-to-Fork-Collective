@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Kitchen - Farm to Fork Collective</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/respnsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .community-page { padding: 40px 0 80px; }
+        .kitchen-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto 40px;
+        }
+        .kitchen-stat-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        .area-filter-bar {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 36px;
+        }
+        .area-btn {
+            padding: 8px 20px;
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            background: transparent;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .area-btn.active, .area-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        .kitchen-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        .kitchen-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            text-align: left;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+        .kitchen-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+        }
+        .kitchen-icon-badge {
+            font-size: 2.5rem;
+            width: 65px;
+            height: 65px;
+            border-radius: 14px;
+            background: #E8F5E9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 24px;
+        }
+        .recipe-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        .recipe-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .recipe-body {
+            padding: 20px;
+        }
+    </style>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+    <div class="container">
+        <div class="top-bar-left">
+            <span><i class="fas fa-leaf"></i> 100% Organic</span>
+            <span><i class="fas fa-utensils"></i> Zero Waste Cooking</span>
+            <span><i class="fas fa-users"></i> Neighborhood Cook Circles</span>
+        </div>
+        <div class="top-bar-right" style="display: flex; align-items: center;">
+            
+            <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar glass">
+    <div class="container">
+        <div class="nav-brand">
+            <a href="../index.html">
+                <div class="brand-icon"><i class="fas fa-seedling"></i></div>
+                <div class="brand-text">
+                    <span class="brand-main">Farm to Fork</span>
+                    <span class="brand-sub">Collective</span>
+                </div>
+            </a>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="../index.html">Home</a>
+            <a href="products.html">Shop</a>
+            <a href="community-kitchen.html" class="active">Community Kitchen</a>
+            <a href="group-buying.html">Group Buying</a>
+            <a href="seed-to-plate.html">Seed to Plate</a>
+        </div>
+        <div class="nav-actions">
+            <!-- Language Pill in Navbar -->
+            
+            <a href="cart.html" class="cart-btn">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-badge" id="cartBadge">0</span>
+            </a>
+            <a href="login.html" class="btn-login">Login</a>
+            <a href="register.html" class="btn-signup">Sign Up</a>
+            <button class="hamburger" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+        </div>
+    </div>
+</nav>
+
+<!-- COMMUNITY KITCHEN PAGE -->
+<section class="community-page">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">🍽️ Cook Together & Save</span>
+            <h2>Neighborhood <span class="gradient-text">Community Kitchens</span></h2>
+            <p>Cook fresh organic meals in collective cooking circles. Save 40% on groceries, reduce cooking time, and eliminate food waste.</p>
+        </div>
+
+        <!-- STATS -->
+        <div class="kitchen-stats-grid">
+            <div class="kitchen-stat-card">
+                <div style="font-size: 2rem;">🍽️</div>
+                <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">28</div>
+                <div style="color: var(--text-light); font-size: 0.85rem;">Active Kitchens</div>
+            </div>
+            <div class="kitchen-stat-card">
+                <div style="font-size: 2rem;">👥</div>
+                <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">420+</div>
+                <div style="color: var(--text-light); font-size: 0.85rem;">Active Families</div>
+            </div>
+            <div class="kitchen-stat-card">
+                <div style="font-size: 2rem;">♻️</div>
+                <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">2,800 kg</div>
+                <div style="color: var(--text-light); font-size: 0.85rem;">Food Saved</div>
+            </div>
+            <div class="kitchen-stat-card">
+                <div style="font-size: 2rem;">💰</div>
+                <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">₹4.2 Lakhs</div>
+                <div style="color: var(--text-light); font-size: 0.85rem;">Family Grocery Savings</div>
+            </div>
+        </div>
+
+        <!-- AREA FILTER -->
+        <div class="area-filter-bar">
+            <button class="area-btn active" onclick="filterKitchens('all', this)">All Hubs</button>
+            <button class="area-btn" onclick="filterKitchens('Anna Nagar', this)">Anna Nagar</button>
+            <button class="area-btn" onclick="filterKitchens('T. Nagar', this)">T. Nagar</button>
+            <button class="area-btn" onclick="filterKitchens('Adyar', this)">Adyar</button>
+            <button class="area-btn" onclick="filterKitchens('Velachery', this)">Velachery</button>
+            <button class="area-btn" onclick="filterKitchens('OMR', this)">OMR / Sholinganallur</button>
+        </div>
+
+        <!-- KITCHEN GRID -->
+        <div class="kitchen-grid" id="kitchenGridContainer">
+            <!-- Dynamic Kitchen Cards Injected by JS -->
+        </div>
+
+        <!-- CREATE KITCHEN CALLOUT -->
+        <div style="text-align: center; margin-top: 50px; padding: 40px; background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);">
+            <div style="font-size: 2.5rem; margin-bottom: 8px;">🏡</div>
+            <h3 style="font-size: 1.6rem; margin-bottom: 8px;">Want to Start a Kitchen in Your Apartment or Street?</h3>
+            <p style="color: var(--text-light); max-width: 600px; margin: 0 auto 20px;">Gather 5-10 nearby families. We supply certified organic farm bulk packs at wholesale pricing with free scheduled delivery!</p>
+            <button class="btn-primary" onclick="openCreateKitchenModal()">
+                <i class="fas fa-plus-circle"></i> Create New Community Kitchen
+            </button>
+        </div>
+
+        <!-- COMMUNITY RECIPES BOARD -->
+        <div style="margin-top: 60px;">
+            <div class="section-header">
+                <span class="section-tag">🍲 Shared Table</span>
+                <h2>Popular <span class="gradient-text">Zero-Waste Community Recipes</span></h2>
+            </div>
+            <div class="recipe-grid">
+                <div class="recipe-card">
+                    <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=500" alt="Veg Biryani" />
+                    <div class="recipe-body">
+                        <span style="font-size: 0.75rem; background: #E8F5E9; color: var(--primary); padding: 2px 8px; border-radius: 10px; font-weight: 700;">Organic Veg</span>
+                        <h4 style="margin: 8px 0;">Traditional Claypot Veg Dum Biryani</h4>
+                        <p style="color: var(--text-light); font-size: 0.85rem;">Prepared using Frozen Mix Veg packs + Desi Ghee in Anna Nagar kitchen.</p>
+                        <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 0.85rem; color: var(--text-light);">⏱️ 35 mins • 25 servings</span>
+                            <button onclick="showNotification('Recipe saved to your favorites! ❤️', 'fas fa-heart')" class="btn-secondary btn-small">❤️ 42 Likes</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="recipe-card">
+                    <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500" alt="Green Salad" />
+                    <div class="recipe-body">
+                        <span style="font-size: 0.75rem; background: #E8F5E9; color: var(--primary); padding: 2px 8px; border-radius: 10px; font-weight: 700;">Raw Detox</span>
+                        <h4 style="margin: 8px 0;">Farm-Fresh Spinach & Beetroot Salad</h4>
+                        <p style="color: var(--text-light); font-size: 0.85rem;">With cold-pressed honey-mustard dressing and roasted peanuts.</p>
+                        <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 0.85rem; color: var(--text-light);">⏱️ 10 mins • 12 servings</span>
+                            <button onclick="showNotification('Recipe saved to your favorites! ❤️', 'fas fa-heart')" class="btn-secondary btn-small">❤️ 38 Likes</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="recipe-card">
+                    <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=500" alt="Organic Soup" />
+                    <div class="recipe-body">
+                        <span style="font-size: 0.75rem; background: #E1F5FE; color: #0288D1; padding: 2px 8px; border-radius: 10px; font-weight: 700;">Immunity Soup</span>
+                        <h4 style="margin: 8px 0;">5-Minute Country Vegetable Stew</h4>
+                        <p style="color: var(--text-light); font-size: 0.85rem;">Using Soup Veg Pack, crushed black pepper, and garlic broth.</p>
+                        <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 0.85rem; color: var(--text-light);">⏱️ 15 mins • 30 servings</span>
+                            <button onclick="showNotification('Recipe saved to your favorites! ❤️', 'fas fa-heart')" class="btn-secondary btn-small">❤️ 55 Likes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- JOIN KITCHEN MODAL -->
+<div id="joinKitchenModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-box">
+        <button onclick="closeJoinKitchenModal()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.3rem; cursor: pointer;">✕</button>
+        <h3 id="joinModalTitle" style="margin-bottom: 8px;">Join Sunshine Community Kitchen</h3>
+        <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px;">Select your preferred meal schedule & family slot.</p>
+
+        <form onsubmit="handleJoinKitchenSubmit(event)">
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">Your Name</label>
+                <input type="text" id="joinUserName" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;" placeholder="Full Name" />
+            </div>
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">Phone Number</label>
+                <input type="tel" id="joinUserPhone" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;" placeholder="+91 98765 43210" />
+            </div>
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">Meal Slot</label>
+                <select id="joinMealSlot" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    <option value="Lunch Prep (11:00 AM - 1:30 PM)">Lunch Prep (11:00 AM - 1:30 PM)</option>
+                    <option value="Dinner Prep (5:30 PM - 8:00 PM)">Dinner Prep (5:30 PM - 8:00 PM)</option>
+                    <option value="Weekend Bulk Cook (Sunday 9:00 AM)">Weekend Bulk Cook (Sunday 9:00 AM)</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">Family Portion Size</label>
+                <select id="joinPortions" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    <option value="2-3 People">2 - 3 People</option>
+                    <option value="4-5 People">4 - 5 People</option>
+                    <option value="6+ People">6+ People</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+                <i class="fas fa-check-circle"></i> Confirm Participation
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- CREATE KITCHEN MODAL -->
+<div id="createKitchenModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-box">
+        <button onclick="closeCreateKitchenModal()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.3rem; cursor: pointer;">✕</button>
+        <h3 style="margin-bottom: 8px;">Create a Community Kitchen</h3>
+        <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px;">Start an organic cooking circle in your neighborhood.</p>
+
+        <form onsubmit="handleCreateKitchenSubmit(event)">
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">Kitchen Name</label>
+                <input type="text" id="newKitchenName" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;" placeholder="e.g. Lotus Green Kitchen" />
+            </div>
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">Locality / Area</label>
+                <select id="newKitchenArea" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    <option value="Anna Nagar">Anna Nagar</option>
+                    <option value="T. Nagar">T. Nagar</option>
+                    <option value="Adyar">Adyar</option>
+                    <option value="Velachery">Velachery</option>
+                    <option value="OMR">OMR / Sholinganallur</option>
+                    <option value="Tambaram">Tambaram</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">Host Address / Apartment Community</label>
+                <input type="text" id="newKitchenAddress" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;" placeholder="e.g. Block C, Royal Palms Apartment" />
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">Target Meals Per Day</label>
+                <input type="number" id="newKitchenMeals" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;" placeholder="e.g. 40" value="40" />
+            </div>
+            <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+                <i class="fas fa-plus"></i> Register Community Kitchen
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="footer-logo"><i class="fas fa-seedling"></i><span>Farm to Fork Collective</span></div>
+                <p>Building a sustainable community through organic food, transparency, and collective action.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="products.html">Products</a>
+                <a href="community-kitchen.html">Community Kitchen</a>
+                <a href="group-buying.html">Group Buying</a>
+            </div>
+            <div class="footer-links">
+                <h4>Support</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Farm to Fork Collective. All rights reserved. 🌱</p>
+        </div>
+    </div>
+</footer>
+
+<script src="../js/api.js"></script>
+<script src="../js/script.js"></script>
+<script src="../js/cart.js"></script>
+<script src="../js/animation.js"></script>
+<script src="../js/notifications.js"></script>
+<script src="../js/i18n.js"></script>
+<script>
+    let kitchens = [
+        {
+            id: 1,
+            name: "Sunshine Community Kitchen",
+            area: "Anna Nagar",
+            address: "2nd Avenue, Anna Nagar, Chennai",
+            members: 28,
+            dailyMeals: 60,
+            icon: "🏠",
+            specialty: "Sambar, Kootu & Organic Rice Meals",
+            todayMenu: "Organic Tomato Rice + Curd + Greens Fry"
+        },
+        {
+            id: 2,
+            name: "Green Valley Kitchen",
+            area: "T. Nagar",
+            address: "Venkatnarayana Road, T. Nagar, Chennai",
+            members: 22,
+            dailyMeals: 45,
+            icon: "🌿",
+            specialty: "High-Protein Millet Meals & Porridges",
+            todayMenu: "Foxtail Millet Pulao + Sprouted Salad"
+        },
+        {
+            id: 3,
+            name: "Healthy Harvest Kitchen",
+            area: "Adyar",
+            address: "Besant Avenue Road, Adyar, Chennai",
+            members: 34,
+            dailyMeals: 80,
+            icon: "🌟",
+            specialty: "Zero-Oil Organic Continental & Soups",
+            todayMenu: "Mixed Veg Soup + Herbed Bread & Hummus"
+        },
+        {
+            id: 4,
+            name: "South Coast Kitchen Hub",
+            area: "Velachery",
+            address: "100 Feet Road, Velachery, Chennai",
+            members: 19,
+            dailyMeals: 40,
+            icon: "🍲",
+            specialty: "Traditional Chettinad Veg Curries",
+            todayMenu: "Ennai Kathirikai Curry + Steamed Rice"
+        },
+        {
+            id: 5,
+            name: "Tech-Park Eco Kitchen Circle",
+            area: "OMR",
+            address: "Sholinganallur Junction, OMR, Chennai",
+            members: 45,
+            dailyMeals: 110,
+            icon: "🏢",
+            specialty: "Quick Healthy Working Lunch Bowls",
+            todayMenu: "Stir-Fry Veg Bowl with Peanut Butter Dressing"
+        },
+        {
+            id: 6,
+            name: "Green Palms Collective Kitchen",
+            area: "Tambaram",
+            address: "GST Road, Tambaram Sanatorium, Chennai",
+            members: 16,
+            dailyMeals: 35,
+            icon: "🌱",
+            specialty: "Traditional Leafy Greens & Lentils",
+            todayMenu: "Keerai Masiyal + Rasam + Roasted Potato"
+        }
+    ];
+
+    let currentAreaFilter = 'all';
+
+    document.addEventListener('DOMContentLoaded', async function() {
+        if (window.FTF_API && window.FTF_API.community) {
+            try {
+                const res = await window.FTF_API.community.getKitchens();
+                if (res && res.success && res.kitchens && res.kitchens.length > 0) {
+                    kitchens = res.kitchens;
+                }
+            } catch (err) {
+                console.warn('API fetch kitchens fallback:', err);
+            }
+        }
+        renderKitchens();
+    });
+
+    function renderKitchens() {
+        const container = document.getElementById('kitchenGridContainer');
+        if (!container) return;
+
+        const filtered = currentAreaFilter === 'all' 
+            ? kitchens 
+            : kitchens.filter(k => {
+                const a = (k.area || k.location || '').toLowerCase();
+                return a.includes(currentAreaFilter.toLowerCase());
+            });
+
+        if (filtered.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--white); border-radius: var(--radius);">
+                    <div style="font-size: 3rem; margin-bottom: 12px;">🍲</div>
+                    <h3>No community kitchens found in ${currentAreaFilter}</h3>
+                    <p style="color: var(--text-light); margin-top: 6px;">Be the first to pioneer an organic cooking circle here!</p>
+                    <button class="btn-primary" style="margin-top: 16px;" onclick="openCreateKitchenModal()">
+                        <i class="fas fa-plus-circle"></i> Start Kitchen in ${currentAreaFilter}
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = filtered.map(k => {
+            const icon = k.icon || '🍲';
+            const area = k.area || (k.location ? k.location.split(',')[0].replace(/(West|East|North|South)/i, '').trim() : 'Chennai');
+            const name = k.name || 'Neighborhood Organic Kitchen';
+            const address = k.address || k.location || `${area}, Chennai`;
+            const todayMenu = k.todayMenu || k.specialty || 'Organic Farm Meals & Millet Sambar';
+            const members = k.members || (k.capacity ? Math.round(k.capacity / 4) : 25);
+            const dailyMeals = k.dailyMeals || k.mealsDaily || 50;
+
+            return `
+            <div class="kitchen-card animate-scale">
+                <div class="kitchen-icon-badge">${icon}</div>
+                <div style="font-size: 0.8rem; color: var(--primary); font-weight: 700; text-transform: uppercase;">📍 ${area}</div>
+                <h3 style="margin: 6px 0; font-size: 1.2rem;">${name}</h3>
+                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 12px;">${address}</p>
+
+                <div style="background: var(--bg); padding: 12px; border-radius: 10px; margin-bottom: 16px; font-size: 0.85rem;">
+                    <div><strong>🍲 Today's Menu:</strong> ${todayMenu}</div>
+                    <div style="color: var(--text-light); margin-top: 4px;">👥 <strong>${members} Families</strong> • 🍽️ ${dailyMeals} meals/day</div>
+                </div>
+
+                <button class="btn-primary" style="width: 100%; justify-content: center; margin-top: auto;" onclick="openJoinKitchenModal('${name.replace(/'/g, "\\'")}')">
+                    <i class="fas fa-handshake"></i> Join This Kitchen
+                </button>
+            </div>
+            `;
+        }).join('');
+    }
+
+    function filterKitchens(area, btn) {
+        currentAreaFilter = area;
+        document.querySelectorAll('.area-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        renderKitchens();
+    }
+
+    function openJoinKitchenModal(kitchenName) {
+        document.getElementById('joinModalTitle').textContent = `Join ${kitchenName}`;
+        const user = getCurrentUser();
+        if (user) {
+            if (document.getElementById('joinUserName')) document.getElementById('joinUserName').value = user.name || '';
+            if (document.getElementById('joinUserPhone')) document.getElementById('joinUserPhone').value = user.phone || '';
+        }
+        document.getElementById('joinKitchenModal').style.display = 'flex';
+    }
+
+    function closeJoinKitchenModal() {
+        document.getElementById('joinKitchenModal').style.display = 'none';
+    }
+
+    function handleJoinKitchenSubmit(e) {
+        e.preventDefault();
+        const name = document.getElementById('joinUserName').value;
+        const slot = document.getElementById('joinMealSlot').value;
+        const portion = document.getElementById('joinPortions').value;
+
+        closeJoinKitchenModal();
+        showNotification(`🎉 Congratulations ${name}! You have joined the kitchen circle for <strong>${slot}</strong> (${portion}).`, 'fas fa-check-circle');
+        if (typeof triggerConfetti === 'function') triggerConfetti();
+    }
+
+    function openCreateKitchenModal() {
+        document.getElementById('createKitchenModal').style.display = 'flex';
+    }
+
+    function closeCreateKitchenModal() {
+        document.getElementById('createKitchenModal').style.display = 'none';
+    }
+
+    function handleCreateKitchenSubmit(e) {
+        e.preventDefault();
+        const kName = document.getElementById('newKitchenName').value;
+        const kArea = document.getElementById('newKitchenArea').value;
+        const kAddress = document.getElementById('newKitchenAddress').value;
+        const kMeals = document.getElementById('newKitchenMeals').value;
+
+        const newKitchen = {
+            id: kitchens.length + 1,
+            name: kName,
+            area: kArea,
+            address: kAddress,
+            members: 1,
+            dailyMeals: parseInt(kMeals, 10),
+            icon: "✨",
+            specialty: "Fresh Organic Home-Style Meals",
+            todayMenu: "Kick-off Community Feast + Organic Biryani"
+        };
+
+        kitchens.unshift(newKitchen);
+        if (window.FTF_API && window.FTF_API.community) {
+            window.FTF_API.community.createKitchen(newKitchen).catch(err => console.warn(err));
+        }
+        closeCreateKitchenModal();
+        renderKitchens();
+        showNotification(`🎉 New Community Kitchen <strong>${kName}</strong> successfully created and published!`, 'fas fa-utensils');
+        if (typeof triggerConfetti === 'function') triggerConfetti();
+    }
+</script>
+</body>
+</html>

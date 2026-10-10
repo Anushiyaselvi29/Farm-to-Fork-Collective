@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Product Details - Farm to Fork Collective</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/respnsive.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <style>
+        .details-page { padding: 40px 0 80px; }
+        .product-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        .product-gallery {
+            position: relative;
+        }
+        .main-img-container {
+            width: 100%;
+            height: 420px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            background: var(--white);
+            position: relative;
+        }
+        .main-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .main-img-container:hover img {
+            transform: scale(1.04);
+        }
+        .product-meta-card {
+            background: var(--white);
+            padding: 36px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+        }
+        .product-price-box {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin: 14px 0;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+        }
+        .current-price {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .original-price {
+            font-size: 1.2rem;
+            text-decoration: line-through;
+            color: var(--text-light);
+        }
+        .discount-tag {
+            background: #FFEBEE;
+            color: #C62828;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        .eco-meter {
+            background: linear-gradient(135deg, #E8F5E9, #F1F8E9);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 16px 0;
+            border: 1px solid #C8E6C9;
+        }
+        .quantity-picker {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .qty-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: var(--bg);
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        .qty-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .qty-val {
+            font-size: 1.3rem;
+            font-weight: 700;
+            min-width: 36px;
+            text-align: center;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: auto;
+        }
+
+        /* FARMER SPOTLIGHT CARD */
+        .farmer-spotlight-card {
+            background: linear-gradient(135deg, #FFFFFF, #FDFBF7);
+            border-radius: var(--radius);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 111, 0, 0.15);
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 24px;
+            align-items: center;
+        }
+        .farmer-avatar-box {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+        .farmer-avatar-box img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--secondary);
+            box-shadow: 0 4px 15px rgba(255, 111, 0, 0.2);
+        }
+        .farmer-verified-badge {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            border: 2px solid white;
+        }
+        .farmer-quote {
+            font-style: italic;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-top: 6px;
+            border-left: 3px solid var(--secondary);
+            padding-left: 10px;
+        }
+
+        /* TABS */
+        .tab-nav {
+            display: flex;
+            gap: 16px;
+            border-bottom: 2px solid rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+        .tab-btn {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            position: relative;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+        .tab-btn.active {
+            color: var(--primary);
+        }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px 3px 0 0;
+        }
+        .tab-pane {
+            display: none;
+            background: var(--white);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.4s ease;
+        }
+        .tab-pane.active { display: block; }
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        .nutrition-box {
+            background: var(--bg);
+            padding: 16px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .review-card {
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+        .review-card:last-child { border-bottom: none; }
+
+        /* SEED TO PLATE TIMELINE IN MODAL */
+        .modal-trace-step {
+            display: flex;
+            gap: 18px;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            align-items: flex-start;
+        }
+        .modal-trace-step:last-child { border-bottom: none; }
+        .modal-step-icon {
+            width: 44px;
+            height: 44px;
+            background: #E8F5E9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .qr-scan-hero {
+            background: #111;
+            color: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .qr-display-box {
+            width: 110px;
+            height: 110px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .qr-display-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .audio-player-sim {
+            background: #F4FBF4;
+            border: 1px solid #C8E6C9;
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        @media (max-width: 768px) {
+            .product-details-grid { grid-template-columns: 1fr; }
+            .farmer-spotlight-card { grid-template-columns: 1fr; text-align: center; }
+            .farmer-avatar-box { margin: 0 auto; }
+            .farmer-quote { border-left: none; border-top: 2px solid var(--secondary); padding-top: 8px; }
+            .nutrition-grid { grid-template-columns: repeat(2, 1fr); }
+            .qr-scan-hero { flex-direction: column; text-align: center; }
+        }
+    </style>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+    <div class="container">
+        <div class="top-bar-left">
+            <span><i class="fas fa-leaf"></i> 100% Certified Organic</span>
+            <span><i class="fas fa-truck"></i> Free Delivery on ₹500+</span>
+            <span><i class="fas fa-qrcode"></i> Seed to Plate QR Transparency</span>
+        </div>
+        <div class="top-bar-right" style="display: flex; align-items: center;">
+            
+            <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar glass">
+    <div class="container">
+        <div class="nav-brand">
+            <a href="../index.html">
+                <div class="brand-icon"><i class="fas fa-seedling"></i></div>
+                <div class="brand-text">
+                    <span class="brand-main">Farm to Fork</span>
+                    <span class="brand-sub">Collective</span>
+                </div>
+            </a>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="../index.html" id="navDetailHome">Home</a>
+            <a href="products.html" class="active" id="navDetailShop">Shop</a>
+            <a href="community-kitchen.html" id="navDetailKitchen">Community Kitchen</a>
+            <a href="group-buying.html" id="navDetailGroup">Group Buying</a>
+            <a href="seed-to-plate.html" id="navDetailSeed">Seed to Plate</a>
+        </div>
+        <div class="nav-actions">
+            <!-- Language Pill in Navbar -->
+            
+            <a href="#" class="search-btn" onclick="toggleSearch()"><i class="fas fa-search"></i></a>
+            <a href="cart.html" class="cart-btn">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-badge" id="cartBadge">0</span>
+            </a>
+            <a href="login.html" class="btn-login" id="navDetailLogin">Login</a>
+            <a href="register.html" class="btn-signup" id="navDetailSignup">Sign Up</a>
+            <button class="hamburger" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+        </div>
+    </div>
+</nav>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay">
+    <button class="search-close" onclick="toggleSearch()">✕</button>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search organic products..." />
+        <div class="search-suggestions" id="searchSuggestions"></div>
+    </div>
+</div>
+
+<!-- PRODUCT DETAILS PAGE -->
+<section class="details-page">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <div style="margin-bottom: 24px; font-size: 0.9rem; color: var(--text-light);">
+            <a href="../index.html" style="color: var(--primary);">Home</a> &gt; 
+            <a href="products.html" style="color: var(--primary);">Shop</a> &gt; 
+            <span id="breadcrumbCategory">Category</span> &gt; 
+            <span id="breadcrumbProduct" style="font-weight: 600; color: var(--text);">Product</span>
+        </div>
+
+        <!-- MAIN PRODUCT OVERVIEW -->
+        <div class="product-details-grid" id="productDetailContainer">
+            <!-- Dynamic Main Product Injected by JS -->
+            <div style="text-align:center; padding: 60px; grid-column: 1 / -1;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary);"></i>
+                <p style="margin-top: 16px;">Loading organic freshness & farmer origin...</p>
+            </div>
+        </div>
+
+        <!-- MULTI-FARMER MARKETPLACE COMPARISON BANNER -->
+        <div id="multiFarmerOfferBanner" style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 1.5px solid #86efac; border-radius: var(--radius); padding: 18px 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; box-shadow: var(--shadow);">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 46px; height: 46px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0;">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <strong style="font-size: 1.05rem; color: var(--text);" id="multiFarmerBannerTitle">🌾 Multiple Farmers Selling This Produce</strong>
+                        <span style="background: #bbf7d0; color: #166534; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 12px;">FAIR TRADE</span>
+                    </div>
+                    <p style="margin: 2px 0 0; font-size: 0.85rem; color: var(--text-light);" id="multiFarmerBannerSub">
+                        Compare farm-gate prices, distance to your doorstep, and harvest timestamps across certified local farmers.
+                    </p>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="openFarmerComparisonModal(currentDetailProduct ? currentDetailProduct.id : 1, currentDetailProduct ? currentDetailProduct.name : 'Organic Produce')" style="padding: 10px 18px; font-size: 0.88rem; display: flex; align-items: center; gap: 6px;">
+                <i class="fas fa-balance-scale"></i> Compare & Choose Farmer
+            </button>
+        </div>
+
+        <!-- ALL FARMERS SELLING THIS PRODUCE SECTION -->
+        <section class="all-farmers-selling-section" id="allFarmersSellingSection" style="display: none; margin-bottom: 36px;">
+            <div class="all-farmers-selling-header">
+                <div>
+                    <h2 class="all-farmers-selling-title" id="allFarmersTitle">
+                        <i class="fas fa-users" style="color: var(--primary);"></i> All Farmers Selling This Product
+                    </h2>
+                    <p class="all-farmers-selling-sub" id="allFarmersSub">
+                        Compare all local growers, distance from your delivery location, farm-gate prices, available stock, and harvest timestamps. Select your preferred farmer to buy directly.
+                    </p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <span id="allFarmersCountBadge" style="background: #dcfce7; color: #15803d; font-size: 0.82rem; font-weight: 800; padding: 6px 14px; border-radius: 20px; border: 1px solid #86efac;">
+                        4 Farmers Available
+                    </span>
+                    <button class="btn-secondary" onclick="openFarmerComparisonModal(currentDetailProduct ? currentDetailProduct.id : 1, currentDetailProduct ? currentDetailProduct.name : 'Organic Produce')" style="padding: 8px 14px; font-size: 0.82rem;">
+                        <i class="fas fa-table-columns"></i> Side-by-Side Compare
+                    </button>
+                </div>
+            </div>
+
+            <!-- Customer Delivery Location Bar with Dynamic City Switcher -->
+            <div class="farmer-delivery-location-card" id="farmerDeliveryLocationCard">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);">
+                        <i class="fas fa-location-dot"></i>
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span id="farmerUserStatusPill" style="font-size: 0.75rem; font-weight: 800; color: #166534; background: #bbf7d0; padding: 2px 8px; border-radius: 10px; text-transform: uppercase;">
+                                📍 Delivering To You
+                            </span>
+                            <span id="farmerUserNameText" style="font-size: 0.85rem; font-weight: 700; color: var(--text);">
+                                Priya Sharma
+                            </span>
+                        </div>
+                        <div id="farmerActiveAddressText" style="font-weight: 800; font-size: 1.05rem; color: var(--text); margin-top: 3px;">
+                            Anna Nagar West, Chennai (Tamil Nadu)
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--text-light); margin-top: 2px;" id="farmerDistExplanation">
+                            💡 Distances and delivery speeds below are calculated dynamically from your address to each farm.
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <label for="farmerDistrictSelect" style="font-size: 0.85rem; font-weight: 700; color: var(--text);">
+                        <i class="fas fa-city"></i> Switch Delivery City:
+                    </label>
+                    <select id="farmerDistrictSelect" onchange="onFarmerLocationSelectChanged(this.value)" style="padding: 10px 14px; border: 1.5px solid #16a34a; border-radius: 10px; background: #f0fdf4; font-weight: 700; font-size: 0.9rem; color: #166534; cursor: pointer; outline: none;">
+                        <option value="Chennai">📍 Chennai (Capital Belt)</option>
+                        <option value="Coimbatore">📍 Coimbatore (Kongu Belt)</option>
+                        <option value="Madurai">📍 Madurai (South Central)</option>
+                        <option value="Dindigul">📍 Dindigul (Oddanchatram Hub)</option>
+                        <option value="Salem">📍 Salem (Fruit & Agro Belt)</option>
+                        <option value="Tiruchirappalli">📍 Tiruchirappalli / Trichy</option>
+                        <option value="Kovilpatti">📍 Kovilpatti / Thoothukudi (NEC)</option>
+                        <option value="Tirunelveli">📍 Tirunelveli (Deep South)</option>
+                        <option value="Dharmapuri">📍 Dharmapuri (Agro Belt)</option>
+                        <option value="Nilgiris">📍 Nilgiris / Ooty (Hill Agro)</option>
+                        <option value="Erode">📍 Erode (Cauvery Belt)</option>
+                        <option value="Sivaganga">📍 Sivaganga / Chettinad</option>
+                        <option value="Thanjavur">📍 Thanjavur (Cauvery Delta)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- In-Page Sorting Filter Bar -->
+            <div class="farmer-filter-sort-bar" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; padding: 12px 16px; background: var(--bg); border-radius: 10px; border: 1px solid var(--border);">
+                <div style="font-size: 0.85rem; font-weight: 700; color: var(--text);">
+                    <i class="fas fa-arrow-down-short-wide"></i> Sort Farmers By:
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" class="farmer-sort-pill active" onclick="sortInPageFarmers('distance', this)">
+                        📍 Nearest Farm First
+                    </button>
+                    <button type="button" class="farmer-sort-pill" onclick="sortInPageFarmers('price-low', this)">
+                        🏷️ Lowest Price
+                    </button>
+                    <button type="button" class="farmer-sort-pill" onclick="sortInPageFarmers('rating', this)">
+                        ⭐ Top Rated
+                    </button>
+                    <button type="button" class="farmer-sort-pill" onclick="sortInPageFarmers('stock', this)">
+                        📦 Highest Stock
+                    </button>
+                </div>
+            </div>
+
+            <!-- Grid of All Farmer Product Cards -->
+            <div class="all-farmers-grid" id="allFarmersCardsGrid">
+                <!-- Dynamically populated by FTF_MARKETPLACE.renderFarmerCardsHtml -->
+            </div>
+        </section>
+
+        <!-- MEET THE FARMER SPOTLIGHT CARD -->
+        <div class="farmer-spotlight-card" id="farmerSpotlight">
+            <div class="farmer-avatar-box">
+                <img id="farmerImg" src="https://images.unsplash.com/photo-1544717305-2782549b5136?w=300" alt="Farmer Portrait" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300'" />
+                <div class="farmer-verified-badge" title="Verified Organic Producer"><i class="fas fa-check"></i></div>
+            </div>
+            <div>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <span style="font-size: 0.8rem; background: #FFF3E0; color: #E65100; font-weight: 700; padding: 2px 10px; border-radius: 12px;">👨‍🌾 Direct From Grower</span>
+                    <span id="farmerExpBadge" style="font-size: 0.8rem; color: var(--text-light);">20+ Years Organic Farming</span>
+                </div>
+                <h3 id="farmerNameHeading" style="font-size: 1.3rem; margin: 4px 0;">Farmer Sundaram R.</h3>
+                <p style="color: var(--text-light); font-size: 0.9rem;" id="farmerFarmDetails">
+                    <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> Green Valley Organic Farm, Dindigul, Tamil Nadu • 12 Acres Certified Organic Land
+                </p>
+                <div class="farmer-quote" id="farmerQuoteText">
+                    "We nurture this soil with indigenous Jeevamrutham and pure well water so your family enjoys food full of vitality and zero chemicals."
+                </div>
+            </div>
+            <div>
+                <button class="btn-secondary" onclick="openFarmerMsgModal()" style="white-space: nowrap; padding: 12px 20px;">
+                    <i class="fas fa-comment-heart"></i> Send Farmer Thanks
+                </button>
+            </div>
+        </div>
+
+        <!-- DETAILS TABS -->
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('tab-desc', this)">🌿 Story & Farm Origin</button>
+            <button class="tab-btn" onclick="switchTab('tab-trace', this)">📱 Seed-to-Plate Logs</button>
+            <button class="tab-btn" onclick="switchTab('tab-nutrition', this)">🥗 Nutrition & Certifications</button>
+            <button class="tab-btn" onclick="switchTab('tab-reviews', this)">💬 Customer Reviews (<span id="reviewCountHeader">0</span>)</button>
+        </div>
+
+        <!-- TAB 1: STORY & FARM -->
+        <div id="tab-desc" class="tab-pane active">
+            <h3 style="margin-bottom: 12px;">About the Produce</h3>
+            <p id="tabDescText" style="color: var(--text-light); line-height: 1.8; margin-bottom: 24px;"></p>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <div style="background: var(--bg); padding: 18px; border-radius: 12px;">
+                    <div style="color: var(--primary); font-size: 1.4rem; margin-bottom: 6px;"><i class="fas fa-map-marker-alt"></i></div>
+                    <h4 style="font-size: 1rem;">Farm Origin</h4>
+                    <p id="tabFarmOrigin" style="color: var(--text-light); font-size: 0.85rem;"></p>
+                </div>
+                <div style="background: var(--bg); padding: 18px; border-radius: 12px;">
+                    <div style="color: var(--primary); font-size: 1.4rem; margin-bottom: 6px;"><i class="fas fa-calendar-alt"></i></div>
+                    <h4 style="font-size: 1rem;">Harvest Timeline</h4>
+                    <p id="tabHarvest" style="color: var(--text-light); font-size: 0.85rem;"></p>
+                </div>
+                <div style="background: var(--bg); padding: 18px; border-radius: 12px;">
+                    <div style="color: var(--primary); font-size: 1.4rem; margin-bottom: 6px;"><i class="fas fa-hourglass-half"></i></div>
+                    <h4 style="font-size: 1rem;">Expected Shelf Life</h4>
+                    <p id="tabShelfLife" style="color: var(--text-light); font-size: 0.85rem;"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: SEED TO PLATE TRACE PREVIEW -->
+        <div id="tab-trace" class="tab-pane">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                <div>
+                    <h3>Direct Blockchain QR Audit Trail</h3>
+                    <p style="color: var(--text-light); font-size: 0.9rem;">Trace every milestone from seed sowing to delivery.</p>
+                </div>
+                <button class="btn-primary btn-small" onclick="window.location.href='seed-to-plate.html?batch=' + ((currentDetailProduct && currentDetailProduct.batchCode) || 'FTF-TOM-2024-001')">
+                    <i class="fas fa-qrcode"></i> Launch Full Born-to-Delivery Scanner
+                </button>
+            </div>
+
+            <div id="tabTraceSteps">
+                <!-- Trace steps injected dynamically -->
+            </div>
+        </div>
+
+        <!-- TAB 3: NUTRITION & CERTS -->
+        <div id="tab-nutrition" class="tab-pane">
+            <h3 style="margin-bottom: 16px;">Nutritional Profile (Per 100g Serving)</h3>
+            <div class="nutrition-grid" id="nutritionGrid"></div>
+
+            <h3 style="margin: 28px 0 12px;">Verified Certifications & Quality Assays</h3>
+            <div id="certificationsList" style="display: flex; gap: 12px; flex-wrap: wrap;"></div>
+        </div>
+
+        <!-- TAB 4: REVIEWS -->
+        <div id="tab-reviews" class="tab-pane">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+                <div>
+                    <h3 style="margin-bottom: 4px;">Customer Reviews & Feedback</h3>
+                    <p style="color: var(--text-light); font-size: 0.9rem;">Real ratings from verified community consumers.</p>
+                </div>
+                <button class="btn-secondary btn-small" onclick="openReviewModal()"><i class="fas fa-pen"></i> Write a Review</button>
+            </div>
+            <div id="reviewsList">
+                <div class="review-card">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <strong>Priya S. <span style="font-size:0.75rem; color:var(--primary);">✓ Verified Buyer</span></strong>
+                        <span style="color: #FFB300;">★★★★★</span>
+                    </div>
+                    <p style="color: var(--text-light); font-size: 0.9rem;">Extremely fresh and delicious! You can truly taste the organic difference.</p>
+                </div>
+                <div class="review-card">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <strong>Arun Kumar <span style="font-size:0.75rem; color:var(--primary);">✓ Verified Buyer</span></strong>
+                        <span style="color: #FFB300;">★★★★☆</span>
+                    </div>
+                    <p style="color: var(--text-light); font-size: 0.9rem;">Quick delivery and clean packaging with minimal plastic. Highly recommended!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RELATED PRODUCTS -->
+        <div style="margin-top: 60px;">
+            <div class="section-header">
+                <span class="section-tag">✨ Recommended</span>
+                <h2>You Might Also <span class="gradient-text">Love</span></h2>
+            </div>
+            <div class="products-grid" id="relatedProductsGrid"></div>
+        </div>
+    </div>
+</section>
+
+<!-- SEED TO PLATE QR TRACE MODAL (FULL VERIFICATION) -->
+<div id="traceModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-box" style="max-width: 650px;">
+        <button onclick="closeTraceModal()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.3rem; cursor: pointer;">✕</button>
+        
+        <!-- Header with QR Code -->
+        <div class="qr-scan-hero">
+            <div class="qr-display-box">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://farmtofork.organic/trace/FTF-BATCH-8921" alt="Live QR Code" />
+            </div>
+            <div style="flex: 1;">
+                <span style="font-size: 0.75rem; background: #2E7D32; color: white; padding: 2px 10px; border-radius: 20px; font-weight: 700;">🌱 SEED TO PLATE PASSPORT</span>
+                <h3 id="modalProduceTitle" style="color: white; margin: 6px 0 2px; font-size: 1.3rem;">Organic Tomatoes</h3>
+                <div style="font-size: 0.85rem; color: #B0BEC5;">Batch Hash: <code>0x89f2a71d8c03...</code></div>
+                <div style="font-size: 0.8rem; color: #A5D6A7; margin-top: 4px;"><i class="fas fa-shield-check"></i> 100% Chemical-Free Verified</div>
+            </div>
+        </div>
+
+        <!-- Farmer Voice Note Simulation -->
+        <div class="audio-player-sim">
+            <button onclick="playFarmerAudio()" style="width: 38px; height: 38px; border-radius: 50%; background: var(--primary); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-play" id="audioPlayIcon"></i>
+            </button>
+            <div style="flex: 1;">
+                <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary-dark);">🎙️ Voice Message from Farmer <span id="modalFarmerVoiceName">Sundaram</span></div>
+                <div style="font-size: 0.75rem; color: var(--text-light);" id="audioStatusText">Tap to listen to harvest notes from the field (0:18)</div>
+            </div>
+        </div>
+
+        <!-- Detailed Visual Steps -->
+        <h4 style="margin: 16px 0 8px; font-size: 1.05rem;">Chronological Soil-to-Door Journey</h4>
+        <div id="modalTraceStepsList">
+            <!-- Injected by JS -->
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 20px;">
+            <button class="btn-primary" onclick="showNotification('Downloading Blockchain Certificate of Organic Purity 📄', 'fas fa-file-pdf')" style="flex: 1; justify-content: center;">
+                <i class="fas fa-file-download"></i> Download Lab Purity Certificate
+            </button>
+            <button class="btn-secondary" onclick="closeTraceModal()" style="padding: 12px 20px;">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- FARMER THANK YOU MESSAGE MODAL -->
+<div id="farmerMsgModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-box">
+        <button onclick="closeFarmerMsgModal()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.3rem; cursor: pointer;">✕</button>
+        <h3 style="margin-bottom: 8px;">💌 Send a Note to the Farmer</h3>
+        <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px;">Your words of gratitude go directly to the farmer's collective mobile dashboard!</p>
+
+        <form onsubmit="handleSendFarmerMsg(event)">
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">Your Name</label>
+                <input type="text" id="thankSender" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;" placeholder="e.g. Priya Sharma" />
+            </div>
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">Appreciation Note</label>
+                <textarea id="thankMessage" required rows="3" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;" placeholder="Thank you for growing clean organic food for our family!"></textarea>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">Add a Green Tip / Tree Contribution (Optional)</label>
+                <select id="thankTip" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    <option value="0">Just words of heartfelt thanks ❤️</option>
+                    <option value="20">₹20 (Plant 1 Organic Sapling 🌱)</option>
+                    <option value="50">₹50 (Bio-Compost Support 🌿)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">
+                <i class="fas fa-paper-plane"></i> Send Gratitude Message
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- REVIEW MODAL -->
+<div id="reviewModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-box">
+        <button onclick="closeReviewModal()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.3rem; cursor: pointer;">✕</button>
+        <h3 style="margin-bottom: 16px;">Write a Customer Review</h3>
+        <form onsubmit="submitReview(event)">
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">Your Name</label>
+                <input type="text" id="reviewAuthor" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;" placeholder="e.g. Ramesh" />
+            </div>
+            <div style="margin-bottom: 14px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">Rating</label>
+                <select id="reviewRating" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    <option value="5">⭐⭐⭐⭐⭐ (5/5 Outstanding Organic Quality)</option>
+                    <option value="4">⭐⭐⭐⭐ (4/5 Very Good)</option>
+                    <option value="3">⭐⭐⭐ (3/5 Average)</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 18px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 6px;">Your Review</label>
+                <textarea id="reviewComment" required rows="3" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;" placeholder="Share your experience..."></textarea>
+            </div>
+            <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">Submit Review</button>
+        </form>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="footer-logo"><i class="fas fa-seedling"></i><span>Farm to Fork Collective</span></div>
+                <p>Building a sustainable community through organic food, transparency, and collective action.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="products.html">Shop Products</a>
+                <a href="community-kitchen.html">Community Kitchen</a>
+                <a href="group-buying.html">Group Buying</a>
+                <a href="seed-to-plate.html">Seed to Plate</a>
+            </div>
+            <div class="footer-links">
+                <h4>Support</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Farm to Fork Collective. All rights reserved. 🌱</p>
+        </div>
+    </div>
+</footer>
+
+<script src="../js/script.js"></script>
+<script src="../js/cart.js"></script>
+<script src="../js/animation.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/feedback.js"></script>
+<script src="../js/notifications.js"></script>
+<script src="../js/farmer-marketplace.js"></script>
+<script src="../js/i18n.js"></script>
+
+<script>
+    let currentDetailProduct = null;
+    let selectedQuantity = 1;
+
+    // Rich farmer profiles mapped by category/seller
+    const farmerProfiles = {
+        "Green Valley Farm": {
+            name: "Farmer Sundaram R.",
+            exp: "25+ Years Certified Organic Pioneer",
+            photo: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=300",
+            location: "Dindigul & Anna Nagar Hub, Tamil Nadu",
+            acres: "12 Acres Heritage Soil",
+            quote: "We don't use a single chemical drop on our soil. Every plant is nourished with natural Panchagavya and sunlight.",
+            audioQuote: "Vanakkam! We handpicked this batch at 5:30 AM today while morning dew preserved the fresh nutrients. Thank you for supporting native farming!"
+        },
+        "Fresh Farm": {
+            name: "Velmurugan & Selvi K.",
+            exp: "18 Years Natural Farming",
+            photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300",
+            location: "Kanchipuram Organic Belt, Tamil Nadu",
+            acres: "8 Acres Drip-Irrigated Farm",
+            quote: "Our greens and vegetables are washed only with pure mountain spring water before eco-packing.",
+            audioQuote: "Greetings! These greens were harvested at dawn and rushed in climate-controlled vans to reach your table in peak vitality."
+        },
+        "Root Farm": {
+            name: "Anand & Devi Mountain Collective",
+            exp: "22 Years Nilgiris Terrace Farming",
+            photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300",
+            location: "Ooty Hills, Nilgiris (Altitude: 6,800 ft)",
+            acres: "15 Acres Terrace Plots",
+            quote: "Cool mountain breezes and natural compost give our root vegetables rich sweetness without synthetic fertilizers.",
+            audioQuote: "Hello from Ooty hills! We grew these carrots in rich volcanic mountain loam soil. Enjoy the natural crunch!"
+        },
+        "Himalayan Orchard": {
+            name: "Vikram Negi",
+            exp: "3rd Generation Apple Grower",
+            photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300",
+            location: "Kinnaur Valley, Himachal Pradesh",
+            acres: "20 Acres High-Altitude Orchards",
+            quote: "Ripened under clean snowmelt and Himalayan sunshine with absolutely zero artificial wax or gas ripening.",
+            audioQuote: "Vanakkam and Namaste! We hand-plucked each apple from high-altitude trees without any wax coating."
+        },
+        "Bee Natural": {
+            name: "Murugan T. (Tribal Beekeepers Lead)",
+            exp: "Ethical Forest Foraging Tradition",
+            photo: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=300",
+            location: "Jawadhu Hills, Eastern Ghats",
+            acres: "5,000 Acres Protected Reserve Forest",
+            quote: "We take only surplus honey and keep the bee colonies flourishing naturally in the wild forest.",
+            audioQuote: "Greetings! This raw forest honey comes from medicinal wild blooms. Raw, unheated, and full of natural enzymes."
+        },
+        "default": {
+            name: "Sundaram R. & Organic Collective",
+            exp: "Certified Organic Grower Group",
+            photo: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=300",
+            location: "Tamil Nadu Organic Farmers Network",
+            acres: "Collective Agro-Ecosystem",
+            quote: "100% traceable, non-GMO, zero chemical residues. Pure food grown with love for humanity and planet.",
+            audioQuote: "Vanakkam! Thank you for buying direct from organic farmers. Your support empowers our rural green economy."
+        }
+    };
+
+    let currentDetailLang = localStorage.getItem('ftf_lang') || 'en';
+
+    function setDetailLanguage(lang) {
+        currentDetailLang = lang;
+        localStorage.setItem('ftf_lang', lang);
+        // Ensure legacy language switchers are removed
+        const legacyFloat = document.getElementById('globalFloatingLangBtn');
+        if (legacyFloat) legacyFloat.remove();
+        document.querySelectorAll('.floating-lang-btn, .nav-lang-pill, .lang-switch-wrap').forEach(el => el.remove());
+
+        const navHome = document.getElementById('navDetailHome');
+        const navShop = document.getElementById('navDetailShop');
+        const navKitchen = document.getElementById('navDetailKitchen');
+        const navGroup = document.getElementById('navDetailGroup');
+        const navSeed = document.getElementById('navDetailSeed');
+        const navLogin = document.getElementById('navDetailLogin');
+        const navSignup = document.getElementById('navDetailSignup');
+        if (navHome) navHome.textContent = lang === 'ta' ? 'முகப்பு' : 'Home';
+        if (navShop) navShop.textContent = lang === 'ta' ? 'விளைபொருட்கள்' : 'Shop';
+        if (navKitchen) navKitchen.textContent = lang === 'ta' ? 'சமுதாய சமையலறை' : 'Community Kitchen';
+        if (navGroup) navGroup.textContent = lang === 'ta' ? 'குழு கொள்முதல்' : 'Group Buying';
+        if (navSeed) navSeed.textContent = lang === 'ta' ? 'விதையிலிருந்து தட்டு வரை' : 'Seed to Plate';
+        if (navLogin) navLogin.textContent = lang === 'ta' ? 'உள்நுழைக' : 'Login';
+        if (navSignup) navSignup.textContent = lang === 'ta' ? 'பதிவு செய்க' : 'Sign Up';
+
+        if (currentDetailProduct) {
+            renderProductDetails(currentDetailProduct);
+            renderRelatedProducts(currentDetailProduct);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', async function() {
+        setDetailLanguage(currentDetailLang);
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = parseInt(urlParams.get('id'), 10) || 1;
+        const farmerParam = urlParams.get('farmer');
+
+        // 1. Immediately render local product to prevent infinite spinner
+        currentDetailProduct = getProductById(productId) || (typeof products !== 'undefined' && products.length > 0 ? products[0] : null);
+        if (currentDetailProduct) {
+            if (window.FTF_MARKETPLACE) {
+                const farmers = window.FTF_MARKETPLACE.getFarmersForProduct(productId);
+                if (farmerParam) {
+                    const fListing = window.FTF_MARKETPLACE.getFarmerListing(productId, farmerParam);
+                    if (fListing) applyFarmerListingToProduct(fListing);
+                    else renderProductDetails(currentDetailProduct);
+                } else if (farmers && farmers.length > 1) {
+                    const fListing = window.FTF_MARKETPLACE.getFarmerListing(productId, farmers[0].farmerId);
+                    if (fListing) applyFarmerListingToProduct(fListing);
+                    else renderProductDetails(currentDetailProduct);
+                } else {
+                    renderProductDetails(currentDetailProduct);
+                }
+            } else {
+                renderProductDetails(currentDetailProduct);
+            }
+            renderRelatedProducts(currentDetailProduct);
+        }
+
+        // 2. Fetch live data asynchronously to enrich product & reviews
+        if (window.FTF_API && window.FTF_API.products) {
+            try {
+                const res = await window.FTF_API.products.getById(productId);
+                if (res && res.success && res.product) {
+                    currentDetailProduct = res.product;
+                    if (window.FTF_MARKETPLACE) {
+                        const farmers = window.FTF_MARKETPLACE.getFarmersForProduct(productId);
+                        if (farmerParam) {
+                            const fListing = window.FTF_MARKETPLACE.getFarmerListing(productId, farmerParam);
+                            if (fListing) applyFarmerListingToProduct(fListing);
+                            else renderProductDetails(currentDetailProduct);
+                        } else if (farmers && farmers.length > 1) {
+                            const fListing = window.FTF_MARKETPLACE.getFarmerListing(productId, farmers[0].farmerId);
+                            if (fListing) applyFarmerListingToProduct(fListing);
+                            else renderProductDetails(currentDetailProduct);
+                        } else {
+                            renderProductDetails(currentDetailProduct);
+                        }
+                    } else {
+                        renderProductDetails(currentDetailProduct);
+                    }
+                    renderRelatedProducts(currentDetailProduct);
+                }
+            } catch (err) {
+                console.warn('Live product fetch fallback:', err);
+            }
+        }
+    });
+
+    function applyFarmerListingToProduct(fListing) {
+        if (!currentDetailProduct || !fListing) return;
+        currentDetailProduct = {
+            ...currentDetailProduct,
+            seller: fListing.farmName,
+            farmerName: fListing.farmerName,
+            farmerId: fListing.farmerId,
+            selectedFarmerId: fListing.farmerId,
+            price: fListing.price,
+            originalPrice: fListing.originalPrice,
+            stock: fListing.stock,
+            origin: fListing.formattedLocation,
+            harvestDate: fListing.harvestDate,
+            batchCode: fListing.batchCode,
+            distanceKm: fListing.distanceKm,
+            unit: fListing.unit || currentDetailProduct.unit || 'kg'
+        };
+        farmerProfiles[fListing.farmName] = {
+            name: fListing.farmerName,
+            exp: fListing.farmingMethod,
+            photo: fListing.farmerPhoto,
+            location: fListing.formattedLocation,
+            acres: `${fListing.distanceKm} km from your registered location`,
+            quote: fListing.story || fListing.about,
+            audioQuote: `Vanakkam! Handpicked at ${fListing.harvestDate} directly from ${fListing.farmName}. Thank you for choosing organic direct trade!`
+        };
+        
+        const bannerSub = document.getElementById('multiFarmerBannerSub');
+        if (bannerSub) {
+            const isTa = currentDetailLang === 'ta';
+            bannerSub.innerHTML = isTa
+                ? `தற்போது தேர்வு செய்யப்பட்ட விவசாயி: <strong>${fListing.farmerName}</strong> (${fListing.farmName}, ${fListing.distanceKm} கி.மீ தூரம்), விலை: <strong>₹${fListing.price}/${fListing.unit}</strong>.`
+                : `Currently viewing <strong>${fListing.farmerName}</strong> (${fListing.farmName}, ${fListing.distanceKm} km away) at <strong>₹${fListing.price}/${fListing.unit}</strong>.`;
+        }
+        renderProductDetails(currentDetailProduct);
+    }
+
+    function selectFarmerOnProductDetail(farmerId) {
+        if (!currentDetailProduct || !window.FTF_MARKETPLACE) return;
+        const fListing = window.FTF_MARKETPLACE.getFarmerListing(currentDetailProduct.id, farmerId);
+        if (!fListing) return;
+
+        applyFarmerListingToProduct(fListing);
+
+        // Update URL param without page reload
+        try {
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('farmer', farmerId);
+            window.history.replaceState({}, '', newUrl);
+        } catch (e) {}
+
+        const isTa = (localStorage.getItem('ftf_lang') || 'en') === 'ta';
+        if (typeof showNotification === 'function') {
+            showNotification(
+                isTa 
+                    ? `🌾 <strong>${fListing.farmerName}</strong> (${fListing.farmName}) தேர்வு செய்யப்பட்டார்! விலை: ₹${fListing.price}/${fListing.unit}`
+                    : `🌾 Selected <strong>${fListing.farmerName}</strong> (${fListing.farmName})! Price: ₹${fListing.price}/${fListing.unit}`,
+                'fas fa-check-circle'
+            );
+        }
+    }
+    window.selectFarmerOnProductDetail = selectFarmerOnProductDetail;
+
+    function getFarmerData(seller) {
+        return (seller && farmerProfiles[seller]) ? farmerProfiles[seller] : farmerProfiles["default"];
+    }
+
+    function renderProductDetails(product) {
+        if (!product) return;
+        document.title = `${product.name} - Farm to Fork Collective`;
+
+        const catEl = document.getElementById('breadcrumbCategory');
+        if (catEl && product.category) {
+            catEl.textContent = product.category.charAt(0).toUpperCase() + product.category.slice(1);
+        }
+        const prodEl = document.getElementById('breadcrumbProduct');
+        if (prodEl) {
+            prodEl.textContent = product.name;
+        }
+
+        const origPrice = product.originalPrice || (product.price ? Math.round(product.price * 1.25) : 100);
+        const curPrice = product.price || 50;
+        const discountPct = Math.round(((origPrice - curPrice) / origPrice) * 100);
+        const farmer = getFarmerData(product.seller);
+        const imgSrc = typeof getProductImagePath === 'function' ? getProductImagePath(product.image) : product.image;
+        const backupSrc = product.backupImage || 'https://via.placeholder.com/600x400?text=Product';
+
+        const stock = (product.stock !== undefined && product.stock !== null) ? Number(product.stock) : 50;
+
+        // Populate Main Product Area
+        const container = document.getElementById('productDetailContainer');
+        if (container) {
+            container.innerHTML = `
+                <div class="product-gallery">
+                    <div class="main-img-container">
+                        <img src="${imgSrc}" alt="${product.name}" onerror="this.src='${backupSrc}'">
+                        <span style="position: absolute; top: 16px; left: 16px; background: rgba(46, 125, 50, 0.95); color: white; padding: 6px 14px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+                            ${product.badge || '🌿 Organic'}
+                        </span>
+                        <span style="position: absolute; bottom: 16px; right: 16px; background: rgba(0,0,0,0.75); color: white; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; backdrop-filter: blur(4px);">
+                            📸 Verified Farm Photo
+                        </span>
+                    </div>
+                </div>
+
+                <div class="product-meta-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span style="color: var(--primary); font-weight: 700; font-size: 0.9rem; text-transform: uppercase;">
+                            <i class="fas fa-tractor"></i> ${product.seller || 'Green Valley Farm'}
+                        </span>
+                        ${stock <= 0 ? 
+                            `<span class="status-pill" style="background:#FEE2E2; color:#DC2626;"><i class="fas fa-times-circle"></i> Out of Stock</span>` : 
+                            (stock < 15 ? 
+                                `<span class="status-pill" style="background:#FEF3C7; color:#B45309;"><i class="fas fa-exclamation-triangle"></i> Low Stock</span>` : 
+                                `<span class="status-pill status-delivered"><i class="fas fa-check-circle"></i> In Stock & Fresh</span>`
+                            )
+                        }
+                    </div>
+
+                    <h1 style="font-size: 2rem; margin-bottom: 6px;">${product.name}</h1>
+                    
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="color: #FFB300; font-size: 1.1rem; font-weight: bold;">★ ${product.rating || '4.5'}</span>
+                        <span style="color: var(--text-light); font-size: 0.9rem;">(${product.reviewsCount !== undefined ? product.reviewsCount : 25} verified reviews)</span>
+                        <span style="color: var(--text-light);">•</span>
+                        <span style="font-size: 0.85rem; color: var(--text-light);"><i class="fas fa-map-pin"></i> ${product.origin || 'Tamil Nadu'}</span>
+                    </div>
+
+                    ${stock <= 0 ? `
+                        <div style="background: #FEE2E2; border: 1.5px solid #FCA5A5; border-radius: 12px; padding: 12px 16px; margin-bottom: 14px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <strong style="color: #991B1B; font-size: 0.92rem;"><i class="fas fa-clock"></i> Currently Out of Stock</strong>
+                                <span style="background: #DC2626; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.72rem; font-weight:700;">Sold Out</span>
+                            </div>
+                            <p style="color: #B91C1C; font-size: 0.8rem; margin: 4px 0 0;">
+                                The farmer's next harvest is maturing in the fields. Subscribe below to be notified first when stock arrives!
+                            </p>
+                        </div>
+                    ` : (stock < 15 ? `
+                        <div style="background: #FEF3C7; border: 1.5px solid #FCD34D; border-radius: 12px; padding: 12px 16px; margin-bottom: 14px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <strong style="color: #92400E; font-size: 0.9rem;"><i class="fas fa-bolt"></i> Low Stock Alert: Only ${stock} ${product.unit || 'kg'} left!</strong>
+                                <span style="background: #D97706; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.72rem; font-weight:700;">Hurry</span>
+                            </div>
+                            <div style="width: 100%; height: 6px; background: rgba(0,0,0,0.08); border-radius: 10px; margin-top: 8px; overflow: hidden;">
+                                <div style="width: ${Math.min(100, Math.max(12, (stock / 25) * 100))}%; height: 100%; background: #D97706; border-radius: 10px;"></div>
+                            </div>
+                        </div>
+                    ` : `
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom: 12px;">
+                            <span style="background: #DCFCE7; color: #15803d; padding: 3px 10px; border-radius: 20px; font-size: 0.82rem; font-weight: 700;">
+                                <i class="fas fa-check-circle"></i> Available Stock: ${stock} ${product.unit || 'kg'}
+                            </span>
+                        </div>
+                    `)}
+
+                    <div class="product-price-box">
+                        <span class="current-price">₹${curPrice}</span>
+                        <span class="original-price">₹${origPrice}</span>
+                        <span style="color: var(--text-light); font-size: 1rem;">/${product.unit || 'kg'}</span>
+                        <span class="discount-tag">${discountPct}% OFF</span>
+                    </div>
+
+                    <p style="color: var(--text-light); line-height: 1.6; margin-bottom: 14px; font-size: 0.95rem;">
+                        ${product.description || 'Freshly harvested certified organic produce directly from local sustainable farmers.'}
+                    </p>
+
+                    <div class="eco-meter">
+                        <div>
+                            <div style="font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-leaf" style="color: var(--primary);"></i> Eco-Sustainability & Purity Index
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--text-light); margin-top: 2px;">
+                                0.00% Pesticides • Solar Powered Irrigation • Local Carbon Saved
+                            </div>
+                        </div>
+                        <div style="font-size: 1.6rem; font-weight: 800; color: var(--primary);">${product.ecoScore || 94}/100</div>
+                    </div>
+
+                    ${stock > 0 ? `
+                        <div class="quantity-picker">
+                            <span style="font-weight: 600;">Select Quantity:</span>
+                            <button class="qty-btn" onclick="adjustQty(-1)">−</button>
+                            <span class="qty-val" id="qtyDisplay">1</span>
+                            <button class="qty-btn" onclick="adjustQty(1)">+</button>
+                            <span style="color: var(--text-light); font-size: 0.9rem; margin-left: 6px;">(${product.unit || 'kg'})</span>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn-primary btn-large" onclick="addCurrentToCart()" style="flex: 1.2; justify-content: center;">
+                                <i class="fas fa-shopping-bag"></i> Add to Cart
+                            </button>
+                            <button class="btn-secondary btn-large" onclick="buyNow()" style="flex: 1; justify-content: center;">
+                                <i class="fas fa-bolt"></i> Buy Now
+                            </button>
+                            <button class="btn-secondary" onclick="window.location.href='seed-to-plate.html?batch=' + (product.batchCode || 'FTF-TOM-2024-001')" title="Trace Born to Delivery Journey" style="padding: 16px; border-color: var(--primary); color: var(--primary);">
+                                <i class="fas fa-qrcode"></i> Trace QR
+                            </button>
+                        </div>
+                    ` : `
+                        <div class="action-buttons" style="margin-top: 16px;">
+                            <button class="btn-primary btn-large" onclick="triggerNotifyBackInStock('${product.name.replace(/'/g, "\\'")}')" style="flex: 1.5; justify-content: center; background: linear-gradient(135deg, #16A34A, #15803D);">
+                                <i class="fas fa-bell"></i> 🔔 Notify Me When Back in Stock
+                            </button>
+                            <button class="btn-secondary" onclick="window.location.href='seed-to-plate.html?batch=' + (product.batchCode || 'FTF-TOM-2024-001')" title="Trace Born to Delivery Journey" style="padding: 16px; border-color: var(--primary); color: var(--primary);">
+                                <i class="fas fa-qrcode"></i> Trace QR
+                            </button>
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        function triggerNotifyBackInStock(cropName) {
+            if (window.FTF_NOTIFICATIONS && typeof window.FTF_NOTIFICATIONS.addNotification === 'function') {
+                window.FTF_NOTIFICATIONS.addNotification({
+                    type: 'stock',
+                    title: 'Restock Alert Subscribed',
+                    message: `You're on the priority notification list for fresh ${cropName}!`
+                });
+            }
+            alert(`🔔 Restock Alert Activated!\nWe will notify you immediately once fresh ${cropName} is harvested and listed on the marketplace.`);
+        }
+
+        // Populate Meet the Farmer Card
+        const fImg = document.getElementById('farmerImg');
+        if (fImg) fImg.src = farmer.photo;
+        const fExp = document.getElementById('farmerExpBadge');
+        if (fExp) fExp.textContent = farmer.exp;
+        const fName = document.getElementById('farmerNameHeading');
+        if (fName) fName.textContent = farmer.name;
+        const fFarm = document.getElementById('farmerFarmDetails');
+        if (fFarm) fFarm.innerHTML = `<i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> ${product.seller || 'Green Valley Farm'}, ${farmer.location} • ${farmer.acres}`;
+        const fQuote = document.getElementById('farmerQuoteText');
+        if (fQuote) fQuote.textContent = `"${farmer.quote}"`;
+
+        // Populate Tab 1
+        const descEl = document.getElementById('tabDescText');
+        if (descEl) descEl.textContent = product.description || '';
+        const originEl = document.getElementById('tabFarmOrigin');
+        if (originEl) originEl.textContent = `${product.seller || 'Green Valley Farm'}, ${product.origin || 'Tamil Nadu'}`;
+        const harvestEl = document.getElementById('tabHarvest');
+        if (harvestEl) harvestEl.textContent = product.harvestDate || 'Harvested Yesterday 6:00 AM';
+        const shelfEl = document.getElementById('tabShelfLife');
+        if (shelfEl) shelfEl.textContent = product.shelfLife || '5-7 days';
+        const revCountEl = document.getElementById('reviewCountHeader');
+        if (revCountEl) revCountEl.textContent = product.reviewsCount !== undefined ? product.reviewsCount : (product.reviews ? product.reviews.length : 25);
+        if (window.FTF_Feedback && typeof window.FTF_Feedback.renderProductReviews === 'function') {
+            window.FTF_Feedback.renderProductReviews(product.id, 'reviewsList');
+        }
+
+        // Populate Tab 2 Trace Steps
+        const traceStepsHtml = `
+            <div class="modal-trace-step">
+                <div class="modal-step-icon"><i class="fas fa-seedling"></i></div>
+                <div>
+                    <div style="font-weight: 700;">1. Non-GMO Indigenous Seeds Sown</div>
+                    <div style="font-size: 0.85rem; color: var(--text-light); margin-top: 2px;">Grown in certified organic nursery beds with natural vermicompost and cow dung enrichers.</div>
+                </div>
+            </div>
+            <div class="modal-trace-step">
+                <div class="modal-step-icon"><i class="fas fa-leaf"></i></div>
+                <div>
+                    <div style="font-weight: 700;">2. Natural Biological Nourishment</div>
+                    <div style="font-size: 0.85rem; color: var(--text-light); margin-top: 2px;">Fed with Jeevamrutham bio-liquid and solar drip irrigation. Zero synthetic pesticides.</div>
+                </div>
+            </div>
+            <div class="modal-trace-step">
+                <div class="modal-step-icon"><i class="fas fa-flask"></i></div>
+                <div>
+                    <div style="font-weight: 700;">3. Quality Lab Assay & Harvest (${product.harvestDate || 'Yesterday'})</div>
+                    <div style="font-size: 0.85rem; color: var(--text-light); margin-top: 2px;">Hand-picked at peak ripeness. Lab certified 0.00% chemical residues.</div>
+                </div>
+            </div>
+            <div class="modal-trace-step">
+                <div class="modal-step-icon"><i class="fas fa-truck"></i></div>
+                <div>
+                    <div style="font-weight: 700;">4. Clean Cold-Chain Dispatch</div>
+                    <div style="font-size: 0.85rem; color: var(--text-light); margin-top: 2px;">Transported in electric temperature-controlled vans to preserve morning freshness.</div>
+                </div>
+            </div>
+        `;
+        const tabTraceEl = document.getElementById('tabTraceSteps');
+        if (tabTraceEl) tabTraceEl.innerHTML = traceStepsHtml;
+        const modalTraceEl = document.getElementById('modalTraceStepsList');
+        if (modalTraceEl) modalTraceEl.innerHTML = traceStepsHtml;
+
+        // Populate Modal header
+        const modalProdTitle = document.getElementById('modalProduceTitle');
+        if (modalProdTitle) modalProdTitle.textContent = `${product.name} (${product.seller || 'Direct Farm'})`;
+        const modalFarmerName = document.getElementById('modalFarmerVoiceName');
+        if (modalFarmerName) {
+            const firstN = (farmer.name || 'Sundaram').split(' ')[0];
+            modalFarmerName.textContent = firstN;
+        }
+
+        // Nutrition Grid
+        const nutritionContainer = document.getElementById('nutritionGrid');
+        if (nutritionContainer && product.nutrition) {
+            nutritionContainer.innerHTML = Object.entries(product.nutrition).map(([key, val]) => `
+                <div class="nutrition-box">
+                    <div style="font-weight: 700; font-size: 1.1rem; color: var(--primary);">${val}</div>
+                    <div style="text-transform: capitalize; font-size: 0.8rem; color: var(--text-light);">${key}</div>
+                </div>
+            `).join('');
+        }
+
+        // Certifications
+        const certContainer = document.getElementById('certificationsList');
+        if (certContainer) {
+            const certs = product.certifications || ["India Organic", "Jaivik Bharat", "Pesticide Free 0.0%", "FSSAI Organic"];
+            certContainer.innerHTML = certs.map(c => `
+                <span style="background: #E8F5E9; color: var(--primary-dark); font-weight: 700; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px;">
+                    <i class="fas fa-award" style="color: var(--primary);"></i> ${c}
+                </span>
+            `).join('');
+        }
+
+        // Render All Farmers Selling Section if multiple sellers exist
+        // "When a customer searches or opens a product like Tomato, do not show only one product. Display all farmers selling that product."
+        // "Show multiple sellers only when the same product is available from different farmers."
+        const farmers = (window.FTF_MARKETPLACE && typeof window.FTF_MARKETPLACE.getFarmersForProduct === 'function')
+            ? window.FTF_MARKETPLACE.getFarmersForProduct(product.id)
+            : null;
+
+        const allFarmersSection = document.getElementById('allFarmersSellingSection');
+        const offerBanner = document.getElementById('multiFarmerOfferBanner');
+        const allFarmersGrid = document.getElementById('allFarmersCardsGrid');
+        const allFarmersTitle = document.getElementById('allFarmersTitle');
+        const allFarmersSub = document.getElementById('allFarmersSub');
+        const countBadge = document.getElementById('allFarmersCountBadge');
+        const isTa = currentDetailLang === 'ta';
+
+        if (farmers && farmers.length > 1) {
+            if (allFarmersSection) allFarmersSection.style.display = 'block';
+            if (offerBanner) offerBanner.style.display = 'flex';
+
+            const activeFarmerId = product.selectedFarmerId || farmers[0].farmerId;
+
+            if (allFarmersTitle) {
+                allFarmersTitle.innerHTML = `<i class="fas fa-users" style="color: var(--primary);"></i> ${isTa ? 'இவ்விளைபொருளை விற்பனை செய்யும் அனைத்து விவசாயிகள்' : 'All Farmers Selling This Product'}`;
+            }
+            if (allFarmersSub) {
+                allFarmersSub.textContent = isTa 
+                    ? 'பண்ணை விலை, உங்கள் இருப்பிடத்திலிருந்து தூரம், இருப்பு மற்றும் அறுவடை நேரம் போன்றவற்றை ஒப்பிட்டு உங்களுக்கு விருப்பமான விவசாயியை தேர்வு செய்து நேரடியாக வாங்கலாம்.'
+                    : 'Compare all verified local growers, distance from your registered location, farm-gate prices, available stock, and harvest timestamps. Select your preferred farmer to buy directly.';
+            }
+            if (countBadge) {
+                countBadge.textContent = isTa ? `${farmers.length} விவசாயிகள் விற்பனை செய்கின்றனர்` : `${farmers.length} Farmers Available`;
+            }
+
+            if (allFarmersGrid && window.FTF_MARKETPLACE) {
+                allFarmersGrid.innerHTML = window.FTF_MARKETPLACE.renderFarmerCardsHtml(farmers, {
+                    selectedFarmerId: activeFarmerId,
+                    showSelectBtn: true
+                });
+            }
+        } else {
+            if (allFarmersSection) allFarmersSection.style.display = 'none';
+            if (offerBanner) offerBanner.style.display = 'none';
+        }
+    }
+
+    function adjustQty(delta) {
+        selectedQuantity = Math.max(1, selectedQuantity + delta);
+        const qtyEl = document.getElementById('qtyDisplay');
+        if (qtyEl) qtyEl.textContent = selectedQuantity;
+    }
+
+    function addCurrentToCart() {
+        if (!currentDetailProduct) return;
+        const qtySelect = document.getElementById('qtyDisplay');
+        const qty = qtySelect ? parseInt(qtySelect.textContent, 10) : selectedQuantity;
+
+        let added = false;
+        if (currentDetailProduct.selectedFarmerId && window.FTF_MARKETPLACE) {
+            window.FTF_MARKETPLACE.selectFarmerAndAddToCart(currentDetailProduct.id, currentDetailProduct.selectedFarmerId, qty, true);
+            added = true;
+        } else {
+            const farmers = (window.FTF_MARKETPLACE && typeof window.FTF_MARKETPLACE.getFarmersForProduct === 'function')
+                ? window.FTF_MARKETPLACE.getFarmersForProduct(currentDetailProduct.id)
+                : null;
+            if (farmers && farmers.length > 1) {
+                window.FTF_MARKETPLACE.selectFarmerAndAddToCart(currentDetailProduct.id, farmers[0].farmerId, qty, true);
+                added = true;
+            }
+        }
+
+        if (!added) {
+            // Direct robust cart addition
+            let currentCart = [];
+            try { currentCart = JSON.parse(localStorage.getItem('farmToForkCart') || '[]'); } catch(e) { currentCart = []; }
+            const finalPrice = parseFloat(currentDetailProduct.price) || 0;
+            const existingIdx = currentCart.findIndex(i => i.id === currentDetailProduct.id);
+            if (existingIdx > -1) {
+                currentCart[existingIdx].quantity += qty;
+            } else {
+                currentCart.push({
+                    id: currentDetailProduct.id,
+                    productId: currentDetailProduct.id,
+                    name: currentDetailProduct.name,
+                    price: finalPrice,
+                    originalPrice: parseFloat(currentDetailProduct.originalPrice) || Math.round(finalPrice * 1.25),
+                    unit: currentDetailProduct.unit || 'kg',
+                    quantity: qty,
+                    image: currentDetailProduct.image || '/assets/images/products/organic-tomatoes.jpg',
+                    seller: currentDetailProduct.seller || 'Verified Farm',
+                    farmerName: currentDetailProduct.farmerName || currentDetailProduct.seller || 'Verified Farmer',
+                    category: currentDetailProduct.category || 'vegetables'
+                });
+            }
+            localStorage.setItem('farmToForkCart', JSON.stringify(currentCart));
+            window.cart = currentCart;
+            if (typeof cart !== 'undefined') cart = currentCart;
+            if (typeof updateCartBadge === 'function') updateCartBadge();
+            if (typeof updateCartUI === 'function') updateCartUI();
+            const isTa = (localStorage.getItem('ftf_lang') || 'en') === 'ta';
+            showNotification(isTa ? `🛒 ${currentDetailProduct.name} கூடையில் சேர்க்கப்பட்டது!` : `🛒 Added ${currentDetailProduct.name} to cart!`, 'fas fa-check-circle');
+        }
+
+        if (typeof triggerConfetti === 'function') triggerConfetti();
+    }
+
+    function buyNow() {
+        if (!currentDetailProduct) return;
+        const qtySelect = document.getElementById('qtyDisplay');
+        const qty = qtySelect ? parseInt(qtySelect.textContent, 10) : selectedQuantity;
+
+        // Guaranteed cart item preparation
+        let currentCart = [];
+        try { currentCart = JSON.parse(localStorage.getItem('farmToForkCart') || '[]'); } catch(e) { currentCart = []; }
+        const finalPrice = parseFloat(currentDetailProduct.price) || 0;
+        const farmerName = currentDetailProduct.farmerName || currentDetailProduct.seller || 'Verified Farmer';
+        const existingIdx = currentCart.findIndex(i => i.id === currentDetailProduct.id);
+
+        if (existingIdx > -1) {
+            currentCart[existingIdx].quantity = Math.max(currentCart[existingIdx].quantity, qty);
+        } else {
+            currentCart.push({
+                id: currentDetailProduct.id,
+                productId: currentDetailProduct.id,
+                name: currentDetailProduct.name,
+                price: finalPrice,
+                originalPrice: parseFloat(currentDetailProduct.originalPrice) || Math.round(finalPrice * 1.25),
+                unit: currentDetailProduct.unit || 'kg',
+                quantity: qty,
+                image: currentDetailProduct.image || '/assets/images/products/organic-tomatoes.jpg',
+                seller: currentDetailProduct.seller || farmerName,
+                farmerName: farmerName,
+                category: currentDetailProduct.category || 'vegetables'
+            });
+        }
+
+        localStorage.setItem('farmToForkCart', JSON.stringify(currentCart));
+        window.cart = currentCart;
+        if (typeof cart !== 'undefined') cart = currentCart;
+        if (typeof updateCartBadge === 'function') updateCartBadge();
+        if (typeof updateCartUI === 'function') updateCartUI();
+
+        // Redirect directly to checkout
+        window.location.href = 'checkout.html';
+    }
+
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-pane').forEach(p => {
+            p.classList.remove('active');
+            p.style.display = 'none';
+        });
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        const target = document.getElementById(tabId);
+        if (target) {
+            target.classList.add('active');
+            target.style.display = 'block';
+        }
+        if (btn) btn.classList.add('active');
+    }
+
+    // Trace Modal
+    function openTraceModal() {
+        document.getElementById('traceModal').style.display = 'flex';
+    }
+    function closeTraceModal() {
+        document.getElementById('traceModal').style.display = 'none';
+    }
+
+    // Farmer Message Modal
+    function openFarmerMsgModal() {
+        const user = getCurrentUser();
+        if (user && document.getElementById('thankSender')) {
+            document.getElementById('thankSender').value = user.name || '';
+        }
+        document.getElementById('farmerMsgModal').style.display = 'flex';
+    }
+    function closeFarmerMsgModal() {
+        document.getElementById('farmerMsgModal').style.display = 'none';
+    }
+
+    function handleSendFarmerMsg(e) {
+        e.preventDefault();
+        const sender = document.getElementById('thankSender').value;
+        const tip = document.getElementById('thankTip').value;
+        closeFarmerMsgModal();
+
+        showNotification(`💌 Thank you ${sender}! Your appreciation message & tree support has been sent to the farmer! 🌾`, 'fas fa-heart');
+        if (typeof triggerConfetti === 'function') triggerConfetti();
+    }
+
+    // Audio Voice Note Simulation
+    let isPlayingAudio = false;
+    function playFarmerAudio() {
+        const icon = document.getElementById('audioPlayIcon');
+        const text = document.getElementById('audioStatusText');
+        const farmer = getFarmerData(currentDetailProduct.seller);
+
+        if (!isPlayingAudio) {
+            isPlayingAudio = true;
+            icon.className = 'fas fa-pause';
+            text.innerHTML = `<em>"${farmer.audioQuote}"</em> 🔊`;
+            showNotification(`🎙️ Playing field audio from ${farmer.name}...`, 'fas fa-volume-up');
+        } else {
+            isPlayingAudio = false;
+            icon.className = 'fas fa-play';
+            text.textContent = 'Audio paused. Tap to resume.';
+        }
+    }
+
+    // Review Modal
+    function openReviewModal() { document.getElementById('reviewModal').style.display = 'flex'; }
+    function closeReviewModal() { document.getElementById('reviewModal').style.display = 'none'; }
+
+    async function submitReview(e) {
+        e.preventDefault();
+        const author = document.getElementById('reviewAuthor').value;
+        const rating = parseInt(document.getElementById('reviewRating').value, 10);
+        const comment = document.getElementById('reviewComment').value;
+
+        if (window.FTF_Feedback && typeof window.FTF_Feedback.submitReview === 'function' && currentDetailProduct) {
+            await window.FTF_Feedback.submitReview(currentDetailProduct.id, rating, comment, author);
+            await window.FTF_Feedback.renderProductReviews(currentDetailProduct.id, 'reviewsList');
+        } else {
+            const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+            const newCard = document.createElement('div');
+            newCard.className = 'review-card animate-scale';
+            newCard.innerHTML = `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                    <strong>${author} <span style="font-size:0.75rem; color:var(--primary);">✓ Verified Buyer</span></strong>
+                    <span style="color: #FFB300;">${stars}</span>
+                </div>
+                <p style="color: var(--text-light); font-size: 0.9rem;">${comment}</p>
+            `;
+            document.getElementById('reviewsList').prepend(newCard);
+        }
+        closeReviewModal();
+        const isTa = (localStorage.getItem('ftf_lang') || 'en') === 'ta';
+        showNotification(
+            isTa ? 'நன்றி! உங்கள் கருத்து வெற்றிகரமாக பதிவு செய்யப்பட்டது ⭐' : 'Thank you! Your verified review has been published ⭐',
+            'fas fa-star'
+        );
+    }
+
+    function renderRelatedProducts(product) {
+        const related = products.filter(p => p.id !== product.id && (p.category === product.category || p.freshnessScore > 85)).slice(0, 4);
+        const container = document.getElementById('relatedProductsGrid');
+        container.innerHTML = related.map(p => {
+            const clean = (p.image || '').replace(/^\/+/, '');
+            const imgSrc = typeof getProductImagePath === 'function' ? getProductImagePath(p.image) : ('../' + clean);
+            return `
+            <div class="product-card animate-scale" onclick="window.location.href='product-details.html?id=${p.id}'" style="cursor: pointer;">
+                <img src="${imgSrc}" alt="${p.name}" style="height: 180px; width: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='../assets/images/products/organic-honey.jpg';">
+                <div class="product-info" style="padding: 16px;">
+                    <div style="font-size: 0.75rem; color: var(--primary); font-weight: 700; text-transform: uppercase;">${p.category}</div>
+                    <h3 class="product-name" style="margin: 4px 0;">${p.name}</h3>
+                    <div style="display: flex; align-items: baseline; gap: 8px; margin: 6px 0;">
+                        <span class="product-price" style="font-weight: 800; color: var(--primary);">₹${p.price}</span>
+                        <span class="product-original" style="text-decoration: line-through; color: var(--text-light); font-size: 0.85rem;">₹${p.originalPrice}</span>
+                        <span style="font-size: 0.8rem; color: var(--text-light);">/${p.unit}</span>
+                    </div>
+                    <button onclick="event.stopPropagation(); addToCart(${p.id});" class="btn-primary btn-small" style="width: 100%; justify-content: center; margin-top: 8px;">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+            `;
+        }).join('');
+    }
+</script>
+</body>
+</html>

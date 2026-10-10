@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard - Farm to Fork Collective</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .dashboard-page { padding: 40px 0 80px; background: var(--bg); min-height: 100vh; }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 40px; }
+        .dashboard-header h1 { font-size: 2rem; }
+        .user-badge { padding: 10px 20px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; border-radius: 50px; font-weight: 600; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; margin-bottom: 30px; }
+        .stat-card { background: var(--white); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center; transition: var(--transition); cursor: pointer; }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+        .stat-card .stat-icon { font-size: 2.5rem; margin-bottom: 8px; }
+        .stat-card .stat-number { font-size: 2rem; font-weight: 800; color: var(--primary); }
+        .stat-card .stat-label { color: var(--text-light); }
+        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        .dashboard-card { background: var(--white); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 24px; }
+        .dashboard-card h3 { margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .order-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.06); align-items: center; }
+        .order-item:last-child { border-bottom: none; }
+        .status-pill { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .status-delivered { background: #E8F5E9; color: #2E7D32; }
+        .status-pending { background: #FFF3E0; color: #E65100; }
+        .status-shipped { background: #E3F2FD; color: #1565C0; }
+        .quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .quick-action { padding: 16px; background: var(--bg); border-radius: 10px; text-align: center; cursor: pointer; transition: var(--transition); border: none; font-family: inherit; }
+        .quick-action:hover { background: #E8F5E9; }
+        .quick-action .qa-icon { font-size: 1.8rem; display: block; margin-bottom: 4px; }
+
+        /* Profile & Notification Settings Section */
+        .profile-settings-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 28px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(45, 106, 79, 0.12);
+        }
+        .profile-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+            margin-bottom: 24px;
+        }
+        .user-role-tag {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #15803d;
+            background: #dcfce7;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid #bbf7d0;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .profile-grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.25fr;
+            gap: 28px;
+        }
+        .pane-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .channel-row {
+            background: var(--bg);
+            border: 1.5px solid rgba(0, 0, 0, 0.08);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.25s ease;
+        }
+        .channel-row:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 14px rgba(45, 106, 79, 0.08);
+        }
+        .channel-main {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            flex: 1;
+        }
+        .channel-icon-box {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        .channel-icon-box.sms-icon { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+        .channel-icon-box.email-icon { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .channel-icon-box.whatsapp-icon { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+        .channel-info { flex: 1; }
+        .channel-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .channel-title-row strong {
+            font-size: 0.92rem;
+            color: var(--text);
+        }
+        .channel-desc {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            margin: 0 0 6px 0;
+            line-height: 1.35;
+        }
+        .channel-live-status {
+            font-size: 0.74rem;
+            font-weight: 600;
+        }
+        .channel-action {
+            flex-shrink: 0;
+        }
+        .channel-test-btn {
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1.5px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        .channel-test-btn.test-sms {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-color: #bfdbfe;
+        }
+        .channel-test-btn.test-sms:hover {
+            background: #1d4ed8;
+            color: white;
+        }
+        .channel-test-btn.test-email {
+            background: #fef2f2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+        .channel-test-btn.test-email:hover {
+            background: #b91c1c;
+            color: white;
+        }
+        .channel-test-btn.test-wa {
+            background: #ecfdf5;
+            color: #047857;
+            border-color: #a7f3d0;
+        }
+        .channel-test-btn.test-wa:hover {
+            background: #047857;
+            color: white;
+        }
+
+        /* Pure CSS Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        .profile-actions-bar {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.07);
+        }
+
+        @media (max-width: 860px) {
+            .profile-grid-layout {
+                grid-template-columns: 1fr;
+            }
+            .channel-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .channel-action {
+                align-self: flex-end;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .quick-actions { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .quick-actions { grid-template-columns: 1fr; }
+        }
+    </style>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+    <div class="dashboard-sidebar-backdrop" id="sidebarBackdrop" onclick="closeMobileSidebar()"></div>
+    
+    <!-- LEFT SIDE ELEMENTS (CUSTOMER SIDEBAR) -->
+    <aside class="dashboard-sidebar" id="dashboardSidebar">
+        <div class="sidebar-brand">
+            <a href="../index.html">
+                <div class="sidebar-brand-icon"><i class="fas fa-seedling"></i></div>
+                <div class="sidebar-brand-text">
+                    <span class="sidebar-brand-title">Farm to Fork</span>
+                    <span class="sidebar-brand-sub">Collective • Customer</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="sidebar-user-card">
+            <div class="sidebar-user-avatar customer-avatar" id="customerSidebarAvatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="sidebar-user-info">
+                <h4 class="sidebar-user-name" id="customerSidebarName">Customer</h4>
+                <span class="sidebar-user-role customer-role"><i class="fas fa-user-check"></i> Customer</span>
+                <span class="sidebar-user-email" id="customerSidebarEmail">customer@farmtofork.com</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="sidebar-nav-heading">NAVIGATION</div>
+            <a href="#ordersSection" class="sidebar-nav-link active">
+                <i class="fas fa-box"></i> <span>My Orders</span>
+            </a>
+            <a href="#profileSection" class="sidebar-nav-link" id="navProfileLink" onclick="scrollToProfileSection()">
+                <i class="fas fa-user-cog"></i> <span>Profile & Notifications</span>
+            </a>
+            <a href="wishlist.html" class="sidebar-nav-link">
+                <i class="fas fa-heart"></i> <span>Wishlist</span>
+            </a>
+            <a href="seed-to-plate.html" class="sidebar-nav-link">
+                <i class="fas fa-qrcode"></i> <span>Trace Food</span>
+            </a>
+            <a href="cart.html" class="sidebar-nav-link">
+                <i class="fas fa-shopping-cart"></i> <span>My Cart</span>
+            </a>
+            <div class="sidebar-nav-heading">COMMUNITY & EXPLORE</div>
+            <a href="products.html" class="sidebar-nav-link">
+                <i class="fas fa-store"></i> <span>Shop Products</span>
+            </a>
+            <a href="group-buying.html" class="sidebar-nav-link">
+                <i class="fas fa-users"></i> <span>Group Buying</span>
+            </a>
+            <a href="community-kitchen.html" class="sidebar-nav-link">
+                <i class="fas fa-utensils"></i> <span>Community Kitchen</span>
+            </a>
+            <a href="../index.html" class="sidebar-nav-link">
+                <i class="fas fa-home"></i> <span>Main Home</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-pref-row">
+                <button class="sidebar-theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+                    <i class="fas fa-moon"></i>
+                    <span>Theme</span>
+                </button>
+                <button class="sidebar-lang-btn" onclick="toggleLanguage()" title="Switch Language">
+                    <i class="fas fa-globe"></i> <span>EN</span>
+                </button>
+            </div>
+            <!-- Logout Button in Left Sidebar -->
+            <button class="sidebar-logout-btn" onclick="logoutUser()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout to Top Menu</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="dashboard-main-area">
+        <header class="dashboard-topbar">
+            <div class="topbar-left">
+                <button class="sidebar-toggle-btn" id="sidebarToggleBtn" onclick="toggleMobileSidebar()" aria-label="Toggle Navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="topbar-breadcrumb">
+                    <span class="crumb-root"><i class="fas fa-user"></i> Customer Portal</span>
+                    <span class="crumb-sep">/</span>
+                    <span class="crumb-active">My Account & Orders</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <a href="cart.html" class="topbar-action-btn" title="View Cart">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="topbar-badge" id="cartBadge">0</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="dashboard-content-body">
+            <div class="dashboard-header" style="margin-bottom: 24px;">
+                <div>
+                    <h1 style="font-size: 1.85rem; margin: 0 0 6px;">👤 Welcome, <span id="customerName">Customer</span>!</h1>
+                    <p style="color:var(--text-light); margin: 0;">Track your orders and discover farm-fresh organic products</p>
+                </div>
+                <div class="user-badge" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-user"></i> Customer Account
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon">🛒</div><div class="stat-number">12</div><div class="stat-label">Total Orders</div></div>
+                <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-number">4.8</div><div class="stat-label">Rating</div></div>
+                <div class="stat-card"><div class="stat-icon">💚</div><div class="stat-number">25</div><div class="stat-label">Green Points</div></div>
+                <div class="stat-card"><div class="stat-icon">♻️</div><div class="stat-number">18kg</div><div class="stat-label">Food Saved</div></div>
+                <div class="stat-card" onclick="document.getElementById('dashboardNotificationCenter').scrollIntoView({behavior:'smooth'})" style="border: 1.5px solid rgba(22, 163, 74, 0.3); background: linear-gradient(135deg, rgba(22, 163, 74, 0.05), transparent);">
+                    <div class="stat-icon">🔔</div>
+                    <div class="stat-number" id="custNotifStatCount" style="color: var(--primary);">3</div>
+                    <div class="stat-label">Customer Alerts</div>
+                </div>
+            </div>
+
+            <!-- 🔔 DEDICATED CUSTOMER NOTIFICATIONS FEED -->
+            <div id="dashboardNotificationCenter"></div>
+
+            <div class="dashboard-grid" id="ordersSection">
+                <div class="dashboard-card">
+                    <h3>📦 Recent Orders</h3>
+                    <div id="customerOrdersList">
+                        <div class="order-item"><div><strong>#FTF-2024-001</strong><div style="font-size:0.85rem;">2 items • ₹450</div></div><div style="display:flex; align-items:center; gap:8px;"><span class="status-pill status-delivered">Delivered</span><button class="btn-secondary btn-small" onclick="location.href='seed-to-plate.html'" style="padding:4px 10px; font-size:0.75rem; border-radius:6px; cursor:pointer;"><i class="fas fa-qrcode"></i> Trace</button></div></div>
+                        <div class="order-item"><div><strong>#FTF-2024-002</strong><div style="font-size:0.85rem;">3 items • ₹680</div></div><div style="display:flex; align-items:center; gap:8px;"><span class="status-pill status-shipped">Shipped</span><button class="btn-secondary btn-small" onclick="location.href='seed-to-plate.html'" style="padding:4px 10px; font-size:0.75rem; border-radius:6px; cursor:pointer;"><i class="fas fa-qrcode"></i> Trace</button></div></div>
+                        <div class="order-item"><div><strong>#FTF-2024-003</strong><div style="font-size:0.85rem;">1 item • ₹120</div></div><div style="display:flex; align-items:center; gap:8px;"><span class="status-pill status-pending">Processing</span><button class="btn-secondary btn-small" onclick="location.href='seed-to-plate.html'" style="padding:4px 10px; font-size:0.75rem; border-radius:6px; cursor:pointer;"><i class="fas fa-qrcode"></i> Trace</button></div></div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>⚡ Quick Actions</h3>
+                    <div class="quick-actions">
+                        <button class="quick-action" onclick="location.href='products.html'"><span class="qa-icon">🛒</span>Shop</button>
+                        <button class="quick-action" onclick="location.href='cart.html'"><span class="qa-icon">🛍️</span>Cart</button>
+                        <button class="quick-action" onclick="scrollToProfileSection()"><span class="qa-icon">⚙️</span>Profile & Alerts</button>
+                        <button class="quick-action" onclick="location.href='seed-to-plate.html'"><span class="qa-icon">🌱</span>Trace</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- 👤 PERSONAL PROFILE & NOTIFICATION CHANNELS  -->
+            <!-- ============================================ -->
+            <div class="profile-settings-card" id="profileSection">
+                <div class="profile-card-header">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            <h2 style="font-size: 1.35rem; font-weight: 800; margin: 0; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-user-circle" style="color: var(--primary);"></i> Personal Profile & Notification Channels
+                            </h2>
+                            <span class="user-role-tag"><i class="fas fa-check-circle"></i> Customer Verified</span>
+                        </div>
+                        <p style="color: var(--text-light); font-size: 0.86rem; margin: 6px 0 0;">
+                            Configure how you want to be notified (SMS, Gmail, WhatsApp). Update your preferences anytime!
+                        </p>
+                    </div>
+                </div>
+
+                <div class="profile-grid-layout">
+                    <!-- Left: Profile Info Form -->
+                    <div class="profile-form-pane">
+                        <h4 class="pane-title"><i class="fas fa-id-card"></i> Contact & Delivery Details</h4>
+                        
+                        <div class="form-group" style="margin-bottom: 14px;">
+                            <label style="font-size: 0.82rem; font-weight: 700; color: #334155; margin-bottom: 6px; display: block;">Full Name</label>
+                            <input type="text" id="profName" class="form-input" placeholder="Your Full Name">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 14px;">
+                            <label style="font-size: 0.82rem; font-weight: 700; color: #334155; margin-bottom: 6px; display: block;">
+                                Gmail / Email Address <span style="font-size: 0.72rem; color: #ea4335; font-weight: 600;">(For Invoices & Farm Catalogs)</span>
+                            </label>
+                            <input type="email" id="profEmail" class="form-input" placeholder="you@gmail.com">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 14px;">
+                            <label style="font-size: 0.82rem; font-weight: 700; color: #334155; margin-bottom: 6px; display: block;">
+                                Mobile Phone Number <span style="font-size: 0.72rem; color: #2563eb; font-weight: 600;">(For SMS & WhatsApp Alerts)</span>
+                            </label>
+                            <input type="tel" id="profPhone" class="form-input" placeholder="+91 98765 43210">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 14px;">
+                            <label style="font-size: 0.82rem; font-weight: 700; color: #334155; margin-bottom: 6px; display: block;">Default Delivery Address</label>
+                            <input type="text" id="profAddress" class="form-input" placeholder="House no, Street, Area, City - Pincode">
+                        </div>
+
+                        <!-- Google Verified Identity Section -->
+                        <div id="customerGoogleIdentityCard" style="display: none; background: #f8fafc; border: 1.5px solid #bfdbfe; border-radius: 12px; padding: 14px; margin-top: 14px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="font-size: 0.8rem; font-weight: 800; color: #1e40af; display: flex; align-items: center; gap: 6px;">
+                                    <i class="fab fa-google" style="color: #ea4335;"></i> Verified Google Profile
+                                </span>
+                                <span style="font-size: 0.7rem; font-weight: 700; background: #dbeafe; color: #1e40af; padding: 2px 8px; border-radius: 20px;">
+                                    <i class="fas fa-check-circle"></i> OAuth 2.0
+                                </span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.82rem; margin-bottom: 8px;">
+                                <div>
+                                    <span style="color: #64748b; display: block; font-size: 0.72rem; font-weight: 600;">Given Name</span>
+                                    <strong id="custGivenName" style="color: #0f172a;">-</strong>
+                                </div>
+                                <div>
+                                    <span style="color: #64748b; display: block; font-size: 0.72rem; font-weight: 600;">Family Name</span>
+                                    <strong id="custFamilyName" style="color: #0f172a;">-</strong>
+                                </div>
+                            </div>
+                            <div style="font-size: 0.82rem; margin-bottom: 6px;">
+                                <span style="color: #64748b; display: block; font-size: 0.72rem; font-weight: 600;">Google Account ID</span>
+                                <code id="custGoogleId" style="color: #1e3a8a; background: #eff6ff; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; word-break: break-all;">-</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Notification Channels Switchboard -->
+                    <div class="profile-channels-pane">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <h4 class="pane-title" style="margin: 0;"><i class="fas fa-bell"></i> Notification Channels</h4>
+                            <span style="font-size: 0.72rem; color: #15803d; font-weight: 700; background: #dcfce7; padding: 3px 10px; border-radius: 12px;">Multi-Channel Gateway</span>
+                        </div>
+                        <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 16px;">
+                            Toggle which channels you prefer for order dispatches, harvest arrivals, and traceability certificates:
+                        </p>
+
+                        <!-- Channel 1: SMS -->
+                        <div class="channel-row">
+                            <div class="channel-main">
+                                <div class="channel-icon-box sms-icon"><i class="fas fa-sms"></i></div>
+                                <div class="channel-info">
+                                    <div class="channel-title-row">
+                                        <strong>SMS Notifications</strong>
+                                        <label class="switch">
+                                            <input type="checkbox" id="prefSMS" checked onchange="updateChannelLiveBadges()">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <p class="channel-desc">Urgent courier arrival alerts, delivery OTPs, and price drop warnings sent directly to mobile phone via SMS.</p>
+                                    <div class="channel-live-status" id="smsChannelStatus">
+                                        <i class="fas fa-check-circle" style="color: #16a34a;"></i> Enabled • SMS text alerts
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="channel-action">
+                                <button type="button" class="channel-test-btn test-sms" onclick="testNotificationChannel('sms')" title="Send simulated test SMS to your phone">
+                                    <i class="fas fa-paper-plane"></i> Test SMS
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Channel 2: Gmail / Email -->
+                        <div class="channel-row">
+                            <div class="channel-main">
+                                <div class="channel-icon-box email-icon"><i class="fab fa-google"></i></div>
+                                <div class="channel-info">
+                                    <div class="channel-title-row">
+                                        <strong>Gmail / Email Alerts</strong>
+                                        <label class="switch">
+                                            <input type="checkbox" id="prefEmail" checked onchange="updateChannelLiveBadges()">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <p class="channel-desc">Itemized tax invoices, order receipts, farm harvest specials, and community dining updates delivered to Gmail.</p>
+                                    <div class="channel-live-status" id="emailChannelStatus">
+                                        <i class="fas fa-check-circle" style="color: #16a34a;"></i> Enabled • Deliver to Gmail inbox
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="channel-action">
+                                <button type="button" class="channel-test-btn test-email" onclick="testNotificationChannel('email')" title="Send simulated test Gmail notification">
+                                    <i class="fas fa-envelope"></i> Test Gmail
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Channel 3: WhatsApp -->
+                        <div class="channel-row">
+                            <div class="channel-main">
+                                <div class="channel-icon-box whatsapp-icon"><i class="fab fa-whatsapp"></i></div>
+                                <div class="channel-info">
+                                    <div class="channel-title-row">
+                                        <strong>WhatsApp Messages</strong>
+                                        <label class="switch">
+                                            <input type="checkbox" id="prefWhatsApp" checked onchange="updateChannelLiveBadges()">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <p class="channel-desc">Real-time WhatsApp messages with electric van courier tracking links and 7-stage QR trace certificates.</p>
+                                    <div class="channel-live-status" id="whatsappChannelStatus">
+                                        <i class="fas fa-check-circle" style="color: #16a34a;"></i> Enabled • WhatsApp instant messaging
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="channel-action">
+                                <button type="button" class="channel-test-btn test-wa" onclick="testNotificationChannel('whatsapp')" title="Send simulated test WhatsApp message">
+                                    <i class="fab fa-whatsapp"></i> Test WhatsApp
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Save Action Bar -->
+                <div class="profile-actions-bar">
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <button type="button" class="btn-primary" id="btnSaveProfile" onclick="saveProfileAndNotifications()" style="padding: 12px 24px; font-weight: 700; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-save"></i> Save Profile & Notification Preferences
+                        </button>
+                        <button type="button" class="btn-secondary" onclick="loadUserProfileData()" style="padding: 12px 18px; border-radius: 10px; cursor: pointer;">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                    </div>
+                    <div id="profileSaveFeedback" style="display: none; width: 100%; margin-top: 12px; padding: 12px 16px; border-radius: 10px; font-size: 0.88rem;"></div>
+                </div>
+            </div>
+            <!-- RECENTLY ACCESSED ITEMS -->
+            <div id="recentlyAccessedCustContainer" style="margin-top: 30px;"></div>
+        </div>
+
+        <footer class="footer" style="margin-top: auto; border-top: 1px solid rgba(0,0,0,0.06); padding: 24px 32px; background: var(--white);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 0.82rem; color: var(--text-light);">
+                <div>&copy; 2024 Farm to Fork Collective • Customer Account Center 🌱</div>
+                <div style="display: flex; gap: 16px;">
+                    <a href="../index.html" style="color: var(--text-light); text-decoration: none;">Public Home</a>
+                    <a href="products.html" style="color: var(--text-light); text-decoration: none;">Shop Products</a>
+                </div>
+            </div>
+        </footer>
+    </main>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/script.js"></script>
+<script src="../js/notifications.js"></script>
+<script src="../js/i18n.js"></script>
+<script src="../js/recently-accessed.js"></script>
+<script src="../js/chatbot.js"></script>
+<script>
+
+    async function loadCustomerOrders() {
+        const list = document.getElementById('customerOrdersList');
+        if (!list) return;
+
+        let orders = [];
+        if (window.FTF_API && window.FTF_API.orders) {
+            try {
+                const res = await window.FTF_API.orders.getAll();
+                if (res && res.success && Array.isArray(res.orders) && res.orders.length > 0) {
+                    orders = res.orders;
+                }
+            } catch (err) {
+                console.warn('Orders API error:', err);
+            }
+        }
+
+        // Check local saved orders if backend had no orders
+        if (orders.length === 0) {
+            try {
+                orders = JSON.parse(localStorage.getItem('farmToForkOrders') || '[]');
+            } catch (e) {}
+        }
+
+        if (orders.length > 0) {
+            const orderStat = document.querySelectorAll('.stats-grid .stat-card .stat-number')[0];
+            if (orderStat) orderStat.textContent = orders.length;
+
+            list.innerHTML = orders.map(o => {
+                let pillClass = 'status-delivered';
+                const s = (o.status || 'Processing').toLowerCase();
+                if (s === 'processing') pillClass = 'status-pending';
+                else if (s === 'shipped') pillClass = 'status-shipped';
+
+                const itemCount = o.items ? o.items.length : 1;
+                return `
+                    <div class="order-item" style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid rgba(0,0,0,0.06);">
+                        <div>
+                            <strong>${o.id}</strong>
+                            <div style="font-size:0.85rem; color:var(--text-light); margin-top:2px;">
+                                ${itemCount} ${itemCount === 1 ? 'item' : 'items'} • ₹${o.total} • ${o.slot || 'Morning Delivery'}
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span class="status-pill ${pillClass}">${o.status || 'Processing'}</span>
+                            <button class="btn-secondary btn-small" onclick="location.href='seed-to-plate.html'" style="padding:4px 10px; font-size:0.75rem; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
+                                <i class="fas fa-qrcode"></i> Trace
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        } else {
+            list.innerHTML = `
+                <div style="text-align: center; padding: 24px; color: var(--text-light);">
+                    <p>No orders placed yet.</p>
+                    <a href="products.html" class="btn-primary btn-small" style="display:inline-block; margin-top:8px;">Shop Organic Store 🛒</a>
+                </div>
+            `;
+        }
+    }
+
+    function scrollToProfileSection() {
+        const sec = document.getElementById('profileSection');
+        if (sec) {
+            sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            sec.style.outline = '2px solid var(--primary)';
+            setTimeout(() => { sec.style.outline = 'none'; }, 2000);
+        }
+    }
+
+    async function loadUserProfileData() {
+        const storedUser = JSON.parse(localStorage.getItem('farmToForkUser') || '{}');
+        const storedPrefs = JSON.parse(localStorage.getItem('userNotificationPreferences') || '{"sms":true,"email":true,"whatsapp":true}');
+        
+        let user = storedUser;
+        if (window.FTF_API && window.FTF_API.auth && window.FTF_API.auth.getProfile) {
+            try {
+                const res = await window.FTF_API.auth.getProfile();
+                if (res && res.success && res.user) {
+                    user = res.user;
+                }
+            } catch(e) {}
+        }
+
+        const name = user.name || localStorage.getItem('userName') || '';
+        const email = user.email || localStorage.getItem('userEmail') || '';
+        const phone = user.phone || '+91 98765 43210';
+        const address = user.address || 'Chennai, Tamil Nadu';
+        const prefs = user.notificationPreferences || storedPrefs;
+        const pic = user.profilePicture || user.avatar || localStorage.getItem('userAvatar');
+
+        // Update form fields
+        if (document.getElementById('profName') && name) document.getElementById('profName').value = name;
+        if (document.getElementById('profEmail') && email) document.getElementById('profEmail').value = email;
+        if (document.getElementById('profPhone')) document.getElementById('profPhone').value = phone;
+        if (document.getElementById('profAddress')) document.getElementById('profAddress').value = address;
+
+        // Update headers & sidebar
+        if (name) {
+            if (document.getElementById('customerName')) document.getElementById('customerName').textContent = name;
+            if (document.getElementById('customerSidebarName')) document.getElementById('customerSidebarName').textContent = name;
+        }
+        if (email && document.getElementById('customerSidebarEmail')) {
+            document.getElementById('customerSidebarEmail').textContent = email;
+        }
+
+        // Sidebar avatar
+        const sideAvatar = document.getElementById('customerSidebarAvatar');
+        if (sideAvatar) {
+            if (pic) {
+                sideAvatar.innerHTML = `<img src="${pic}" alt="${name || 'User'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-user\\'></i>';">`;
+                sideAvatar.style.padding = '0';
+                sideAvatar.style.overflow = 'hidden';
+            } else if (name) {
+                sideAvatar.textContent = name.charAt(0).toUpperCase();
+                sideAvatar.style.fontWeight = '800';
+            }
+        }
+
+        // Google Verified Identity Card
+        const isGoogle = user.authProvider === 'google' || user.oauthProvider === 'google' || user.googleId || localStorage.getItem('authProvider') === 'google';
+        const gCard = document.getElementById('customerGoogleIdentityCard');
+        if (gCard) {
+            if (isGoogle) {
+                gCard.style.display = 'block';
+                if (document.getElementById('custGivenName')) document.getElementById('custGivenName').textContent = user.firstName || (name ? name.split(' ')[0] : '-');
+                if (document.getElementById('custFamilyName')) document.getElementById('custFamilyName').textContent = user.lastName || (name && name.includes(' ') ? name.split(' ').slice(1).join(' ') : '-');
+                if (document.getElementById('custGoogleId')) document.getElementById('custGoogleId').textContent = user.googleId || localStorage.getItem('userGoogleId') || 'Google Verified';
+            } else {
+                gCard.style.display = 'none';
+            }
+        }
+
+        if (document.getElementById('prefSMS')) document.getElementById('prefSMS').checked = prefs.sms !== false;
+        if (document.getElementById('prefEmail')) document.getElementById('prefEmail').checked = prefs.email !== false;
+        if (document.getElementById('prefWhatsApp')) document.getElementById('prefWhatsApp').checked = prefs.whatsapp !== false;
+
+        updateChannelLiveBadges();
+    }
+
+    function updateChannelLiveBadges() {
+        const isSms = document.getElementById('prefSMS') ? document.getElementById('prefSMS').checked : true;
+        const isEmail = document.getElementById('prefEmail') ? document.getElementById('prefEmail').checked : true;
+        const isWhatsApp = document.getElementById('prefWhatsApp') ? document.getElementById('prefWhatsApp').checked : true;
+        const phone = (document.getElementById('profPhone') ? document.getElementById('profPhone').value : '') || '+91 98765 43210';
+        const email = (document.getElementById('profEmail') ? document.getElementById('profEmail').value : '') || 'priya@example.com';
+
+        const smsBadge = document.getElementById('smsChannelStatus');
+        if (smsBadge) {
+            smsBadge.innerHTML = isSms 
+                ? `<span style="color:#16a34a;"><i class="fas fa-check-circle"></i> Enabled • SMS to ${phone}</span>`
+                : `<span style="color:#94a3b8;"><i class="fas fa-ban"></i> Disabled</span>`;
+        }
+        const emailBadge = document.getElementById('emailChannelStatus');
+        if (emailBadge) {
+            emailBadge.innerHTML = isEmail 
+                ? `<span style="color:#16a34a;"><i class="fas fa-check-circle"></i> Enabled • Deliver to ${email}</span>`
+                : `<span style="color:#94a3b8;"><i class="fas fa-ban"></i> Disabled</span>`;
+        }
+        const waBadge = document.getElementById('whatsappChannelStatus');
+        if (waBadge) {
+            waBadge.innerHTML = isWhatsApp 
+                ? `<span style="color:#16a34a;"><i class="fas fa-check-circle"></i> Enabled • WhatsApp to ${phone}</span>`
+                : `<span style="color:#94a3b8;"><i class="fas fa-ban"></i> Disabled</span>`;
+        }
+    }
+
+    async function saveProfileAndNotifications() {
+        const name = (document.getElementById('profName') ? document.getElementById('profName').value.trim() : '') || 'Priya Sharma';
+        const email = (document.getElementById('profEmail') ? document.getElementById('profEmail').value.trim() : '') || 'priya@example.com';
+        const phone = (document.getElementById('profPhone') ? document.getElementById('profPhone').value.trim() : '') || '+91 98765 43210';
+        const address = (document.getElementById('profAddress') ? document.getElementById('profAddress').value.trim() : '') || 'Chennai';
+
+        const sms = document.getElementById('prefSMS') ? document.getElementById('prefSMS').checked : true;
+        const emailPref = document.getElementById('prefEmail') ? document.getElementById('prefEmail').checked : true;
+        const whatsapp = document.getElementById('prefWhatsApp') ? document.getElementById('prefWhatsApp').checked : true;
+
+        const notificationPreferences = { sms, email: emailPref, whatsapp };
+        const notifications = [];
+        if (sms) notifications.push('sms');
+        if (emailPref) notifications.push('email');
+        if (whatsapp) notifications.push('whatsapp');
+
+        const payload = {
+            name,
+            email,
+            phone,
+            address,
+            notificationPreferences,
+            notifications
+        };
+
+        const fb = document.getElementById('profileSaveFeedback');
+        if (fb) {
+            fb.style.display = 'block';
+            fb.style.background = '#e0f2fe';
+            fb.style.color = '#0369a1';
+            fb.style.border = '1px solid #bae6fd';
+            fb.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving changes to your account and updating notification preferences...';
+        }
+
+        // Call API
+        if (window.FTF_API && window.FTF_API.auth && window.FTF_API.auth.updateProfile) {
+            try {
+                await window.FTF_API.auth.updateProfile(payload);
+            } catch(e) {
+                console.warn('Backend updateProfile offline:', e);
+            }
+        }
+
+        // Always update local storage
+        localStorage.setItem('userName', name);
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userNotificationPreferences', JSON.stringify(notificationPreferences));
+        const user = JSON.parse(localStorage.getItem('farmToForkUser') || '{}');
+        user.name = name;
+        user.email = email;
+        user.phone = phone;
+        user.address = address;
+        user.notificationPreferences = notificationPreferences;
+        localStorage.setItem('farmToForkUser', JSON.stringify(user));
+
+        // Update UI headers
+        const custName = document.getElementById('customerName');
+        if (custName) custName.textContent = name;
+        const custSideName = document.getElementById('customerSidebarName');
+        if (custSideName) custSideName.textContent = name;
+        const custSideEmail = document.getElementById('customerSidebarEmail');
+        if (custSideEmail) custSideEmail.textContent = email;
+
+        updateChannelLiveBadges();
+
+        const activeList = [];
+        if (sms) activeList.push('SMS');
+        if (emailPref) activeList.push('Gmail');
+        if (whatsapp) activeList.push('WhatsApp');
+        const channelsMsg = activeList.length > 0 ? activeList.join(', ') : 'None (Silent Mode)';
+
+        if (fb) {
+            fb.style.background = '#dcfce7';
+            fb.style.color = '#15803d';
+            fb.style.border = '1px solid #bbf7d0';
+            fb.innerHTML = `🎉 <strong>Profile & Notifications Updated!</strong> Your preferences are saved. Active Channels: <strong>${channelsMsg}</strong>.`;
+            setTimeout(() => { fb.style.display = 'none'; }, 6000);
+        }
+    }
+
+    function testNotificationChannel(channel) {
+        const phone = (document.getElementById('profPhone') ? document.getElementById('profPhone').value : '') || '+91 98765 43210';
+        const email = (document.getElementById('profEmail') ? document.getElementById('profEmail').value : '') || 'priya@example.com';
+        const name = (document.getElementById('profName') ? document.getElementById('profName').value : '') || 'Priya Sharma';
+
+        if (channel === 'sms') {
+            const isSmsEnabled = document.getElementById('prefSMS') ? document.getElementById('prefSMS').checked : true;
+            if (!isSmsEnabled) {
+                alert('⚠️ SMS Notifications are currently disabled in your settings above. Toggle the switch ON to receive SMS alerts!');
+                return;
+            }
+            if (window.showSmsToast) {
+                window.showSmsToast('customer', phone, `[FTF-ALERTS] Vanakkam ${name}! Your SMS notification channel is active. Order updates and OTPs will be sent to ${phone}.`, '📱 SMS Notification Verified');
+            } else {
+                alert(`📱 [SMS DISPATCH SIMULATION]\nTo: ${phone}\nMessage: [FTF-ALERTS] Vanakkam ${name}! Your SMS notification channel is active.`);
+            }
+        } else if (channel === 'email') {
+            const isEmailEnabled = document.getElementById('prefEmail') ? document.getElementById('prefEmail').checked : true;
+            if (!isEmailEnabled) {
+                alert('⚠️ Gmail Notifications are currently disabled in your settings above. Toggle the switch ON to receive email alerts!');
+                return;
+            }
+            
+            // Dispatch real test email through backend Nodemailer service
+            fetch('/api/notifications/test', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + (localStorage.getItem('farmToForkToken') || '')
+                },
+                body: JSON.stringify({
+                    channel: 'email',
+                    email,
+                    name,
+                    notificationPreferences: { email: isEmailEnabled }
+                })
+            })
+            .then(r => r.json())
+            .then(res => {
+                if (res && res.success) {
+                    if (window.showEmailToast) {
+                        window.showEmailToast('customer', email, `Real test email successfully delivered to ${email}. Please check your Gmail inbox!`, '📧 Real Gmail Sent');
+                    } else {
+                        alert(`✅ Real test email successfully sent to ${email}! Please check your Gmail inbox.`);
+                    }
+                } else {
+                    alert(`ℹ️ Email test notice: ${res ? res.message : 'Could not deliver email. Verify SMTP / Gmail credentials in server/.env.'}`);
+                }
+            })
+            .catch(err => {
+                alert(`⚠️ Network error calling notification service: ${err.message}`);
+            });
+        } else if (channel === 'whatsapp') {
+            const isWaEnabled = document.getElementById('prefWhatsApp') ? document.getElementById('prefWhatsApp').checked : true;
+            if (!isWaEnabled) {
+                alert('⚠️ WhatsApp Notifications are currently disabled in your settings above. Toggle the switch ON to receive WhatsApp alerts!');
+                return;
+            }
+            if (window.showWhatsAppToast) {
+                window.showWhatsAppToast('customer', phone, `🌱 Vanakkam ${name}! Your WhatsApp notification channel is active. Live courier GPS tracking and QR trace certificate links will be sent here!`, '💬 WhatsApp Notification Verified');
+            } else {
+                alert(`💬 [WHATSAPP DISPATCH SIMULATION]\nTo WhatsApp: ${phone}\nMessage: 🌱 Vanakkam ${name}! Your WhatsApp notification channel is active.`);
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const storedUser = JSON.parse(localStorage.getItem('farmToForkUser') || '{}');
+        const name = storedUser.name || localStorage.getItem('userName');
+        const email = storedUser.email || localStorage.getItem('userEmail');
+        const role = storedUser.role || localStorage.getItem('userRole') || 'customer';
+        const pic = storedUser.profilePicture || storedUser.avatar || localStorage.getItem('userAvatar');
+
+        if (name) {
+            const bar = document.getElementById('userInfoBar');
+            if (bar) bar.style.display = 'block';
+            if (document.getElementById('displayUserName')) document.getElementById('displayUserName').textContent = name;
+            if (document.getElementById('displayUserRole')) document.getElementById('displayUserRole').textContent = 'Customer';
+            if (document.getElementById('customerName')) document.getElementById('customerName').textContent = name;
+            if (document.getElementById('customerSidebarName')) document.getElementById('customerSidebarName').textContent = name;
+        }
+        if (email && document.getElementById('customerSidebarEmail')) {
+            document.getElementById('customerSidebarEmail').textContent = email;
+        }
+        if (pic && document.getElementById('customerSidebarAvatar')) {
+            const sideAvatar = document.getElementById('customerSidebarAvatar');
+            sideAvatar.innerHTML = `<img src="${pic}" alt="${name || 'User'}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+            sideAvatar.style.padding = '0';
+            sideAvatar.style.overflow = 'hidden';
+        }
+
+        loadCustomerOrders();
+        loadUserProfileData();
+
+        // If URL hash is #profile or #profileSection, scroll to it automatically
+        if (window.location.hash === '#profileSection' || window.location.hash === '#profile') {
+            setTimeout(scrollToProfileSection, 300);
+        }
+    });
+</script>
+</body>
+</html>

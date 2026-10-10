@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - Farm to Fork Collective 🌱</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Mukta+Malar:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/respnsive.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html, body {
+            min-height: 100%;
+            overflow-x: hidden;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', 'Mukta Malar', sans-serif;
+            background: radial-gradient(circle at 10% 20%, rgba(220, 252, 231, 0.75) 0%, transparent 45%),
+                        radial-gradient(circle at 90% 80%, rgba(254, 243, 199, 0.75) 0%, transparent 45%),
+                        linear-gradient(135deg, #F0FDF4 0%, #FFFBEB 100%);
+            min-height: 100vh;
+            color: var(--text, #1B2E24);
+            line-height: 1.5;
+        }
+
+        /* Desktop Page Layout Container */
+        .auth-page {
+            min-height: 100vh;
+            min-height: 100dvh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* Full Desktop Split-Screen Card */
+        .auth-desktop-card {
+            background: #ffffff;
+            border-radius: 28px;
+            border: 1px solid rgba(45, 106, 79, 0.15);
+            box-shadow: 0 25px 65px -15px rgba(27, 67, 50, 0.18), 0 0 0 1px rgba(255, 255, 255, 0.9);
+            width: 100%;
+            max-width: 1200px;
+            min-height: 740px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr 1.25fr;
+            overflow: hidden;
+            position: relative;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        /* ==================================================== */
+        /* LEFT COLUMN: BRAND HERO & WHY JOIN PANEL             */
+        /* ==================================================== */
+        .auth-showcase-panel {
+            background: linear-gradient(145deg, #081C15 0%, #1B4332 45%, #2D6A4F 100%);
+            color: #ffffff;
+            padding: 52px 44px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Ambient Orbs */
+        .auth-showcase-panel::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(116, 198, 157, 0.28) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .auth-showcase-panel::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -40px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(233, 196, 106, 0.18) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .showcase-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand-pill-header {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 8px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 28px;
+        }
+        .brand-pill-header .logo-badge {
+            width: 32px;
+            height: 32px;
+            background: #52B788;
+            color: #081C15;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+        .brand-pill-header span {
+            font-size: 0.88rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #E8F5E9;
+        }
+
+        .showcase-heading {
+            font-size: 2.35rem;
+            font-weight: 800;
+            line-height: 1.22;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+        .showcase-heading span {
+            background: linear-gradient(135deg, #74C69D, #E9C46A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .showcase-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.82);
+            margin-bottom: 32px;
+        }
+
+        /* Pillars list */
+        .showcase-features {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 36px;
+        }
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+        .feature-icon-box {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #74C69D;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .feature-text strong {
+            display: block;
+            font-size: 0.94rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+        .feature-text p {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.72);
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        /* Live Metrics */
+        .showcase-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 14px;
+            padding: 14px 10px;
+            text-align: center;
+        }
+        .stat-card .stat-val {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #74C69D;
+            display: block;
+            line-height: 1.2;
+        }
+        .stat-card .stat-label {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.75);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* Quote Box */
+        .showcase-testimonial {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            position: relative;
+            z-index: 2;
+        }
+        .testimonial-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #52B788;
+            color: #081C15;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+        .testimonial-text p {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-style: italic;
+            line-height: 1.4;
+            margin-bottom: 3px;
+        }
+        .testimonial-text span {
+            font-size: 0.74rem;
+            color: #E9C46A;
+            font-weight: 700;
+        }
+
+        /* ==================================================== */
+        /* RIGHT COLUMN: INTERACTIVE REGISTRATION FORM          */
+        /* ==================================================== */
+        .auth-form-panel {
+            padding: 44px 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: #ffffff;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .logo-header {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .logo-header h1 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #0f172a;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-header p {
+            color: #64748b;
+            font-size: 0.92rem;
+            margin: 0;
+        }
+
+        /* Desktop 2-column form grid */
+        .form-grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px 18px;
+        }
+        .form-grid-span2 {
+            grid-column: span 2;
+        }
+
+        .form-group {
+            margin-bottom: 4px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.84rem;
+            margin-bottom: 6px;
+            color: #334155;
+        }
+        .form-input {
+            width: 100%;
+            height: 46px;
+            padding: 10px 14px;
+            font-size: 0.94rem;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            transition: all 0.25s ease;
+            background: #f8fafc;
+            box-sizing: border-box;
+            outline: none;
+            font-family: inherit;
+        }
+        .form-input:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3.5px rgba(22, 163, 74, 0.14);
+        }
+
+        select.form-input {
+            cursor: pointer;
+        }
+
+        /* Role Selector */
+        .role-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 4px;
+        }
+        .role-option {
+            padding: 12px 10px;
+            text-align: center;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            box-sizing: border-box;
+        }
+        .role-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+        .role-option.active {
+            border-color: var(--primary);
+            background: #f0fdf4;
+            box-shadow: 0 4px 14px rgba(22, 163, 74, 0.15);
+        }
+        .role-option .role-icon { font-size: 1.5rem; display: block; margin-bottom: 4px; }
+        .role-option .role-name { font-weight: 700; font-size: 0.84rem; color: #1e293b; }
+
+        /* Conditional role field boxes */
+        .farmer-fields, .artisan-fields {
+            display: none;
+            margin-top: 14px;
+            padding: 18px;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 14px;
+        }
+        .farmer-fields.show, .artisan-fields.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .register-btn {
+            width: 100%;
+            height: 48px;
+            padding: 0 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 6px 20px rgba(22, 163, 74, 0.28);
+            box-sizing: border-box;
+            margin-top: 18px;
+        }
+        .register-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 26px rgba(22, 163, 74, 0.38);
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+        }
+
+        /* Notification Preference Channels */
+        .notif-pref-box {
+            margin-top: 16px;
+            padding: 16px;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 14px;
+            transition: all 0.25s ease;
+        }
+        .notif-channels-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .notif-channel-card {
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            border: 1.5px solid #cbd5e1;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            user-select: none;
+        }
+        .notif-channel-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(45, 106, 79, 0.1);
+        }
+        .notif-channel-card.active {
+            border-color: var(--primary);
+            background: #f0fdf4;
+            box-shadow: 0 4px 14px rgba(22, 163, 74, 0.12);
+        }
+        .notif-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .notif-card-icon {
+            font-size: 1.25rem;
+        }
+        .notif-card-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .notif-card-desc {
+            font-size: 0.7rem;
+            color: #64748b;
+            line-height: 1.25;
+            margin-top: 2px;
+        }
+        @media (max-width: 540px) {
+            .notif-channels-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 18px;
+            color: #64748b;
+            font-size: 0.88rem;
+        }
+        .login-link a {
+            color: var(--primary);
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .back-home a {
+            color: #94a3b8;
+            font-size: 0.84rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+        .back-home a:hover {
+            color: var(--primary);
+        }
+
+        .secret-admin {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.7rem;
+            opacity: 0.25;
+            transition: opacity 0.3s ease;
+        }
+        .secret-admin:hover { opacity: 0.8; }
+        .secret-admin a { color: #94a3b8; text-decoration: none; }
+
+        /* ==================================================== */
+        /* RESPONSIVE BREAKPOINTS: Desktop, Tablet, Mobile      */
+        /* ==================================================== */
+        @media (max-width: 991px) {
+            .auth-desktop-card {
+                grid-template-columns: 1fr;
+                max-width: 620px;
+                min-height: auto;
+            }
+            .auth-showcase-panel {
+                padding: 36px 30px;
+            }
+            .showcase-heading {
+                font-size: 1.75rem;
+            }
+            .auth-form-panel {
+                padding: 36px 30px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .auth-page {
+                padding: 16px 12px;
+            }
+            .auth-desktop-card {
+                border-radius: 20px;
+            }
+            .auth-showcase-panel {
+                padding: 24px 18px;
+            }
+            .showcase-heading {
+                font-size: 1.45rem;
+            }
+            .showcase-description {
+                font-size: 0.88rem;
+                margin-bottom: 16px;
+            }
+            .showcase-features, .showcase-testimonial {
+                display: none; /* Keep mobile view clean and concise */
+            }
+            .auth-form-panel {
+                padding: 24px 18px;
+            }
+            .form-grid-2col {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .form-grid-span2 {
+                grid-column: span 1;
+            }
+            .role-selector {
+                gap: 8px;
+            }
+        }
+    </style>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+</head>
+<body>
+
+<div class="auth-page">
+    <div class="auth-desktop-card">
+        
+        <!-- ============================================ -->
+        <!-- LEFT: BRAND & WHY JOIN SHOWCASE PANEL        -->
+        <!-- ============================================ -->
+        <div class="auth-showcase-panel">
+            <div class="showcase-content">
+                <!-- Header Badge -->
+                <div class="brand-pill-header">
+                    <div class="logo-badge"><i class="fas fa-seedling"></i></div>
+                    <span>Join Farm to Fork Collective</span>
+                </div>
+
+                <h2 class="showcase-heading">
+                    Soil to Soul, <br>
+                    <span>Together as One.</span>
+                </h2>
+
+                <p class="showcase-description">
+                    Whether you cultivate chemical-free crops, craft artisanal heritage goods, or seek honest wholesome nourishment for your household — welcome home.
+                </p>
+
+                <!-- Value Pillars for all roles -->
+                <div class="showcase-features">
+                    <div class="feature-item">
+                        <div class="feature-icon-box"><i class="fas fa-users"></i></div>
+                        <div class="feature-text">
+                            <strong>For Conscious Consumers</strong>
+                            <p>Direct farm-gate pricing, verified soil test reports, and community cook circles.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon-box"><i class="fas fa-tractor"></i></div>
+                        <div class="feature-text">
+                            <strong>For Organic Farmers</strong>
+                            <p>Guaranteed transparent payment, zero intermediary deductions, and harvest planning.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon-box"><i class="fas fa-mortar-pestle"></i></div>
+                        <div class="feature-text">
+                            <strong>For Food Artisans</strong>
+                            <p>Showcase wood-pressed oils, wild honey, natural pickles, and sourdough breads.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Metrics -->
+                <div class="showcase-stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-val">500+</span>
+                        <span class="stat-label">Organic Growers</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-val">1,200+</span>
+                        <span class="stat-label">Artisan Batches</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-val">100%</span>
+                        <span class="stat-label">Direct & Pure</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial / Community Quote -->
+            <div class="showcase-testimonial">
+                <div class="testimonial-avatar">🧺</div>
+                <div class="testimonial-text">
+                    <p>"Joining Farm to Fork allowed my cold-pressed oil collective to connect with families who truly value purity."</p>
+                    <span>— Kavitha N., Handmade Artisan, Madurai</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- RIGHT: INTERACTIVE REGISTRATION FORM         -->
+        <!-- ============================================ -->
+        <div class="auth-form-panel">
+            <div class="logo-header">
+                <h1>
+                    <span>Create Your Account</span>
+                    <span style="font-size: 1.4rem;">🌱</span>
+                </h1>
+                <p>Start your journey with South India's transparent farm collective</p>
+            </div>
+
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                
+                <!-- Desktop 2-Column Grid for Personal Details -->
+                <div class="form-grid-2col">
+                    <div class="form-group">
+                        <label><i class="fas fa-user" style="color: var(--primary); margin-right:4px;"></i> Full Name</label>
+                        <input type="text" id="regName" class="form-input" placeholder="e.g. Sundaram Perumal" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope" style="color: var(--primary); margin-right:4px;"></i> Email Address</label>
+                        <input type="email" id="regEmail" class="form-input" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group form-grid-span2">
+                        <label><i class="fas fa-phone" style="color: var(--primary); margin-right:4px;"></i> Phone Number</label>
+                        <input type="tel" id="regPhone" class="form-input" placeholder="+91 98765 43210" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-lock" style="color: var(--primary); margin-right:4px;"></i> Password</label>
+                        <input type="password" id="regPassword" class="form-input" placeholder="Create strong password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-lock" style="color: var(--primary); margin-right:4px;"></i> Confirm Password</label>
+                        <input type="password" id="regConfirm" class="form-input" placeholder="Re-type password" required>
+                    </div>
+                </div>
+
+                <!-- Role Selection -->
+                <div class="form-group" style="margin-top: 14px;">
+                    <label style="font-size: 0.88rem;"><i class="fas fa-id-badge" style="color: var(--primary); margin-right:4px;"></i> Select Your Role:</label>
+                    <div class="role-selector">
+                        <div class="role-option active" data-role="customer" onclick="selectRegRole('customer')">
+                            <span class="role-icon">👤</span>
+                            <span class="role-name">Customer</span>
+                        </div>
+                        <div class="role-option" data-role="farmer" onclick="selectRegRole('farmer')">
+                            <span class="role-icon">👨‍🌾</span>
+                            <span class="role-name">Farmer</span>
+                        </div>
+                        <div class="role-option" data-role="artisan" onclick="selectRegRole('artisan')">
+                            <span class="role-icon">🧺</span>
+                            <span class="role-name">Artisan</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conditional Farmer Fields (2-Column Grid) -->
+                <div class="farmer-fields" id="farmerFields">
+                    <div style="font-size:0.78rem; font-weight:800; color:#15803d; text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+                        <i class="fas fa-seedling"></i> Farmer Profile Details
+                    </div>
+                    <div class="form-grid-2col">
+                        <div class="form-group">
+                            <label>Farm Name</label>
+                            <input type="text" id="farmName" class="form-input" placeholder="e.g. Green Valley Organics">
+                        </div>
+                        <div class="form-group">
+                            <label>Farm Location</label>
+                            <input type="text" id="farmLocation" class="form-input" placeholder="e.g. Thanjavur, Tamil Nadu">
+                        </div>
+                        <div class="form-group form-grid-span2">
+                            <label>Organic Certification Status</label>
+                            <select id="farmCert" class="form-input">
+                                <option value="yes">✅ Certified Organic (PGS-India / NPOP)</option>
+                                <option value="no">❌ Natural / Traditional Non-Certified</option>
+                                <option value="pending">⏳ Certification In Progress</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conditional Artisan Fields (2-Column Grid) -->
+                <div class="artisan-fields" id="artisanFields">
+                    <div style="font-size:0.78rem; font-weight:800; color:#15803d; text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+                        <i class="fas fa-mortar-pestle"></i> Artisan Kitchen Details
+                    </div>
+                    <div class="form-grid-2col">
+                        <div class="form-group">
+                            <label>Artisan Craft Specialty</label>
+                            <select id="artisanType" class="form-input">
+                                <option value="bread">🍞 Sourdough & Millets Baker</option>
+                                <option value="honey">🍯 Raw Wild Honey Harvester</option>
+                                <option value="soap">🧼 Cold-Processed Herbal Soaps</option>
+                                <option value="pickle">🥒 Traditional Sun-Cured Pickles</option>
+                                <option value="spices">🌿 Stone-Ground Masalas & Spices</option>
+                                <option value="other">Other Handcrafted Goods</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Experience (Years)</label>
+                            <input type="number" id="artisanExp" class="form-input" placeholder="Years of experience" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification Preferences Selection (SMS, Gmail, WhatsApp) -->
+                <div class="notif-pref-box" id="regNotifPrefSection">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <label style="font-size: 0.88rem; font-weight: 800; color: #1e293b; margin-bottom: 0; display: flex; align-items: center; gap: 6px;">
+                            <i class="fas fa-bell" style="color: var(--primary);"></i> How Should We Notify You?
+                        </label>
+                        <span style="font-size: 0.7rem; color: #15803d; font-weight: 700; background: #dcfce7; padding: 2px 8px; border-radius: 20px;">
+                            <i class="fas fa-sliders-h"></i> Editable in Profile
+                        </span>
+                    </div>
+                    <p style="font-size: 0.77rem; color: #64748b; margin-bottom: 10px; line-height: 1.35;">
+                        Select your preferred channels for order dispatches, OTPs, and harvest updates:
+                    </p>
+
+                    <div class="notif-channels-grid">
+                        <!-- SMS Channel -->
+                        <label class="notif-channel-card active" id="cardNotifySMS">
+                            <div class="notif-card-header">
+                                <span class="notif-card-icon" style="color: #2563eb;"><i class="fas fa-sms"></i></span>
+                                <input type="checkbox" id="notifySMS" name="notif_channel" value="sms" checked onchange="toggleNotifCardStyle('cardNotifySMS', this.checked)" style="accent-color: var(--primary); width: 17px; height: 17px; cursor: pointer;">
+                            </div>
+                            <span class="notif-card-title">📱 SMS Alerts</span>
+                            <span class="notif-card-desc">OTPs & courier delivery status via phone SMS</span>
+                        </label>
+
+                        <!-- Gmail / Email Channel -->
+                        <label class="notif-channel-card active" id="cardNotifyEmail">
+                            <div class="notif-card-header">
+                                <span class="notif-card-icon" style="color: #ea4335;"><i class="fab fa-google"></i></span>
+                                <input type="checkbox" id="notifyEmail" name="notif_channel" value="email" checked onchange="toggleNotifCardStyle('cardNotifyEmail', this.checked)" style="accent-color: var(--primary); width: 17px; height: 17px; cursor: pointer;">
+                            </div>
+                            <span class="notif-card-title">📧 Gmail / Email</span>
+                            <span class="notif-card-desc">Digital invoices, receipts & weekly harvest specials</span>
+                        </label>
+
+                        <!-- WhatsApp Channel -->
+                        <label class="notif-channel-card active" id="cardNotifyWhatsApp">
+                            <div class="notif-card-header">
+                                <span class="notif-card-icon" style="color: #25d366;"><i class="fab fa-whatsapp"></i></span>
+                                <input type="checkbox" id="notifyWhatsApp" name="notif_channel" value="whatsapp" checked onchange="toggleNotifCardStyle('cardNotifyWhatsApp', this.checked)" style="accent-color: var(--primary); width: 17px; height: 17px; cursor: pointer;">
+                            </div>
+                            <span class="notif-card-title">💬 WhatsApp</span>
+                            <span class="notif-card-desc">Instant delivery tracking & seed-to-plate QR links</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="register-btn">
+                    <i class="fas fa-user-plus"></i> Complete Registration
+                </button>
+            </form>
+
+            <div class="divider" style="display:flex; align-items:center; text-align:center; margin:16px 0 12px;">
+                <span style="flex:1; border-bottom:1px solid #e2e8f0;"></span>
+                <span style="padding:0 12px; color:#94a3b8; font-size:0.76rem; font-weight:700; text-transform:uppercase;">Or continue with Google</span>
+                <span style="flex:1; border-bottom:1px solid #e2e8f0;"></span>
+            </div>
+
+            <!-- GOOGLE SIGN IN (REAL OAUTH 2.0 FLOW) -->
+            <div style="margin-bottom: 12px;">
+                <button type="button" class="oauth-btn google" onclick="triggerRealGoogleAuth(regRole)" id="btnContinueGoogleReg" style="display:flex; align-items:center; justify-content:center; gap:10px; width:100%; height:44px; padding:0 16px; background:white; border:1.5px solid #cbd5e1; border-radius:10px; font-size:0.92rem; font-weight:700; cursor:pointer; color:#1e293b; box-sizing:border-box;">
+                    <i class="fab fa-google" style="color: #ea4335; font-size: 1.15rem;"></i>
+                    <span>Continue with Google</span>
+                </button>
+                <div id="googleAuthErrorNotice" style="display: none; padding: 10px 14px; background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; border-radius: 8px; font-size: 0.84rem; margin-top: 10px;"></div>
+            </div>
+
+            <div class="login-link">
+                Already have an account? <a href="login.html">Sign In</a>
+            </div>
+            
+            <div class="back-home">
+                <a href="../index.html"><i class="fas fa-arrow-left"></i> Back to Homepage</a>
+            </div>
+
+            <div class="secret-admin">
+                <a href="admin-login.html" title="Admin Portal">🔒 Platform Admin</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================================================== -->
+<!-- OAUTH 2.0 CONSENT & ACCOUNT SELECTOR MODAL -->
+<!-- ==================================================== -->
+<div class="oauth-modal-backdrop" id="oauthModal" style="position:fixed; inset:0; background:rgba(0,0,0,0.65); backdrop-filter:blur(5px); z-index:99999; display:none; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
+    <div class="oauth-modal-box" style="background:white; border-radius:22px; max-width:480px; width:100%; max-height:90vh; overflow-y:auto; padding:28px; position:relative; box-sizing:border-box; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);">
+        <button onclick="closeOAuthModal()" style="position:absolute; top:16px; right:16px; background:none; border:none; font-size:1.2rem; cursor:pointer; color:#94a3b8;">✕</button>
+        
+        <div id="oauthModalIcon" style="font-size:2.2rem; margin-bottom:10px; text-align:center;">
+            <i class="fab fa-google" style="color:#ea4335;"></i>
+        </div>
+        <h3 id="oauthModalTitle" style="font-size:1.25rem; font-weight:800; margin-bottom:4px; text-align:center;">Continue with Google</h3>
+        <p style="color:#64748b; font-size:0.85rem; margin-bottom:20px; text-align:center;">Choose an account to continue to <strong>Farm to Fork Collective</strong></p>
+
+        <div id="oauthAccountsList">
+            <!-- Injected by JS -->
+        </div>
+
+        <div style="margin-top:16px; padding-top:16px; border-top:1px solid #e2e8f0; font-size:0.75rem; color:#94a3b8; text-align:center;">
+            To continue, Google will share your name and email address with Farm to Fork.
+        </div>
+    </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/google-auth.js"></script>
+<script>
+    let regRole = 'customer';
+
+    function selectRegRole(role) {
+        regRole = role;
+        document.querySelectorAll('.role-option').forEach(el => {
+            el.classList.toggle('active', el.dataset.role === role);
+        });
+        document.getElementById('farmerFields').classList.toggle('show', role === 'farmer');
+        document.getElementById('artisanFields').classList.toggle('show', role === 'artisan');
+    }
+
+    function toggleNotifCardStyle(cardId, isChecked) {
+        const card = document.getElementById(cardId);
+        if (card) {
+            card.classList.toggle('active', !!isChecked);
+        }
+    }
+
+    async function handleRegister(event) {
+        event.preventDefault();
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+        const password = document.getElementById('regPassword').value.trim();
+        const confirm = document.getElementById('regConfirm').value.trim();
+
+        if (!name || !email || !phone || !password || !confirm) {
+            alert('Please fill in all fields!');
+            return;
+        }
+        if (password !== confirm) {
+            alert('Passwords do not match!');
+            return;
+        }
+
+        // Notification Preferences (SMS, Gmail, WhatsApp)
+        const notifySMS = document.getElementById('notifySMS') ? document.getElementById('notifySMS').checked : true;
+        const notifyEmail = document.getElementById('notifyEmail') ? document.getElementById('notifyEmail').checked : true;
+        const notifyWhatsApp = document.getElementById('notifyWhatsApp') ? document.getElementById('notifyWhatsApp').checked : true;
+
+        const notificationPreferences = {
+            sms: notifySMS,
+            email: notifyEmail,
+            whatsapp: notifyWhatsApp
+        };
+
+        const activeChannels = [];
+        if (notifySMS) activeChannels.push('SMS');
+        if (notifyEmail) activeChannels.push('Gmail');
+        if (notifyWhatsApp) activeChannels.push('WhatsApp');
+
+        const formData = {
+            name,
+            email,
+            phone,
+            password,
+            role: regRole,
+            notificationPreferences,
+            notifications: activeChannels.map(c => c.toLowerCase())
+        };
+
+        if (regRole === 'farmer') {
+            formData.farmName = document.getElementById('farmName').value;
+            formData.farmLocation = document.getElementById('farmLocation').value;
+            formData.farmCert = document.getElementById('farmCert').value;
+        } else if (regRole === 'artisan') {
+            formData.artisanType = document.getElementById('artisanType').value;
+            formData.artisanExp = document.getElementById('artisanExp').value;
+        }
+
+        // Persist notification preferences locally immediately
+        localStorage.setItem('userNotificationPreferences', JSON.stringify(notificationPreferences));
+
+        const channelListText = activeChannels.length > 0 ? activeChannels.join(', ') : 'None';
+
+        // Call backend API if available
+        if (window.FTF_API && window.FTF_API.auth) {
+            try {
+                const res = await window.FTF_API.auth.register(formData);
+                if (res && res.success) {
+                    alert(`✅ Registration successful!\nWelcome ${res.user.name} (${res.user.role})! 🎉\n\n🔔 Active Notification Channels:\n👉 ${channelListText}\n\n💡 You can modify your notification channels anytime from your Personal Dashboard Profile!`);
+                    window.location.href = 'login.html';
+                    return;
+                } else if (res && !res.success) {
+                    alert('⚠️ ' + res.message);
+                    return;
+                }
+            } catch (err) {
+                console.warn('Backend offline, saving locally:', err);
+            }
+        }
+
+        let roleName = 'Customer';
+        switch(regRole) {
+            case 'farmer': roleName = 'Farmer'; break;
+            case 'artisan': roleName = 'Artisan'; break;
+            default: roleName = 'Customer';
+        }
+
+        alert(`✅ Registration successful!\nWelcome ${roleName}! 🎉\n\n🔔 Active Notification Channels:\n👉 ${channelListText}\n\n💡 You can modify your notification channels anytime from your Personal Dashboard Profile!`);
+        window.location.href = 'login.html';
+    }
+
+    // Real Google OAuth 2.0 flow is managed by js/google-auth.js
+    function openOAuthModal(provider) {
+        if (window.triggerRealGoogleAuth) {
+            window.triggerRealGoogleAuth(regRole || 'customer');
+        }
+    }
+</script>
+
+    <script src="../js/script.js"></script>
+    <script src="../js/i18n.js"></script>
+</body>
+</html>

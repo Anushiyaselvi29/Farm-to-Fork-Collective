@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artisan Dashboard - Farm to Fork Collective</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .dashboard-page { padding: 40px 0 80px; background: var(--bg); min-height: 100vh; }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 40px; }
+        .dashboard-header h1 { font-size: 2rem; }
+        .user-badge { padding: 10px 20px; background: linear-gradient(135deg, #6A1B9A, #4A148C); color: white; border-radius: 50px; font-weight: 600; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 30px; }
+        .stat-card { background: var(--white); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center; transition: var(--transition); cursor: pointer; }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+        .stat-card .stat-icon { font-size: 2.5rem; margin-bottom: 8px; }
+        .stat-card .stat-number { font-size: 2rem; font-weight: 800; color: #6A1B9A; }
+        .stat-card .stat-label { color: var(--text-light); }
+        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        .dashboard-card { background: var(--white); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 24px; }
+        .dashboard-card h3 { margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .product-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.06); align-items: center; }
+        .product-item:last-child { border-bottom: none; }
+        .quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .quick-action { padding: 16px; background: var(--bg); border-radius: 10px; text-align: center; cursor: pointer; transition: var(--transition); border: none; font-family: inherit; }
+        .quick-action:hover { background: #F3E5F5; }
+        .quick-action .qa-icon { font-size: 1.8rem; display: block; margin-bottom: 4px; }
+        .quick-action.upload-journey { background: #F3E5F5; border: 2px solid #6A1B9A; }
+        .quick-action.upload-journey:hover { background: #E1BEE7; transform: scale(1.02); }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-content { background: var(--white); padding: 36px; border-radius: var(--radius); max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        .modal-content h2 { margin-bottom: 20px; }
+        .modal-content .form-group { margin-bottom: 16px; }
+        .modal-content .form-group label { display: block; font-weight: 600; margin-bottom: 4px; }
+        .modal-content .form-group input, .modal-content .form-group select, .modal-content .form-group textarea { width: 100%; padding: 12px 14px; border: 2px solid rgba(0,0,0,0.1); border-radius: 8px; font-size: 1rem; }
+        .modal-content .form-group input[type="file"] { padding: 8px; }
+        .modal-close { float: right; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+        .btn-modal { padding: 12px 30px; background: linear-gradient(135deg, #6A1B9A, #4A148C); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; }
+        .preview-image { max-width: 150px; max-height: 120px; border-radius: 8px; margin-top: 6px; border: 2px solid #ddd; display: none; }
+        .preview-image.show { display: block; }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .quick-actions { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .quick-actions { grid-template-columns: 1fr; }
+        }
+    </style>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+    <div class="dashboard-sidebar-backdrop" id="sidebarBackdrop" onclick="closeMobileSidebar()"></div>
+    
+    <!-- LEFT SIDE ELEMENTS (ARTISAN SIDEBAR) -->
+    <aside class="dashboard-sidebar" id="dashboardSidebar">
+        <div class="sidebar-brand">
+            <a href="../index.html">
+                <div class="sidebar-brand-icon" style="background: linear-gradient(135deg, #6a1b9a, #4a148c);"><i class="fas fa-hand-sparkles"></i></div>
+                <div class="sidebar-brand-text">
+                    <span class="sidebar-brand-title">Farm to Fork</span>
+                    <span class="sidebar-brand-sub" style="color: #6a1b9a;">Artisan Collective</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="sidebar-user-card" style="background: linear-gradient(135deg, rgba(106, 27, 154, 0.08), rgba(74, 20, 140, 0.02)); border-color: rgba(106, 27, 154, 0.18);">
+            <div class="sidebar-user-avatar artisan-avatar">
+                <i class="fas fa-hand-sparkles"></i>
+            </div>
+            <div class="sidebar-user-info">
+                <h4 class="sidebar-user-name" id="artisanSidebarName">Kavitha Natarajan</h4>
+                <span class="sidebar-user-role artisan-role"><i class="fas fa-award"></i> Master Artisan</span>
+                <span class="sidebar-user-email">Auroville, Tamil Nadu</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="sidebar-nav-heading">WORKSHOP MANAGEMENT</div>
+            <a href="#artisanStatsOverview" class="sidebar-nav-link active">
+                <i class="fas fa-chart-line"></i> <span>Overview & Stats</span>
+            </a>
+            <a href="#artisanProductsSection" class="sidebar-nav-link">
+                <i class="fas fa-box-open"></i> <span>Handcrafted Catalog</span>
+            </a>
+            <a href="javascript:void(0)" onclick="openModal('addProduct')" class="sidebar-nav-link">
+                <i class="fas fa-plus-circle"></i> <span>Add New Craft</span>
+            </a>
+            <a href="javascript:void(0)" onclick="openModal('journey')" class="sidebar-nav-link">
+                <i class="fas fa-qrcode"></i> <span>Upload Craft Journey</span>
+            </a>
+            <a href="javascript:void(0)" onclick="openModal('orders')" class="sidebar-nav-link">
+                <i class="fas fa-receipt"></i> <span>Orders Received</span>
+            </a>
+            <a href="profile.html" class="sidebar-nav-link">
+                <i class="fas fa-user-cog"></i> <span>Profile & Notifications</span>
+            </a>
+            <div class="sidebar-nav-heading">EXPLORER & STORE</div>
+            <a href="products.html" class="sidebar-nav-link">
+                <i class="fas fa-shopping-basket"></i> <span>Shop Catalog</span>
+            </a>
+            <a href="seed-to-plate.html" class="sidebar-nav-link">
+                <i class="fas fa-route"></i> <span>Trace Journey</span>
+            </a>
+            <a href="../index.html" class="sidebar-nav-link">
+                <i class="fas fa-home"></i> <span>Main Home</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-pref-row">
+                <button class="sidebar-theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+                    <i class="fas fa-moon"></i>
+                    <span>Theme</span>
+                </button>
+                <button class="sidebar-lang-btn" onclick="toggleLanguage()" title="Switch Language">
+                    <i class="fas fa-globe"></i> <span>EN</span>
+                </button>
+            </div>
+            <!-- Logout Button in Left Sidebar -->
+            <button class="sidebar-logout-btn" onclick="logoutUser()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout to Top Menu</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="dashboard-main-area">
+        <header class="dashboard-topbar">
+            <div class="topbar-left">
+                <button class="sidebar-toggle-btn" id="sidebarToggleBtn" onclick="toggleMobileSidebar()" aria-label="Toggle Navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="topbar-breadcrumb">
+                    <span class="crumb-root"><i class="fas fa-hand-sparkles"></i> Artisan Studio</span>
+                    <span class="crumb-sep">/</span>
+                    <span class="crumb-active">Craft Inventory & Storytelling</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-status-badge" style="background:#f3e8ff; border-color:#d8b4fe; color:#6b21a8;">
+                    <span class="status-dot-pulse" style="background:#9333ea;"></span>
+                    <span>Artisan Ledger: <strong>Active 100%</strong></span>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content-body">
+            <div class="dashboard-header" style="margin-bottom: 24px;">
+                <div>
+                    <h1 style="font-size: 1.85rem; margin: 0 0 6px;">🧺 Welcome, <span id="artisanName">Artisan</span>!</h1>
+                    <p style="color:var(--text-light); margin: 0;">Manage your handmade products & share your craft story</p>
+                </div>
+                <div class="user-badge" style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #6a1b9a, #4a148c);">
+                    <i class="fas fa-hand-sparkles"></i> Master Artisan
+                </div>
+            </div>
+
+            <div class="stats-grid" id="artisanStatsOverview">
+            <div class="stat-card" onclick="openModal('addProduct')"><div class="stat-icon">🧺</div><div class="stat-number">8</div><div class="stat-label">Products</div></div>
+            <div class="stat-card" onclick="openModal('orders')"><div class="stat-icon">📦</div><div class="stat-number">32</div><div class="stat-label">Orders</div></div>
+            <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-number">4.9</div><div class="stat-label">Rating</div></div>
+            <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-number">₹8,750</div><div class="stat-label">Earnings</div></div>
+            <div class="stat-card" onclick="document.getElementById('dashboardNotificationCenter').scrollIntoView({behavior:'smooth'})" style="border: 1.5px solid rgba(106, 27, 154, 0.3); background: linear-gradient(135deg, rgba(106, 27, 154, 0.05), transparent);">
+                <div class="stat-icon">🔔</div>
+                <div class="stat-number" id="artisanNotifStatCount" style="color: #6A1B9A;">3</div>
+                <div class="stat-label">Craft Alerts</div>
+            </div>
+        </div>
+
+        <!-- 🔔 DEDICATED ARTISAN NOTIFICATIONS FEED -->
+        <div id="dashboardNotificationCenter"></div>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 style="margin: 0;"><i class="fas fa-hand-sparkles" style="color:#6A1B9A;"></i> Your Handmade Products</h3>
+                    <button class="btn-primary btn-small" onclick="openModal('addProduct')">+ Add New Product</button>
+                </div>
+                <div id="artisanProductList">
+                    <div class="product-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.06);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <img src="../assets/images/products/organic-honey.jpg" alt="Honey" style="width: 48px; height: 48px; border-radius: 8px; object-fit: cover;" onerror="this.src='assets/images/products/organic-honey.jpg'">
+                            <div>
+                                <h4 style="margin: 0;">🍯 Organic Honey</h4>
+                                <p style="color:var(--text-light); font-size:0.85rem; margin: 2px 0 0;">₹350/500g • Bee Natural</p>
+                            </div>
+                        </div>
+                        <span style="color:#4CAF50; font-size: 0.85rem; font-weight: 600;">In Stock</span>
+                    </div>
+                    <div class="product-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.06);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <img src="../assets/images/products/organic-artisan-bread.jpg" alt="Artisan Bread" style="width: 48px; height: 48px; border-radius: 8px; object-fit: cover;" onerror="this.src='assets/images/products/organic-artisan-bread.jpg'">
+                            <div>
+                                <h4 style="margin: 0;">🍞 Organic Artisan Bread</h4>
+                                <p style="color:var(--text-light); font-size:0.85rem; margin: 2px 0 0;">₹45/loaf • Bake Organic</p>
+                            </div>
+                        </div>
+                        <span style="color:#FF9800; font-size: 0.85rem; font-weight: 600;">Low Stock</span>
+                    </div>
+                    <div class="product-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.06);">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <img src="../assets/images/products/organic-handmade-soap.jpg" alt="Handmade Soap" style="width: 48px; height: 48px; border-radius: 8px; object-fit: cover;" onerror="this.src='assets/images/products/organic-handmade-soap.jpg'">
+                            <div>
+                                <h4 style="margin: 0;">🧼 Organic Handmade Soap</h4>
+                                <p style="color:var(--text-light); font-size:0.85rem; margin: 2px 0 0;">₹150/piece • Nature's Touch</p>
+                            </div>
+                        </div>
+                        <span style="color:#4CAF50; font-size: 0.85rem; font-weight: 600;">In Stock</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>⚡ Quick Actions</h3>
+                <div class="quick-actions">
+                    <button class="quick-action" onclick="openModal('addProduct')"><span class="qa-icon">➕</span>Add Product</button>
+                    <button class="quick-action" onclick="openModal('orders')"><span class="qa-icon">📦</span>View Orders</button>
+                    <button class="quick-action" onclick="showNotification('📊 Sales report generated!')"><span class="qa-icon">📊</span>Sales Report</button>
+                    <button class="quick-action" onclick="showNotification('🤝 Artisan community opened!')"><span class="qa-icon">🤝</span>Community</button>
+                    <!-- ✅ ARTISAN JOURNEY UPLOAD -->
+                    <button class="quick-action upload-journey" onclick="openModal('journey')"><span class="qa-icon">📸</span>Upload Journey</button>
+                </div>
+                <div style="margin-top:16px; padding:12px; background:#F3E5F5; border-radius:8px;">
+                    <p style="font-size:0.9rem;">💡 <strong>Tip:</strong> Share your craft story with customers!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CUSTOMER REVIEWS & ARTISAN REPLY HUB -->
+        <div class="dashboard-card" style="margin-top: 28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:10px;">
+                <div>
+                    <h3 style="margin-bottom:4px;"><i class="fas fa-comments" style="color:var(--primary);"></i> Customer Reviews & Artisan Replies</h3>
+                    <p style="color:var(--text-light); font-size:0.88rem; margin:0;">Read customer reviews for your handmade crafts and post verified artisan replies.</p>
+                </div>
+                <span class="status-pill status-delivered"><i class="fas fa-check-circle"></i> Direct Artisan Channel</span>
+            </div>
+            <div id="artisanReviewsHubList">
+                <div style="text-align:center; padding:20px; color:var(--text-light);">
+                    <i class="fas fa-spinner fa-spin"></i> Loading craft feedback...
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ✅ ADD PRODUCT MODAL -->
+<div class="modal" id="addProductModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('addProductModal')">✕</button>
+        <h2>➕ Add Handmade Product</h2>
+        <form onsubmit="handleAddArtisanProduct(event)">
+            <div class="form-group">
+                <label>Product Name</label>
+                <input type="text" id="artisanProdName" placeholder="e.g. Organic Raw Honey" required>
+            </div>
+            <div class="form-group">
+                <label>Handmade Category</label>
+                <select id="artisanProdCat">
+                    <option value="honey">🍯 Raw Honey</option>
+                    <option value="bread">🍞 Artisan Bread</option>
+                    <option value="soap">🧼 Herbal Soap</option>
+                    <option value="pickle">🥒 Country Pickle</option>
+                    <option value="ghee">🧈 A2 Desi Ghee</option>
+                    <option value="tea">🍵 Wellness Tea</option>
+                    <option value="handmade">🧺 Other Craft</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Price (₹)</label>
+                <input type="number" id="artisanProdPrice" placeholder="350" required>
+            </div>
+            <div class="form-group">
+                <label>Unit</label>
+                <input type="text" id="artisanProdUnit" placeholder="500g, jar, bottle, piece" value="500g" required>
+            </div>
+            <div class="form-group">
+                <label>Available Stock</label>
+                <input type="number" id="artisanProdQty" placeholder="50" required>
+            </div>
+            <button type="submit" class="btn-modal">Publish Handmade Good</button>
+        </form>
+    <!-- ========================================== -->
+<!-- ✅ PRODUCT ADDED SUCCESSFULLY & QR MODAL  -->
+<!-- ========================================== -->
+<div class="modal" id="productQrStickerModal">
+    <div class="modal-content" style="max-width: 460px; text-align: center;">
+        <button class="modal-close" onclick="closeModal('productQrStickerModal')">✕</button>
+        <div style="font-size: 2.2rem; color: #16a34a; margin-bottom: 4px;">✅</div>
+        <h2 style="font-size: 1.35rem; margin-bottom: 4px; color: #0f172a;">Product Added Successfully</h2>
+        <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 14px;">
+            Unique Product ID, Traceability ID, and Seed-to-Plate QR Code generated automatically by verified backend service.
+        </p>
+
+        <!-- Printable QR & IDs Preview -->
+        <div id="printableQrSticker" style="background: #ffffff; border: 2px dashed #9333ea; border-radius: 14px; padding: 18px; margin-bottom: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center;">
+            <div style="font-size: 0.72rem; font-weight: 800; color: #7e22ce; text-transform: uppercase; letter-spacing: 1px;">
+                🧺 Farm to Fork • Artisan Craft
+            </div>
+            <h3 id="stickerProductName" style="font-size: 1.15rem; color: #0f172a; margin: 4px 0 6px;">Handmade Craft</h3>
+            
+            <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:10px;">
+                <div style="font-size:0.8rem; color:#64748b;">
+                    <strong>Product ID:</strong>
+                    <span id="stickerProductId" style="font-family: monospace; font-weight: 700; color: #1e40af; background: #eff6ff; padding: 2px 8px; border-radius: 4px;">FTF-P-2026-000001</span>
+                </div>
+                <div style="font-size:0.8rem; color:#64748b;">
+                    <strong>Traceability ID:</strong>
+                    <span id="stickerTraceId" style="font-family: monospace; font-weight: 700; color: #7e22ce; background: #faf5ff; padding: 2px 8px; border-radius: 4px;">FTF-TR-XXXXXXXX</span>
+                </div>
+            </div>
+
+            <div style="margin: 6px auto; width: 170px; height: 170px; display: flex; align-items: center; justify-content: center; background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 8px;">
+                <img id="stickerQrImage" src="" alt="Verified Artisan QR Code" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+            <div style="font-size: 0.78rem; font-weight: 700; color: #7e22ce; margin-top: 6px;">
+                ✓ 100% Verified Artisan Craft • Seed to Plate
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 8px; flex-direction: column;">
+            <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn-primary" onclick="printArtisanSticker()" style="flex: 1; padding: 10px; font-size: 0.88rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i class="fas fa-print"></i> Print QR
+                </button>
+                <button type="button" class="btn-secondary" onclick="downloadArtisanQrPng()" style="flex: 1; padding: 10px; font-size: 0.88rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i class="fas fa-download"></i> Download QR
+                </button>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <a id="btnViewTraceabilityLink" href="traceability.html" target="_blank" style="flex: 1; background: #faf5ff; border: 1.5px solid #d8b4fe; border-radius: 8px; padding: 8px; font-size: 0.82rem; font-weight: 700; color: #7e22ce; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i class="fas fa-route"></i> View Traceability
+                </a>
+                <a href="products.html" target="_blank" style="flex: 1; background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 8px; padding: 8px; font-size: 0.82rem; font-weight: 700; color: #1e40af; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i class="fas fa-box-open"></i> View Product
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ ARTISAN JOURNEY UPLOAD MODAL -->
+<div class="modal" id="journeyModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('journeyModal')">✕</button>
+        <h2><i class="fas fa-hand-sparkles" style="color:#6A1B9A;"></i> Share Your Artisan Journey</h2>
+        <p style="color:var(--text-light); margin-bottom:16px;">Share photos and details of your handmade product creation process.</p>
+
+        <form onsubmit="event.preventDefault(); closeModal('journeyModal'); showNotification('✅ Artisan journey uploaded! Customers can now see your craft story! 🧺')">
+            <div class="form-group">
+                <label>Product Name</label>
+                <select required>
+                    <option>Organic Honey</option>
+                    <option>Organic Bread</option>
+                    <option>Organic Soap</option>
+                    <option>Organic Pickle</option>
+                </select>
+            </div>
+
+            <!-- Stage 1: Raw Materials -->
+            <div style="border:1px solid #ddd; border-radius:10px; padding:16px; margin-bottom:12px;">
+                <h4 style="color:#6A1B9A;">🌿 Stage 1: Raw Materials</h4>
+                <div class="form-group"><label>Date</label><input type="date"></div>
+                <div class="form-group"><label>Description</label><textarea rows="2" placeholder="Describe the raw materials used..."></textarea></div>
+                <div class="form-group"><label>Upload Photo</label><input type="file" accept="image/*" onchange="previewImage(this, 'preview1')"><img class="preview-image" id="preview1"></div>
+            </div>
+
+            <!-- Stage 2: Crafting Process -->
+            <div style="border:1px solid #ddd; border-radius:10px; padding:16px; margin-bottom:12px;">
+                <h4 style="color:#7B1FA2;">🖐️ Stage 2: Crafting Process</h4>
+                <div class="form-group"><label>Date</label><input type="date"></div>
+                <div class="form-group"><label>Description</label><textarea rows="2" placeholder="Describe the crafting process..."></textarea></div>
+                <div class="form-group"><label>Upload Photo</label><input type="file" accept="image/*" onchange="previewImage(this, 'preview2')"><img class="preview-image" id="preview2"></div>
+            </div>
+
+            <!-- Stage 3: Quality Check -->
+            <div style="border:1px solid #ddd; border-radius:10px; padding:16px; margin-bottom:12px;">
+                <h4 style="color:#8E24AA;">✅ Stage 3: Quality Check</h4>
+                <div class="form-group"><label>Date</label><input type="date"></div>
+                <div class="form-group"><label>Description</label><textarea rows="2" placeholder="Describe the quality check process..."></textarea></div>
+                <div class="form-group"><label>Upload Photo</label><input type="file" accept="image/*" onchange="previewImage(this, 'preview3')"><img class="preview-image" id="preview3"></div>
+            </div>
+
+            <!-- Stage 4: Packaging -->
+            <div style="border:1px solid #ddd; border-radius:10px; padding:16px; margin-bottom:12px;">
+                <h4 style="color:#AB47BC;">📦 Stage 4: Packaging</h4>
+                <div class="form-group"><label>Date</label><input type="date"></div>
+                <div class="form-group"><label>Description</label><textarea rows="2" placeholder="Describe the packaging..."></textarea></div>
+                <div class="form-group"><label>Upload Photo</label><input type="file" accept="image/*" onchange="previewImage(this, 'preview4')"><img class="preview-image" id="preview4"></div>
+            </div>
+
+            <!-- Stage 5: Final Product -->
+            <div style="border:1px solid #ddd; border-radius:10px; padding:16px; margin-bottom:12px;">
+                <h4 style="color:#CE93D8;">✨ Stage 5: Final Product</h4>
+                <div class="form-group"><label>Date</label><input type="date"></div>
+                <div class="form-group"><label>Description</label><textarea rows="2" placeholder="Describe the final product..."></textarea></div>
+                <div class="form-group"><label>Upload Photo</label><input type="file" accept="image/*" onchange="previewImage(this, 'preview5')"><img class="preview-image" id="preview5"></div>
+            </div>
+
+            <button type="submit" class="btn-modal"><i class="fas fa-upload"></i> Upload Journey</button>
+        </form>
+    </div>
+</div>
+
+<!-- ORDERS MODAL -->
+<div class="modal" id="ordersModal"><div class="modal-content"><button class="modal-close" onclick="closeModal('ordersModal')">✕</button><h2>📦 Orders Received</h2><div id="artisanOrdersList"><div class="product-item"><div><strong>#FTF-2024-001</strong><div style="font-size:0.85rem;">Customer: Priya • 1 item • ₹350</div></div><span style="color:#4CAF50;">Delivered</span></div><div class="product-item"><div><strong>#FTF-2024-002</strong><div style="font-size:0.85rem;">Customer: Ravi • 2 items • ₹195</div></div><span style="color:#2196F3;">Shipped</span></div></div></div></div>
+
+        </div><!-- .dashboard-content-body -->
+
+        <footer class="footer" style="margin-top: auto; border-top: 1px solid rgba(0,0,0,0.06); padding: 24px 32px; background: var(--white);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 0.82rem; color: var(--text-light);">
+                <div>&copy; 2024 Farm to Fork Collective • Artisan Studio Center 🌱</div>
+                <div style="display: flex; gap: 16px;">
+                    <a href="../index.html" style="color: var(--text-light); text-decoration: none;">Public Home</a>
+                    <a href="products.html" style="color: var(--text-light); text-decoration: none;">Shop Products</a>
+                </div>
+            </div>
+        </footer>
+    </main>
+</div>
+
+<script src="../js/script.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/feedback.js"></script>
+<script src="../js/notifications.js"></script>
+<script src="../js/i18n.js"></script>
+<script>
+    function openModal(id) {
+        const map = { 'addProduct': 'addProductModal', 'orders': 'ordersModal', 'journey': 'journeyModal' };
+        const el = document.getElementById(map[id]);
+        if (el) el.classList.add('active');
+    }
+
+    function closeModal(id) { 
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('active'); 
+    }
+
+    function previewImage(input, previewId) {
+        const preview = document.getElementById(previewId);
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.add('show');
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function showNotification(msg) {
+        const toast = document.createElement('div');
+        toast.innerHTML = msg;
+        toast.style.cssText = `
+            position: fixed; bottom: 30px; right: 30px;
+            background: var(--white); padding: 16px 24px;
+            border-radius: 12px; box-shadow: var(--shadow-hover);
+            border-left: 4px solid #6A1B9A;
+            z-index: 9999; animation: slideUp 0.5s ease;
+            font-size: 0.95rem; max-width: 400px;
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    function logoutUser() {
+        if (confirm('Logout?')) { 
+            if (window.FTF_API && window.FTF_API.auth) window.FTF_API.auth.logout();
+            localStorage.clear(); 
+            window.location.href = '../index.html'; 
+        }
+    }
+
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal')) e.target.classList.remove('active');
+    });
+
+    let artisanProducts = [];
+
+    async function loadArtisanDashboardData() {
+        if (window.FTF_API && window.FTF_API.products) {
+            try {
+                const res = await window.FTF_API.products.getAll({ category: 'handmade' });
+                if (res && res.success && Array.isArray(res.products) && res.products.length > 0) {
+                    artisanProducts = res.products;
+                    renderArtisanProductsList();
+                }
+            } catch (err) {
+                console.warn('Error fetching artisan products:', err);
+            }
+        }
+
+        // Fallback to local catalog if API offline or empty
+        if (artisanProducts.length === 0 && typeof products !== 'undefined') {
+            artisanProducts = products.filter(p => p.category === 'handmade');
+            renderArtisanProductsList();
+        }
+
+        if (window.FTF_API && window.FTF_API.orders) {
+            try {
+                const orderRes = await window.FTF_API.orders.getAll();
+                if (orderRes && orderRes.success && Array.isArray(orderRes.orders)) {
+                    const orderStat = document.querySelectorAll('.stats-grid .stat-card .stat-number')[1];
+                    if (orderStat) orderStat.textContent = orderRes.orders.length;
+                }
+            } catch (err) {
+                console.warn('Error fetching orders:', err);
+            }
+        }
+
+        // 3. Load craft reviews & artisan reply threads
+        if (window.FTF_Feedback && typeof window.FTF_Feedback.renderProductReviews === 'function') {
+            await window.FTF_Feedback.renderProductReviews(null, 'artisanReviewsHubList');
+        }
+    }
+
+    function renderArtisanProductsList() {
+        const container = document.getElementById('artisanProductList');
+        if (!container) return;
+
+        const countStat = document.querySelectorAll('.stats-grid .stat-card .stat-number')[0];
+        if (countStat) countStat.textContent = artisanProducts.length;
+
+        if (artisanProducts.length === 0) {
+            container.innerHTML = `<div style="padding: 24px; text-align: center; color: var(--text-light);">No handmade products listed yet. Click + Add New Product to start selling!</div>`;
+            return;
+        }
+
+        container.innerHTML = artisanProducts.map(p => {
+            const clean = (p.image || '').replace(/^\/+/, '');
+            const imgSrc = typeof getProductImagePath === 'function' ? getProductImagePath(p.image) : ('../' + clean);
+            return `
+            <div class="product-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.06);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <img src="${imgSrc}" alt="${p.name}" style="width: 48px; height: 48px; border-radius: 8px; object-fit: cover;" onerror="this.onerror=null; this.src='../assets/images/products/organic-honey.jpg';">
+                    <div>
+                        <h4 style="margin: 0;">🧺 ${p.name}</h4>
+                        <p style="color:var(--text-light); font-size:0.85rem; margin: 2px 0 0;">₹${p.price}/${p.unit || 'piece'} • ${p.seller || 'Artisan Producer'}</p>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="color:#4CAF50; font-size: 0.85rem; font-weight: 600;">In Stock</span>
+                    <button onclick="handleDeleteArtisanProduct(${p.id})" style="background: none; border: 1px solid #FFCDD2; color: #D32F2F; border-radius: 6px; padding: 4px 8px; cursor: pointer;">🗑️</button>
+                </div>
+            </div>
+            `;
+        }).join('');
+    }
+
+    async function handleAddArtisanProduct(e) {
+        e.preventDefault();
+        const name = document.getElementById('artisanProdName').value.trim();
+        const price = parseFloat(document.getElementById('artisanProdPrice').value);
+        const unit = document.getElementById('artisanProdUnit').value.trim() || 'piece';
+        const qty = parseInt(document.getElementById('artisanProdQty').value, 10) || 20;
+        const artisanName = localStorage.getItem('userName') || 'Nature Craft Artisan';
+
+        const newProdData = {
+            name,
+            category: 'handmade',
+            price,
+            stock: qty,
+            unit,
+            seller: artisanName,
+            origin: 'Auroville & Nilgiris',
+            badge: '🧺 Handmade',
+            freshness: 'Crafted Fresh',
+            freshnessScore: 98,
+            image: '/assets/images/products/organic-honey.jpg'
+        };
+
+        if (window.FTF_API && window.FTF_API.products) {
+            try {
+                const res = await window.FTF_API.products.create(newProdData);
+                if (res && res.success) {
+                    showNotification(`🎉 "${name}" published with verified QR code!`);
+                    closeModal('addProductModal');
+                    document.getElementById('artisanProdName').value = '';
+                    document.getElementById('artisanProdPrice').value = '';
+                    await loadArtisanDashboardData();
+
+                    const created = res.product || {};
+                    showCreatedArtisanProductModal(created);
+                    return;
+                }
+            } catch (err) {
+                console.warn('Add artisan product error:', err);
+            }
+        }
+
+        newProdData.id = Date.now();
+        newProdData.productId = 'FTF-P-2026-' + String(newProdData.id).slice(-6);
+        newProdData.traceabilityId = 'FTF-TR-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+        artisanProducts.unshift(newProdData);
+        renderArtisanProductsList();
+        closeModal('addProductModal');
+        showNotification(`🎉 "${name}" added!`);
+        showCreatedArtisanProductModal(newProdData);
+    }
+
+    function showCreatedArtisanProductModal(prod) {
+        if (!prod) return;
+        const nameEl = document.getElementById('stickerProductName');
+        if (nameEl) nameEl.textContent = prod.name || 'Handmade Craft';
+
+        const pIdEl = document.getElementById('stickerProductId');
+        if (pIdEl) pIdEl.textContent = prod.productId || 'FTF-P-2026-000001';
+
+        const trIdEl = document.getElementById('stickerTraceId');
+        if (trIdEl) trIdEl.textContent = prod.traceabilityId || 'FTF-TR-XXXXXXXX';
+
+        const qrImg = document.getElementById('stickerQrImage');
+        if (qrImg) {
+            if (prod.qrCode) {
+                qrImg.src = prod.qrCode;
+            } else {
+                const traceTarget = window.location.origin + '/traceability/' + (prod.traceabilityId || prod.productId);
+                qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=${encodeURIComponent(traceTarget)}`;
+            }
+        }
+
+        const traceLink = document.getElementById('btnViewTraceabilityLink');
+        if (traceLink) {
+            const trId = prod.traceabilityId || prod.productId || '';
+            traceLink.href = `/traceability/${encodeURIComponent(trId)}`;
+        }
+
+        openModal('productQrStickerModal');
+    }
+
+    function printArtisanSticker() {
+        window.print();
+    }
+
+    function downloadArtisanQrPng() {
+        const qrImg = document.getElementById('stickerQrImage');
+        if (!qrImg || !qrImg.src) return;
+        const trId = (document.getElementById('stickerTraceId') && document.getElementById('stickerTraceId').textContent) || 'QR';
+        const a = document.createElement('a');
+        a.href = qrImg.src;
+        a.download = `FTF_Artisan_${trId}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    async function handleDeleteArtisanProduct(id) {
+        if (!confirm('Delete this handmade product listing?')) return;
+        if (window.FTF_API && window.FTF_API.products) {
+            await window.FTF_API.products.delete(id);
+            await loadArtisanDashboardData();
+        } else {
+            artisanProducts = artisanProducts.filter(p => p.id !== id);
+            renderArtisanProductsList();
+        }
+        showNotification('🗑️ Listing deleted.');
+    }
+
+    document.addEventListener('DOMContentLoaded', async function() {
+        const name = localStorage.getItem('userName');
+        const role = localStorage.getItem('userRole');
+        if (name && role === 'artisan') {
+            const bar = document.getElementById('userInfoBar');
+            if (bar) bar.style.display = 'block';
+            if (document.getElementById('displayUserName')) document.getElementById('displayUserName').textContent = name;
+            if (document.getElementById('displayUserRole')) document.getElementById('displayUserRole').textContent = 'Artisan';
+            if (document.getElementById('artisanName')) document.getElementById('artisanName').textContent = name;
+        } else if (!name) {
+            localStorage.setItem('userName', 'Kavitha R.');
+            localStorage.setItem('userRole', 'artisan');
+            if (document.getElementById('artisanName')) document.getElementById('artisanName').textContent = 'Kavitha R.';
+        }
+
+        await loadArtisanDashboardData();
+    });
+</script>
+</body>
+</html>

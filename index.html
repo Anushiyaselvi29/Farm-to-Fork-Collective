@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farm to Fork Collective 🌱</title>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* Additional styles for index page */
+        .hero {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #E8F5E9 0%, #FDF8F0 50%, #FFFFFF 100%);
+            position: relative;
+            overflow: hidden;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="%234CAF50" opacity="0.1"/><circle cx="80" cy="40" r="3" fill="%234CAF50" opacity="0.1"/><circle cx="50" cy="80" r="4" fill="%234CAF50" opacity="0.1"/></svg>') repeat;
+        }
+        .hero .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(46, 125, 50, 0.1);
+            color: var(--primary);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+        .hero-content h1 span:last-child {
+            color: var(--text);
+        }
+        .hero-content p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 500px;
+            margin-bottom: 32px;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 32px;
+        }
+        .hero-stat .stat-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .hero-stat .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .hero-image {
+            position: relative;
+        }
+        .hero-image img {
+            width: 100%;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-hover);
+            object-fit: cover;
+        }
+        .floating-card {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        .floating-card i {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+        .card-1 {
+            top: 10%;
+            right: -10%;
+            animation-delay: 0s;
+        }
+        .card-2 {
+            bottom: 10%;
+            left: -10%;
+            animation-delay: 1.5s;
+        }
+
+        .frozen-banner {
+            padding: 60px 0;
+            background: linear-gradient(135deg, #E3F2FD, #FDF8F0);
+        }
+        .frozen-content {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 30px;
+            padding: 40px;
+            border-radius: var(--radius);
+            align-items: center;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+        }
+        .frozen-icon {
+            font-size: 3rem;
+            color: #2196F3;
+            animation: float 3s ease-in-out infinite;
+        }
+        .frozen-text h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .frozen-text p {
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+        .frozen-features {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .frozen-features span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+        .frozen-features i {
+            color: var(--primary);
+        }
+        .frozen-image img {
+            width: 200px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .features-section {
+            padding: 80px 0;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        .feature-card {
+            padding: 32px 24px;
+            border-radius: var(--radius);
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+        }
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+        .feature-card .feature-icon {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 1.8rem;
+            color: var(--white);
+        }
+        .feature-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        .feature-card p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+        .feature-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(46, 125, 50, 0.1);
+            color: var(--primary);
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .feature-hover {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            transition: var(--transition);
+            font-weight: 600;
+        }
+        .feature-card:hover .feature-hover {
+            bottom: 0;
+        }
+
+        .categories-section {
+            padding: 80px 0;
+            background: var(--white);
+        }
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+        .category-card {
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+        .category-image {
+            position: relative;
+            overflow: hidden;
+        }
+        .category-image img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        .category-card:hover .category-image img {
+            transform: scale(1.05);
+        }
+        .category-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px 24px 24px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: var(--white);
+        }
+        .category-overlay h3 {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+        }
+        .category-overlay p {
+            opacity: 0.8;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .products-section {
+            padding: 80px 0;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        .product-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+        }
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .product-info {
+            padding: 16px;
+        }
+        .product-info .product-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .product-info .product-seller {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+        .product-info .product-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .product-info .product-original {
+            text-decoration: line-through;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-left: 8px;
+        }
+        .product-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--white);
+        }
+        .badge-fresh { background: #4CAF50; }
+        .badge-frozen { background: #2196F3; }
+        .badge-organic { background: var(--primary); }
+        .view-all { text-align: center; }
+
+        .impact-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #E8F5E9, #FDF8F0);
+        }
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+        .impact-card {
+            padding: 32px 24px;
+            border-radius: var(--radius);
+            text-align: center;
+            transition: var(--transition);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+        }
+        .impact-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+        }
+        .impact-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        .impact-number {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--text);
+        }
+        .impact-label {
+            color: var(--text-light);
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+        .impact-progress {
+            width: 100%;
+            height: 6px;
+            background: rgba(46, 125, 50, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+            transition: width 1.5s ease;
+        }
+
+        .demo-section {
+            padding: 80px 0;
+            background: var(--white);
+        }
+        .demo-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .demo-text h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        .demo-text p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 24px;
+        }
+        .demo-features {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .demo-features span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-light);
+        }
+        .demo-features i {
+            color: var(--primary);
+        }
+        .demo-image img {
+            width: 100%;
+            max-width: 300px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .community-preview {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #FDF8F0, #E8F5E9);
+        }
+        .community-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        .community-image img {
+            width: 100%;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-hover);
+        }
+        .community-text h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        .community-text p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 24px;
+        }
+        .community-benefits {
+            list-style: none;
+            margin-bottom: 24px;
+        }
+        .community-benefits li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            color: var(--text-light);
+        }
+        .community-benefits i {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .testimonials {
+            padding: 80px 0;
+            background: var(--white);
+        }
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        .testimonial-card {
+            padding: 32px;
+            border-radius: var(--radius);
+            text-align: center;
+            transition: var(--transition);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+        }
+        .testimonial-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+        }
+        .testimonial-avatar {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+        .testimonial-card h4 {
+            font-weight: 600;
+        }
+        .testimonial-role {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 12px;
+        }
+        .testimonial-card p {
+            color: var(--text-light);
+            font-style: italic;
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+        .testimonial-stars {
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+
+        .newsletter {
+            padding: 80px 0;
+        }
+        .newsletter-content {
+            padding: 60px 40px;
+            border-radius: var(--radius);
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+        }
+        .newsletter-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+        .newsletter-content h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+        .newsletter-content p {
+            color: var(--text-light);
+            margin-bottom: 24px;
+        }
+        .newsletter-form {
+            display: flex;
+            gap: 12px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .newsletter-form input {
+            flex: 1;
+            padding: 14px 20px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50px;
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
+        }
+        .newsletter-form input:focus {
+            border-color: var(--primary);
+        }
+
+        .footer {
+            background: var(--text);
+            color: var(--white);
+            padding: 60px 0 20px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        .footer-logo i {
+            color: var(--primary-light);
+        }
+        .footer-brand p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .footer-social {
+            display: flex;
+            gap: 12px;
+        }
+        .footer-social a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: var(--white);
+            transition: var(--transition);
+        }
+        .footer-social a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+        .footer-links h4 {
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .footer-links a {
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 4px 0;
+            transition: var(--transition);
+        }
+        .footer-links a:hover {
+            color: var(--white);
+            padding-left: 6px;
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-16px); }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up {
+            animation: slideUp 1s ease forwards;
+        }
+
+        @media (max-width: 1024px) {
+            .hero .container { grid-template-columns: 1fr; text-align: center; }
+            .hero-content p { margin: 0 auto 30px; }
+            .hero-buttons { justify-content: center; }
+            .hero-stats { justify-content: center; }
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .products-grid { grid-template-columns: repeat(3, 1fr); }
+            .categories-grid { grid-template-columns: repeat(2, 1fr); }
+            .impact-grid { grid-template-columns: repeat(2, 1fr); }
+            .testimonial-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .frozen-content { grid-template-columns: 1fr; text-align: center; }
+            .frozen-features { justify-content: center; }
+            .frozen-image { display: none; }
+            .demo-content { grid-template-columns: 1fr; text-align: center; }
+            .demo-features { justify-content: center; }
+            .community-content { grid-template-columns: 1fr; text-align: center; }
+            .community-benefits { text-align: left; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                background: var(--white);
+                padding: 20px;
+                border-radius: 12px;
+                box-shadow: var(--shadow);
+                position: absolute;
+                top: 70px;
+                right: 20px;
+                min-width: 200px;
+            }
+            .nav-links.active { display: flex; }
+            .hamburger { display: block; }
+            .top-bar-left { gap: 12px; font-size: 0.75rem; }
+            .hero-content h1 { font-size: 2.5rem; }
+            .section-header h2 { font-size: 2rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .products-grid { grid-template-columns: repeat(2, 1fr); }
+            .categories-grid { grid-template-columns: 1fr; }
+            .impact-grid { grid-template-columns: 1fr; }
+            .testimonial-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; text-align: center; }
+            .footer-social { justify-content: center; }
+            .floating-card { display: none; }
+            .newsletter-form { flex-direction: column; }
+            .hero-stats { flex-direction: column; gap: 16px; }
+            .frozen-features { flex-direction: column; align-items: center; }
+            .hamburger { display: block; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text); }
+        }
+
+        @media (max-width: 480px) {
+            .products-grid { grid-template-columns: 1fr; }
+            .hero-content h1 { font-size: 2rem; }
+            .btn-large { padding: 14px 24px; font-size: 0.95rem; }
+        }
+    </style>
+    <!-- Instant Auth State Detector for flicker-free Navbar -->
+    <script>
+        (function() {
+            try {
+                var stored = localStorage.getItem('farmToForkUser');
+                var uName = localStorage.getItem('userName');
+                var logged = localStorage.getItem('isLoggedIn') === 'true';
+                if ((stored && JSON.parse(stored)) || (uName && logged)) {
+                    document.documentElement.classList.add('user-logged-in');
+                } else {
+                    document.documentElement.classList.add('user-logged-out');
+                }
+            } catch(e) {
+                document.documentElement.classList.add('user-logged-out');
+            }
+        })();
+    </script>
+</head>
+<body class="is-home">
+
+<!-- ========================================== -->
+<!-- TOP BAR -->
+<!-- ========================================== -->
+<div class="top-bar">
+    <div class="container">
+        <div class="top-bar-left">
+            <span id="txtHomeTopOrganic"><i class="fas fa-leaf"></i> 100% Organic</span>
+            <span id="txtHomeTopDelivery"><i class="fas fa-truck"></i> Free Delivery</span>
+            <span id="txtHomeTopZero"><i class="fas fa-hand-holding-heart"></i> Zero Waste</span>
+            <span id="txtHomeTopFrozen"><i class="fas fa-snowflake"></i> Frozen Packs</span>
+        </div>
+        <div class="top-bar-right" style="display: flex; align-items: center;">
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- NAVIGATION -->
+<!-- ========================================== -->
+<nav class="navbar glass">
+    <div class="container">
+        <div class="nav-brand">
+            <a href="index.html" class="brand-logo-link">
+                <div class="brand-icon-wrapper">
+                    <div class="brand-icon"><i class="fas fa-seedling"></i></div>
+                    <span class="brand-leaf-badge" title="100% Organic Produce"><i class="fas fa-leaf"></i></span>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-main">
+                        Farm to Fork
+                        <span class="brand-side-leaf" title="Fresh Organic"><i class="fas fa-leaf"></i></span>
+                    </span>
+                    <span class="brand-sub">Collective • 100% Organic</span>
+                </div>
+            </a>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html" class="active" id="navHomeLink">Home</a>
+            <a href="pages/products.html" id="navShopLink">Shop</a>
+            <a href="pages/wishlist.html" id="navWishlistLink" class="home-auth-only" title="Wishlist"><i class="fas fa-heart"></i> Wishlist</a>
+            <a href="#community-kitchen" id="navKitchenLink">Community Kitchen</a>
+            <a href="#group-buying" id="navGroupLink">Group Buying</a>
+            <a href="pages/seed-to-plate.html" id="navSeedLink">Seed to Plate</a>
+            <a href="pages/api-docs.html" id="navApiDocsLink" class="admin-only-nav" style="display: none;"><i class="fas fa-code"></i> API Docs</a>
+        </div>
+        <div class="nav-actions">
+            <a href="#" class="search-btn" onclick="toggleSearch()" aria-label="Search"><i class="fas fa-search"></i></a>
+            <a href="pages/cart.html" class="cart-btn home-auth-only" id="navCartBtn" title="Cart">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-badge" id="cartBadge">0</span>
+            </a>
+            <!-- ✅ CORRECT LOGIN LINK -->
+            <a href="pages/login.html" class="btn-login" id="navLoginBtn">Login</a>
+            <a href="pages/register.html" class="btn-signup" id="navSignupBtn">Sign Up</a>
+            <button class="hamburger" onclick="toggleMenu()" aria-label="Menu"><i class="fas fa-bars"></i></button>
+        </div>
+    </div>
+</nav>
+
+<!-- ========================================== -->
+<!-- SEARCH OVERLAY -->
+<!-- ========================================== -->
+<div class="search-overlay" id="searchOverlay">
+    <button class="search-close" onclick="toggleSearch()">✕</button>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search products..." />
+        <div class="search-suggestions" id="searchSuggestions"></div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- HERO SECTION -->
+<!-- ========================================== -->
+<section class="hero parallax">
+    <div class="hero-overlay"></div>
+    <div class="container">
+        <div class="hero-content animate-slide-up">
+            <div class="hero-badge"><i class="fas fa-qrcode"></i> Seed to Plate Tracking</div>
+            <h1><span class="gradient-text">Know Your Food,</span><br /><span>From Seed to Plate</span></h1>
+            <p>Trace every product from farm to your table with QR code tracking. 100% organic, 100% transparent.</p>
+            <div class="hero-stats">
+                <div class="hero-stat"><span class="stat-number" data-count="12847">0</span><span class="stat-label">People Fed</span></div>
+                <div class="hero-stat"><span class="stat-number" data-count="8450">0</span><span class="stat-label">Food Saved (kg)</span></div>
+                <div class="hero-stat"><span class="stat-number" data-count="3200">0</span><span class="stat-label">CO₂ Reduced (kg)</span></div>
+            </div>
+            <div class="hero-buttons">
+                <a href="pages/products.html" class="btn-primary btn-large"><i class="fas fa-shopping-bag"></i> Explore Products</a>
+                <a href="pages/seed-to-plate.html" class="btn-secondary btn-large"><i class="fas fa-qrcode"></i> Track Your Food</a>
+            </div>
+        </div>
+        <div class="hero-image animate-slide-up">
+            <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600" alt="Organic Farm" />
+            <div class="floating-card card-1"><i class="fas fa-leaf"></i><span>100% Organic</span></div>
+            <div class="floating-card card-2"><i class="fas fa-snowflake"></i><span>Frozen Packs</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================== -->
+<!-- FROZEN BANNER -->
+<!-- ========================================== -->
+<section class="frozen-banner" id="frozen-packs">
+    <div class="container">
+        <div class="frozen-content glass">
+            <div class="frozen-icon"><i class="fas fa-snowflake"></i></div>
+            <div class="frozen-text">
+                <span class="section-tag">❄️ New Launch</span>
+                <h2>Ready-to-Cook <span class="gradient-text">Frozen Vegetable Packs</span></h2>
+                <p>Pre-cut, pre-washed, ready to cook organic vegetables. Save time, reduce waste!</p>
+                <div class="frozen-features">
+                    <span><i class="fas fa-clock"></i> Ready in 5 mins</span>
+                    <span><i class="fas fa-scissors"></i> No Chopping</span>
+                    <span><i class="fas fa-leaf"></i> 100% Organic</span>
+                </div>
+                <a href="pages/products.html?category=frozen" class="btn-primary"><i class="fas fa-snowflake"></i> Shop Now</a>
+            </div>
+            <div class="frozen-image">
+                <img src="assets/images/products/mixed-vegetable-pack.jpg" alt="Frozen Vegetables" onerror="this.src='https://images.unsplash.com/photo-1598866594230-a7c12756260f?w=300'" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================== -->
+<!-- FEATURES -->
+<!-- ========================================== -->
+<section class="features-section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">🌟 Why Choose Us</span>
+            <h2>Our Unique <span class="gradient-text">Features</span></h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card glass" onclick="location.href='pages/seed-to-plate.html'" style="cursor: pointer;">
+                <div class="feature-icon"><i class="fas fa-qrcode"></i></div>
+                <h3>Seed to Plate</h3>
+                <p>Scan QR codes to trace your food's journey.</p>
+                <span class="feature-tag">Main Feature</span>
+                <div class="feature-hover" onclick="event.stopPropagation(); location.href='pages/seed-to-plate.html'">Learn More →</div>
+            </div>
+            <div class="feature-card glass" onclick="openSustainabilityModal()" style="cursor: pointer;">
+                <div class="feature-icon"><i class="fas fa-star"></i></div>
+                <h3>Sustainability Score</h3>
+                <p>Every product gets a 0-100 eco-score.</p>
+                <span class="feature-tag">Smart</span>
+                <div class="feature-hover" onclick="event.stopPropagation(); openSustainabilityModal()">Learn More →</div>
+            </div>
+            <div class="feature-card glass" onclick="location.href='pages/community-kitchen.html'" style="cursor: pointer;">
+                <div class="feature-icon"><i class="fas fa-utensils"></i></div>
+                <h3>Community Kitchen</h3>
+                <p>Cook together, share meals, zero waste.</p>
+                <span class="feature-tag">Community</span>
+                <div class="feature-hover" onclick="event.stopPropagation(); location.href='pages/community-kitchen.html'">Learn More →</div>
+            </div>
+            <div class="feature-card glass" onclick="location.href='pages/group-buying.html'" style="cursor: pointer;">
+                <div class="feature-icon"><i class="fas fa-users"></i></div>
+                <h3>Group Buying</h3>
+                <p>Order bulk & save 30-50%.</p>
+                <span class="feature-tag">Savings</span>
+                <div class="feature-hover" onclick="event.stopPropagation(); location.href='pages/group-buying.html'">Learn More →</div>
+            </div>
+            <div class="feature-card glass" onclick="openCarbonFootprintModal()" style="cursor: pointer;">
+                <div class="feature-icon"><i class="fas fa-cloud-sun"></i></div>
+                <h3>Carbon Footprint</h3>
+                <p>Track your environmental impact.</p>
+                <span class="feature-tag">Eco-Friendly</span>
+                <div class="feature-hover" onclick="event.stopPropagation(); openCarbonFootprintModal()">Learn More →</div>
+            </div>
+            <div class="feature-card glass" onclick="openSeasonalBoxModal()" style="cursor: pointer;">
+                <div class="feature-icon"><i class="fas fa-box"></i></div>
+                <h3>Seasonal Box</h3>
+                <p>Monthly organic subscription boxes.</p>
+                <span class="feature-tag">Subscription</span>
+                <div class="feature-hover" onclick="event.stopPropagation(); openSeasonalBoxModal()">Learn More →</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================== -->
+<!-- INTERACTIVE FEATURE MODALS -->
+<!-- ========================================== -->
+
+<!-- Modal 1: Sustainability Score Modal -->
+<div class="ftf-feature-modal-overlay" id="sustainabilityModal" onclick="if(event.target===this) closeSustainabilityModal()">
+    <div class="ftf-feature-modal-card">
+        <div class="ftf-modal-header">
+            <div>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                    <span style="background: rgba(22,163,74,0.12); color: var(--primary); padding: 3px 10px; border-radius: 20px; font-weight: 800; font-size: 0.78rem;">🌟 Eco-Intelligence</span>
+                    <span style="color: #64748b; font-size: 0.8rem;">Algorithmic Audit Engine</span>
+                </div>
+                <h2 style="font-size: 1.45rem; margin: 0; color: var(--text);">0-100 Eco-Sustainability Score</h2>
+            </div>
+            <button class="ftf-modal-close" onclick="closeSustainabilityModal()">&times;</button>
+        </div>
+
+        <p style="color: var(--text-light); font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;">
+            Every single farm lot on Farm to Fork Collective undergoes an immutable 5-pillar mathematical evaluation before receiving its customer-facing Eco-Score badge.
+        </p>
+
+        <!-- Benchmark Score Badge -->
+        <div style="display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, rgba(22,163,74,0.1), rgba(22,163,74,0.03)); border: 1.5px solid rgba(22,163,74,0.25); border-radius: 16px; padding: 18px 22px; margin-bottom: 22px;">
+            <div>
+                <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em;">Live Sample Rating</span>
+                <h3 style="margin: 4px 0 0; font-size: 1.15rem; color: var(--text);">Organic Country Tomatoes (Dindigul)</h3>
+                <span style="font-size: 0.82rem; color: var(--primary); font-weight: 700;">🌱 Batch #FTF-TOM-2024-001</span>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 2.2rem; font-weight: 900; color: var(--primary); line-height: 1;">98<span style="font-size: 1.1rem; color: var(--text-light);">/100</span></div>
+                <span style="background: #16a34a; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.72rem; font-weight: 800;">GRADE A+ ORGANIC</span>
+            </div>
+        </div>
+
+        <!-- 5 Pillars Breakdown -->
+        <h4 style="font-size: 0.95rem; margin-bottom: 12px; color: var(--text);"><i class="fas fa-list-check" style="color: var(--primary);"></i> 5-Pillar Algorithmic Breakdown:</h4>
+        
+        <div class="eco-pillar-row">
+            <div>
+                <strong>🔬 Zero Pesticide Residue (NABL / FSSAI Lab Audit)</strong>
+                <div class="eco-progress-bar" style="width: 280px;"><div class="eco-progress-fill" style="width: 100%;"></div></div>
+            </div>
+            <strong style="color: var(--primary);">30 / 30 pts</strong>
+        </div>
+
+        <div class="eco-pillar-row">
+            <div>
+                <strong>🌿 Soil Organic Carbon & Non-GMO Native Seeds</strong>
+                <div class="eco-progress-bar" style="width: 280px;"><div class="eco-progress-fill" style="width: 100%;"></div></div>
+            </div>
+            <strong style="color: var(--primary);">25 / 25 pts</strong>
+        </div>
+
+        <div class="eco-pillar-row">
+            <div>
+                <strong>💧 Precision Drip & Rainwater Irrigation Efficiency</strong>
+                <div class="eco-progress-bar" style="width: 280px;"><div class="eco-progress-fill" style="width: 95%;"></div></div>
+            </div>
+            <strong style="color: var(--primary);">19 / 20 pts</strong>
+        </div>
+
+        <div class="eco-pillar-row">
+            <div>
+                <strong>📦 100% Biodegradable & Plastic-Free Packaging</strong>
+                <div class="eco-progress-bar" style="width: 280px;"><div class="eco-progress-fill" style="width: 93%;"></div></div>
+            </div>
+            <strong style="color: var(--primary);">14 / 15 pts</strong>
+        </div>
+
+        <div class="eco-pillar-row">
+            <div>
+                <strong>☀️ Solar & Renewable Farm Energy Use</strong>
+                <div class="eco-progress-bar" style="width: 280px;"><div class="eco-progress-fill" style="width: 100%;"></div></div>
+            </div>
+            <strong style="color: var(--primary);">10 / 10 pts</strong>
+        </div>
+
+        <!-- Action CTAs -->
+        <div style="display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap;">
+            <button class="btn-primary" style="flex: 1; min-width: 200px; justify-content: center;" onclick="closeSustainabilityModal(); location.href='pages/seed-to-plate.html#lab-purity'">
+                <i class="fas fa-certificate"></i> View Lab Purity Certificate
+            </button>
+            <button class="btn-secondary" style="flex: 1; min-width: 180px; justify-content: center;" onclick="closeSustainabilityModal(); location.href='pages/products.html'">
+                <i class="fas fa-shopping-basket"></i> Browse Verified Products
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2: Carbon Footprint Modal -->
+<div class="ftf-feature-modal-overlay" id="carbonFootprintModal" onclick="if(event.target===this) closeCarbonFootprintModal()">
+    <div class="ftf-feature-modal-card">
+        <div class="ftf-modal-header">
+            <div>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                    <span style="background: rgba(14,165,233,0.12); color: #0284c7; padding: 3px 10px; border-radius: 20px; font-weight: 800; font-size: 0.78rem;">🌍 Climate Impact</span>
+                    <span style="color: #64748b; font-size: 0.8rem;">Food Miles vs Industrial Logistics</span>
+                </div>
+                <h2 style="font-size: 1.45rem; margin: 0; color: var(--text);">Hyper-Local Carbon Footprint Engine</h2>
+            </div>
+            <button class="ftf-modal-close" onclick="closeCarbonFootprintModal()">&times;</button>
+        </div>
+
+        <p style="color: var(--text-light); font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;">
+            By connecting local Tamil Nadu agricultural belts (Dindigul, Pollachi, Ooty) directly to consumers without multi-tier intermediaries, Farm to Fork slashes food transport distance by up to 71%.
+        </p>
+
+        <!-- Distance & CO2 Comparison Grid -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px;">
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px;">
+                <span style="font-size: 0.75rem; color: #64748b; font-weight: 700; text-transform: uppercase;">🚛 Industrial Supermarkets</span>
+                <div style="font-size: 1.35rem; font-weight: 800; color: #ef4444; margin: 6px 0;">1,450 km</div>
+                <p style="font-size: 0.78rem; color: #64748b; margin: 0;">Multi-tier state transit, storage depots & cold warehousing.</p>
+            </div>
+            <div style="background: rgba(22,163,74,0.08); border: 1.5px solid rgba(22,163,74,0.25); border-radius: 14px; padding: 16px;">
+                <span style="font-size: 0.75rem; color: var(--primary); font-weight: 700; text-transform: uppercase;">🌱 Farm-to-Fork Direct</span>
+                <div style="font-size: 1.35rem; font-weight: 800; color: var(--primary); margin: 6px 0;">420 km Direct</div>
+                <p style="font-size: 0.78rem; color: #166534; margin: 0;">Direct harvest-to-door transit within Tamil Nadu. <strong>-1,030 km saved!</strong></p>
+            </div>
+        </div>
+
+        <!-- Interactive Calculator Widget -->
+        <div style="background: var(--bg); border: 1px solid rgba(0,0,0,0.06); border-radius: 16px; padding: 18px 20px; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <label for="carbonSlider" style="font-size: 0.9rem; font-weight: 700; color: var(--text);">
+                    <i class="fas fa-sliders-h" style="color: var(--primary);"></i> Simulate Order Size:
+                </label>
+                <span id="carbonSliderVal" style="font-size: 1.1rem; font-weight: 800; color: var(--primary);">25 kg</span>
+            </div>
+            <input type="range" id="carbonSlider" min="1" max="100" value="25" style="width: 100%; accent-color: var(--primary); cursor: pointer;" oninput="updateCarbonCalc(this.value)">
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; text-align: center;">
+                <div style="background: var(--white); padding: 10px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.06);">
+                    <div style="font-size: 0.72rem; color: var(--text-light); font-weight: 700;">CO2 Saved</div>
+                    <div id="calcCo2Saved" style="font-size: 1.1rem; font-weight: 800; color: #16a34a; margin-top: 2px;">44.03 kg</div>
+                </div>
+                <div style="background: var(--white); padding: 10px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.06);">
+                    <div style="font-size: 0.72rem; color: var(--text-light); font-weight: 700;">Water Saved</div>
+                    <div id="calcWaterSaved" style="font-size: 1.1rem; font-weight: 800; color: #0284c7; margin-top: 2px;">350 L</div>
+                </div>
+                <div style="background: var(--white); padding: 10px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.06);">
+                    <div style="font-size: 0.72rem; color: var(--text-light); font-weight: 700;">Road Miles Cut</div>
+                    <div id="calcKmSaved" style="font-size: 1.1rem; font-weight: 800; color: #e65100; margin-top: 2px;">258 km</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action CTAs -->
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button class="btn-primary" style="flex: 1; min-width: 200px; justify-content: center;" onclick="closeCarbonFootprintModal(); location.href='pages/seed-to-plate.html'">
+                <i class="fas fa-route"></i> Trace Full Journey & Food Miles
+            </button>
+            <button class="btn-secondary" style="flex: 1; min-width: 140px; justify-content: center;" onclick="closeCarbonFootprintModal()">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 3: Seasonal Box Modal -->
+<div class="ftf-feature-modal-overlay" id="seasonalBoxModal" onclick="if(event.target===this) closeSeasonalBoxModal()">
+    <div class="ftf-feature-modal-card">
+        <div class="ftf-modal-header">
+            <div>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                    <span style="background: rgba(230,81,0,0.12); color: #e65100; padding: 3px 10px; border-radius: 20px; font-weight: 800; font-size: 0.78rem;">📦 Farm Subscription</span>
+                    <span style="color: #64748b; font-size: 0.8rem;">100% Certified Organic Harvests</span>
+                </div>
+                <h2 style="font-size: 1.45rem; margin: 0; color: var(--text);">Curated Seasonal Organic Boxes</h2>
+            </div>
+            <button class="ftf-modal-close" onclick="closeSeasonalBoxModal()">&times;</button>
+        </div>
+
+        <p style="color: var(--text-light); font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;">
+            Enjoy direct farm-fresh harvest baskets delivered weekly or monthly to your doorstep with zero middleman markups and 100% biodegradable packaging.
+        </p>
+
+        <!-- 3 Subscription Boxes -->
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 22px;">
+            <!-- Box 1 -->
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #fff8f1; border: 1.5px solid #fed7aa; border-radius: 14px; padding: 14px 18px; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <strong style="color: #9a3412; font-size: 1rem;"><i class="fas fa-carrot"></i> Daily Wellness Veggie Harvest Box</strong>
+                    <div style="font-size: 0.82rem; color: #7c2d12; margin-top: 2px;">7 Native Organic Vegetables + Fresh Moringa Greens (5 kg batch)</div>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 1.25rem; font-weight: 800; color: #c2410c;">₹499</span>
+                    <small style="color: #9a3412; display: block; font-size: 0.72rem;">Weekly Delivery</small>
+                </div>
+            </div>
+
+            <!-- Box 2 -->
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 14px; padding: 14px 18px; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <strong style="color: #166534; font-size: 1rem;"><i class="fas fa-wheat-awn"></i> Heritage Grains & Cold-Pressed Superfoods</strong>
+                    <div style="font-size: 0.82rem; color: #14532d; margin-top: 2px;">Mappillai Samba Rice (2kg) + Karuppu Kavuni + Wood-Pressed Gingelly Oil (1L)</div>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 1.25rem; font-weight: 800; color: #15803d;">₹1,299</span>
+                    <small style="color: #166534; display: block; font-size: 0.72rem;">Monthly Box</small>
+                </div>
+            </div>
+
+            <!-- Box 3 -->
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #faf5ff; border: 1.5px solid #e9d5ff; border-radius: 14px; padding: 14px 18px; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <strong style="color: #6b21a8; font-size: 1rem;"><i class="fas fa-jar"></i> Artisan Immunity & Herbal Wellness Box</strong>
+                    <div style="font-size: 0.82rem; color: #581c87; margin-top: 2px;">Raw Chettinad Honey (500g) + Organic Turmeric Powder + Handcrafted Neem Soap</div>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 1.25rem; font-weight: 800; color: #7e22ce;">₹899</span>
+                    <small style="color: #6b21a8; display: block; font-size: 0.72rem;">Monthly Box</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action CTAs -->
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button class="btn-primary" style="flex: 1; min-width: 200px; justify-content: center;" onclick="closeSeasonalBoxModal(); location.href='pages/products.html'">
+                <i class="fas fa-shopping-bag"></i> Browse Seasonal Produce in Store
+            </button>
+            <button class="btn-secondary" style="flex: 1; min-width: 140px; justify-content: center;" onclick="closeSeasonalBoxModal()">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- ========================================== -->
+<!-- CATEGORIES -->
+<!-- ========================================== -->
+<section class="categories-section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">🛒 Shop by Category</span>
+            <h2>Explore Our <span class="gradient-text">Collection</span></h2>
+        </div>
+        <div class="categories-grid">
+            <div class="category-card animate-scale">
+                <div class="category-image">
+                    <img src="assets/images/products/organic-tomatoes.jpg" alt="Vegetables" onerror="this.src='https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?w=400'" />
+                    <div class="category-overlay">
+                        <h3>🌾 Vegetables</h3>
+                        <p>Fresh & Organic</p>
+                        <a href="pages/products.html?category=vegetables" class="btn-primary btn-small">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="category-card animate-scale">
+                <div class="category-image">
+                    <img src="assets/images/products/organic-apples.jpg" alt="Fruits" onerror="this.src='https://images.unsplash.com/photo-1579613832125-5d34a13ffe2a?w=400'" />
+                    <div class="category-overlay">
+                        <h3>🍎 Fruits</h3>
+                        <p>Seasonal & Fresh</p>
+                        <a href="pages/products.html?category=fruits" class="btn-primary btn-small">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="category-card animate-scale">
+                <div class="category-image">
+                    <img src="assets/images/products/organic-honey.jpg" alt="Handmade" onerror="this.src='assets/images/products/organic-handmade-soap.jpg'" />
+                    <div class="category-overlay">
+                        <h3>🧺 Handmade</h3>
+                        <p>Bread, Honey, Soaps</p>
+                        <a href="pages/products.html?category=handmade" class="btn-primary btn-small">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="category-card animate-scale">
+                <div class="category-image">
+                    <img src="assets/images/products/curry-vegetable-pack.jpg" alt="Frozen" onerror="this.src='https://images.unsplash.com/photo-1598866594230-a7c12756260f?w=400'" />
+                    <div class="category-overlay">
+                        <h3>❄️ Frozen Packs</h3>
+                        <p>Ready to Cook</p>
+                        <a href="pages/products.html?category=frozen" class="btn-primary btn-small">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================== -->
+<!-- FEATURED PRODUCTS -->
+<!-- ========================================== -->
+<section class="products-section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">🔥 Bestsellers</span>
+            <h2>Featured <span class="gradient-text">Products</span></h2>
+        </div>
+        <div class="products-grid" id="featuredProducts"></div>
+        <div class="view-all">
+            <a href="pages/products.html" class="btn-secondary">View All Products →</a>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================== -->
+<!-- RECENTLY ACCESSED (SMART CACHE) -->
+<!-- ========================================== -->
+<section style="background: rgba(245, 245, 244, 0.6); padding: 10px 0;">
+    <div class="container" id="recentlyAccessedContainer"></div>
+</section>
+
+<!-- ========================================== -->
+<!-- IMPACT DASHBOARD -->
+<!-- ========================================== -->
+<section class="impact-section" id="impact">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">🌍 Our Collective Impact</span>
+            <h2>Making a <span class="gradient-text">Difference</span></h2>
+        </div>
+        <div class="impact-grid">
+            <div class="impact-card glass">
+                <div class="impact-icon"><i class="fas fa-utensils"></i></div>
+                <div class="impact-number" data-count="12847">0</div>
+                <div class="impact-label">People Fed</div>
+                <div class="impact-progress"><div class="progress-bar" style="width:85%"></div></div>
+            </div>
+            <div class="impact-card glass">
+                <div class="impact-icon"><i class="fas fa-apple-alt"></i></div>
+                <div class="impact-number" data-count="8450">0</div>
+                <div class="impact-label">Food Saved (kg)</div>
+                <div class="impact-progress"><div class="progress-bar" style="width:70%"></div></div>
+            </div>
+            <div class="impact-card glass">
+                <div class="impact-icon"><i class="fas fa-tree"></i></div>
+                <div class="impact-number" data-count="3200">0</div>
+                <div class="impact-label">CO₂ Reduced (kg)</div>
+                <div class="impact-progress"><div class="progress-bar" style="width:60%"></div></div>
+            </div>
+            <div class="impact-card glass">
+                <div class="impact-icon"><i class="fas fa-handshake"></i></div>
+                <div class="impact-number" data-count="245">0</div>
+                <div class="impact-label">Farmers Supported</div>
+                <div class="impact-progress"><div class="progress-bar" style="width:90%"></div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================== -->
+<!-- SEED TO PLATE DEMO (INTERACTIVE PRODUCE TRACING) -->
+<!-- ========================================== -->
+<section class="demo-section" id="seed-to-plate">
+    <div class="container">
+        <div class="section-header" style="text-align: center; margin-bottom: 28px;">
+            <span class="section-tag">📱 Try It Now</span>
+            <h2>Scan & Trace Your <span class="gradient-text">Food Journey</span></h2>
+            <p style="color: var(--text-light); max-width: 680px; margin: 0 auto;">Select any organic produce below or enter a batch number to inspect its verified farm origin, harvest date, and lab purity test.</p>
+        </div>
+
+        <div class="demo-content" style="align-items: start; gap: 40px;">
+            <div class="demo-text">
+                <!-- Produce Selection Chips -->
+                <div style="font-weight: 700; font-size: 0.88rem; color: var(--text); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                    <span>🌱 Select Produce to Trace:</span>
+                    <span style="font-size: 0.76rem; color: var(--primary); font-weight: 700;"><i class="fas fa-hand-pointer"></i> Click to Inspect</span>
+                </div>
+                
+                <div class="trace-produce-chips" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;">
+                    <button type="button" class="produce-chip active" data-crop="tomato" onclick="selectTraceProduce('tomato')">
+                        <span>🍅</span> <span>Country Tomatoes</span>
+                    </button>
+                    <button type="button" class="produce-chip" data-crop="spinach" onclick="selectTraceProduce('spinach')">
+                        <span>🥬</span> <span>Fresh Spinach</span>
+                    </button>
+                    <button type="button" class="produce-chip" data-crop="honey" onclick="selectTraceProduce('honey')">
+                        <span>🍯</span> <span>Wild Honey</span>
+                    </button>
+                    <button type="button" class="produce-chip" data-crop="apples" onclick="selectTraceProduce('apples')">
+                        <span>🍎</span> <span>Heritage Apples</span>
+                    </button>
+                    <button type="button" class="produce-chip" data-crop="turmeric" onclick="selectTraceProduce('turmeric')">
+                        <span>🫚</span> <span>Salem Turmeric</span>
+                    </button>
+                </div>
+
+                <!-- Custom Batch Input Field -->
+                <div style="display: flex; gap: 8px; margin-bottom: 18px;">
+                    <div style="flex: 1; position: relative;">
+                        <input type="text" id="demoBatchInput" value="FTF-TOM-2026-08" placeholder="e.g. FTF-SPN-2026-11" style="width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--bg); font-family: monospace; font-size: 0.88rem; outline: none;" oninput="onCustomBatchInput(this.value)" />
+                    </div>
+                    <button class="btn-primary" onclick="triggerTraceModal()" style="padding: 11px 18px; border-radius: 10px; font-weight: 700; white-space: nowrap;">
+                        <i class="fas fa-search-location"></i> Trace Batch
+                    </button>
+                </div>
+
+                <!-- Active Produce Live Provenance Card -->
+                <div id="demoActiveCard" style="background: var(--bg); border: 1.5px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 22px;">
+                    <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">
+                        <div id="demoProduceAvatar" style="font-size: 2.2rem; width: 50px; height: 50px; border-radius: 12px; background: rgba(46, 125, 50, 0.12); display: flex; align-items: center; justify-content: center;">🍅</div>
+                        <div style="flex: 1;">
+                            <h4 id="demoProduceName" style="font-size: 1.15rem; font-weight: 800; color: var(--text); margin-bottom: 2px;">Organic Country Tomatoes</h4>
+                            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                                <span id="demoBatchTag" style="font-family: monospace; font-size: 0.75rem; background: rgba(46, 125, 50, 0.15); color: var(--primary); padding: 2px 8px; border-radius: 6px; font-weight: 700;">FTF-TOM-2026-08</span>
+                                <span id="demoFarmerTag" style="font-size: 0.8rem; color: var(--text-light);"><i class="fas fa-user-circle"></i> Sundaram Perumal (Dindigul)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mini Provenance Steps -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; border-top: 1px dashed var(--border); padding-top: 12px; margin-top: 8px;">
+                        <div>
+                            <small style="color: var(--text-light); display: block; font-size: 0.7rem; text-transform: uppercase;">🌱 Sowing / Soil</small>
+                            <strong id="demoSoilText" style="font-size: 0.82rem; color: var(--text);">Panchagavya Enriched</strong>
+                        </div>
+                        <div>
+                            <small style="color: var(--text-light); display: block; font-size: 0.7rem; text-transform: uppercase;">📅 Harvested</small>
+                            <strong id="demoHarvestText" style="font-size: 0.82rem; color: var(--text);">2 Days Ago (Fresh)</strong>
+                        </div>
+                        <div>
+                            <small style="color: var(--text-light); display: block; font-size: 0.7rem; text-transform: uppercase;">🔬 Lab Purity</small>
+                            <strong id="demoPurityText" style="font-size: 0.82rem; color: var(--primary);">0.0% Chemicals ✅</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trace CTA Buttons -->
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <button class="btn-primary btn-large" onclick="triggerTraceModal()">
+                        <i class="fas fa-qrcode"></i> Scan & Trace This Produce
+                    </button>
+                    <a href="pages/seed-to-plate.html" class="btn-secondary btn-large" style="display: inline-flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-seedling"></i> Explore All Products in Seed to Plate →
+                    </a>
+                </div>
+
+                <div class="demo-features" style="margin-top: 20px;">
+                    <span><i class="fas fa-check-circle"></i> Farm GPS Coordinates</span>
+                    <span><i class="fas fa-check-circle"></i> Sowing to Harvest Log</span>
+                    <span><i class="fas fa-check-circle"></i> 100% Organic Certified</span>
+                </div>
+            </div>
+
+            <!-- Right Column: Interactive QR Code Scanner Simulation -->
+            <div class="demo-image" style="text-align: center;">
+                <div style="background: var(--bg); border: 2px solid var(--border); border-radius: 20px; padding: 24px; max-width: 320px; margin: 0 auto; box-shadow: var(--shadow);">
+                    <div style="position: relative; width: 190px; height: 190px; margin: 0 auto 16px; background: white; border-radius: 16px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                        <img id="demoQrGraphic" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://farmtofork.local/seed-to-plate?batch=FTF-TOM-2026-08" alt="Trace QR Code" style="width: 100%; height: 100%; object-fit: contain;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1341/1341159.png'" />
+                        <!-- Scanner Laser line -->
+                        <div style="position: absolute; left: 0; right: 0; height: 3px; background: var(--primary); box-shadow: 0 0 10px #22c55e; animation: scanLine 2.5s infinite ease-in-out;"></div>
+                    </div>
+                    <div style="font-weight: 800; font-size: 0.95rem; color: var(--text); margin-bottom: 4px;" id="demoQrLabel">Batch: FTF-TOM-2026-08</div>
+                    <p style="color: var(--text-light); font-size: 0.78rem; margin-bottom: 16px;">Point your camera or click below to simulate instant scanner verification</p>
+                    <button class="btn-primary" onclick="triggerTraceModal()" style="width: 100%; justify-content: center; font-size: 0.88rem; padding: 10px;">
+                        <i class="fas fa-camera"></i> Simulate Scan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==================================================== -->
+<!-- INTERACTIVE PRODUCE TRACE MODAL (HOMEPAGE) -->
+<!-- ==================================================== -->
+<div id="homeTraceModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(5px); z-index: 99999; display: none; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: var(--white); border-radius: 20px; max-width: 520px; width: 100%; padding: 28px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); position: relative; border: 1.5px solid var(--border); max-height: 90vh; overflow-y: auto;">
+        <button onclick="closeTraceModal()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-light);">✕</button>
+
+        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 18px;">
+            <div id="modalProduceAvatar" style="font-size: 2.4rem; width: 60px; height: 60px; border-radius: 14px; background: rgba(46, 125, 50, 0.12); display: flex; align-items: center; justify-content: center;">🍅</div>
+            <div>
+                <span id="modalBatchBadge" style="font-family: monospace; font-size: 0.78rem; background: #dcfce7; color: #166534; padding: 3px 8px; border-radius: 6px; font-weight: 800;">FTF-TOM-2026-08</span>
+                <h3 id="modalProduceTitle" style="font-size: 1.3rem; font-weight: 800; color: var(--text); margin: 4px 0 2px;">Organic Country Tomatoes</h3>
+                <small id="modalFarmerSub" style="color: var(--text-light); font-size: 0.82rem;"><i class="fas fa-map-marker-alt" style="color: #ef4444;"></i> Green Valley Farm • Dindigul, Tamil Nadu</small>
+            </div>
+        </div>
+
+        <!-- 4-Step Born to Delivery Journey Timeline -->
+        <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 20px;">
+            <div style="font-weight: 800; font-size: 0.82rem; color: var(--primary); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">
+                <i class="fas fa-seedling"></i> Verified Born-to-Delivery Provenance
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.85rem;">
+                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                    <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; font-weight: 700;">1</div>
+                    <div>
+                        <strong style="color: var(--text); display: block;">Native Seed & Soil Preparation</strong>
+                        <span id="modalStep1" style="color: var(--text-light); font-size: 0.8rem;">Native heirloom seeds treated with Panchagavya and organic bio-fertilizers.</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                    <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; font-weight: 700;">2</div>
+                    <div>
+                        <strong style="color: var(--text); display: block;">Sunrise Harvest & Sorting</strong>
+                        <span id="modalStep2" style="color: var(--text-light); font-size: 0.8rem;">Handpicked at sunrise with zero chemical ripening or preservatives.</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                    <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; font-weight: 700;">3</div>
+                    <div>
+                        <strong style="color: var(--text); display: block;">Lab Quality Purity Test</strong>
+                        <span id="modalStep3" style="color: #15803d; font-weight: 600; font-size: 0.8rem;">0.0% Pesticide Residue Tested • 100% Organic Certified.</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                    <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; font-weight: 700;">4</div>
+                    <div>
+                        <strong style="color: var(--text); display: block;">Eco Packaging & Local Hub Delivery</strong>
+                        <span id="modalStep4" style="color: var(--text-light); font-size: 0.8rem;">Biodegradable palm leaf crates & temperature-controlled van transit.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Link to Full Seed to Plate Page -->
+        <a id="modalFullJourneyBtn" href="pages/seed-to-plate.html?batch=FTF-TOM-2026-08" class="btn-primary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px; font-weight: 800; font-size: 0.95rem; border-radius: 12px; text-decoration: none; margin-bottom: 10px;">
+            <span>View Full Interactive Born-to-Delivery Timeline</span>
+            <i class="fas fa-arrow-right"></i>
+        </a>
+        <button onclick="closeTraceModal()" style="width: 100%; padding: 10px; background: none; border: 1px solid var(--border); border-radius: 10px; font-size: 0.85rem; color: var(--text-light); cursor: pointer;">Close Preview</button>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- COMMUNITY KITCHEN PREVIEW -->
+<!-- ========================================== -->
+<section class="community-preview" id="community-kitchen">
+    <div class="container">
+        <div class="community-content">
+            <div class="community-image">
+                <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=600" alt="Community Kitchen" />
+            </div>
+            <div class="community-text">
+                <span class="section-tag">🍽️ Cook Together</span>
+                <h2>Join a <span class="gradient-text">Community Kitchen</span></h2>
+                <p>Cook with neighbors, share meals, save money, zero waste.</p>
+                <ul class="community-benefits">
+                    <li><i class="fas fa-check-circle"></i> Save 40% on food bills</li>
+                    <li><i class="fas fa-check-circle"></i> Zero food waste</li>
+                    <li><i class="fas fa-check-circle"></i> Stronger community bonds</li>
+                </ul>
+                <a href="pages/community-kitchen.html" class="btn-primary">Learn More →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================== -->
+<!-- TESTIMONIALS -->
+<!-- ========================================== -->
+<section class="testimonials">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">💬 Testimonials</span>
+            <h2>Real <span class="gradient-text">Stories</span></h2>
+        </div>
+        <div class="testimonial-grid">
+            <div class="testimonial-card glass">
+                <div class="testimonial-avatar">👩</div>
+                <h4>Priya Sharma</h4>
+                <span class="testimonial-role">Customer</span>
+                <p>"Love the frozen packs! Saves so much time!"</p>
+                <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="testimonial-card glass">
+                <div class="testimonial-avatar">👨</div>
+                <h4>Ramesh Kumar</h4>
+                <span class="testimonial-role">Farmer</span>
+                <p>"Direct connection to customers. No middlemen!"</p>
+                <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="testimonial-card glass">
+                <div class="testimonial-avatar">👩</div>
+                <h4>Meera Patel</h4>
+                <span class="testimonial-role">Community Kitchen</span>
+                <p>"Frozen packs make cooking so much easier!"</p>
+                <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================== -->
+<!-- NEWSLETTER -->
+<!-- ========================================== -->
+<section class="newsletter">
+    <div class="container">
+        <div class="newsletter-content glass">
+            <div class="newsletter-icon"><i class="fas fa-envelope"></i></div>
+            <h2>Stay <span class="gradient-text">Connected</span></h2>
+            <p>Subscribe for updates on fresh products & seasonal boxes.</p>
+            <form class="newsletter-form" onsubmit="event.preventDefault(); showNotification('Subscribed! 🎉')">
+                <input type="email" placeholder="Enter your email" required />
+                <button type="submit" class="btn-primary">Subscribe</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================== -->
+<!-- FOOTER -->
+<!-- ========================================== -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="footer-logo"><i class="fas fa-seedling"></i><span>Farm to Fork Collective</span></div>
+                <p>Building a sustainable community through organic food, transparency, and collective action.</p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="pages/products.html">Products</a>
+                <a href="#community-kitchen">Community Kitchen</a>
+                <a href="#group-buying">Group Buying</a>
+            </div>
+            <div class="footer-links">
+                <h4>Categories</h4>
+                <a href="pages/products.html?category=vegetables">Vegetables</a>
+                <a href="pages/products.html?category=fruits">Fruits</a>
+                <a href="pages/products.html?category=handmade">Handmade</a>
+                <a href="pages/products.html?category=frozen">❄️ Frozen Packs</a>
+            </div>
+            <div class="footer-links">
+                <h4>Support</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Farm to Fork Collective. All rights reserved. 🌱</p>
+        </div>
+    </div>
+</footer>
+
+<!-- ========================================== -->
+<!-- SCRIPTS -->
+<!-- ========================================== -->
+<script src="js/script.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/api.js"></script>
+<script src="js/recently-accessed.js"></script>
+<script src="js/chatbot.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/farmer-marketplace.js"></script>
+<script src="js/i18n.js"></script>
+
+<script>
+    // ==========================================
+    // LANGUAGE FACILITY (ENGLISH / தமிழ்)
+    // ==========================================
+    let currentHomeLang = localStorage.getItem('ftf_lang') || 'en';
+
+    const homeTamilNames = {
+        1: "இயற்கை தக்காளி", 2: "இயற்கை பசலைக்கீரை", 3: "இயற்கை கேரட்", 4: "இயற்கை ப்ரோக்கோலி",
+        5: "இயற்கை காலிஃபிளவர்", 6: "இயற்கை குடைமிளகாய்", 7: "இயற்கை வெங்காயம்", 8: "இயற்கை உருளைக்கிழங்கு",
+        9: "இயற்கை பீட்ரூட்", 10: "இயற்கை பரங்கிக்காய்", 11: "இயற்கை ஆப்பிள்", 12: "இயற்கை வாழைப்பழம்",
+        13: "இயற்கை ஆரஞ்சு", 14: "இயற்கை திராட்சை", 15: "இயற்கை மாம்பழம்", 16: "இயற்கை ஸ்ட்ராபெர்ரி",
+        17: "இயற்கை தர்பூசணி", 18: "இயற்கை மாதுளை", 19: "இயற்கை காட்டுத் தேன்", 20: "இயற்கை கைவினை ரொட்டி",
+        21: "இயற்கை மூலிகை சோப்", 22: "பாரம்பரிய மாங்காய் ஊறுகாய்", 23: "இயற்கை வேர்க்கடலை வெண்ணெய்",
+        24: "பாரம்பரிய A2 பசு நெய்", 25: "இயற்கை வாசனை மசாலா தொகுப்பு", 26: "பாரம்பரிய நாட்டு வெல்லம்",
+        27: "மரச்செக்கு தேங்காய் எண்ணெய்", 28: "இயற்கை மூலிகை ஆரோக்கிய தேநீர்", 29: "கலவை காய்கறி பேக்",
+        30: "சீன வதக்கல் காய்கறி கலவை", 31: "சூப் காய்கறி கலவை", 32: "சாம்பார் & கறி காய்கறி பேக்",
+        33: "பிரீமியம் காய்கறி மெட்லி", 34: "புதிய பச்சை பட்டாணி பேக்"
+    };
+
+    function setHomeLanguage(lang) {
+        currentHomeLang = lang;
+        localStorage.setItem('ftf_lang', lang);
+
+        // Ensure legacy language switchers are removed
+        const legacyFloat = document.getElementById('globalFloatingLangBtn');
+        if (legacyFloat) legacyFloat.remove();
+        document.querySelectorAll('.floating-lang-btn, .nav-lang-pill, .lang-switch-wrap').forEach(el => el.remove());
+
+        const isTa = lang === 'ta';
+
+        // Apply comprehensive site-wide translation dictionary
+        if (window.FTF_I18N && typeof window.FTF_I18N.apply === 'function') {
+            window.FTF_I18N.apply(lang);
+        }
+
+        // Top bar
+        const topOrg = document.getElementById('txtHomeTopOrganic');
+        const topDel = document.getElementById('txtHomeTopDelivery');
+        const topZero = document.getElementById('txtHomeTopZero');
+        const topFrz = document.getElementById('txtHomeTopFrozen');
+        if (topOrg) topOrg.innerHTML = isTa ? '<i class="fas fa-leaf"></i> 100% இயற்கை' : '<i class="fas fa-leaf"></i> 100% Organic';
+        if (topDel) topDel.innerHTML = isTa ? '<i class="fas fa-truck"></i> இலவச டெலிவரி' : '<i class="fas fa-truck"></i> Free Delivery';
+        if (topZero) topZero.innerHTML = isTa ? '<i class="fas fa-hand-holding-heart"></i> பூஜ்ஜிய கழிவு' : '<i class="fas fa-hand-holding-heart"></i> Zero Waste';
+        if (topFrz) topFrz.innerHTML = isTa ? '<i class="fas fa-snowflake"></i> உறைந்த பேக்குகள்' : '<i class="fas fa-snowflake"></i> Frozen Packs';
+
+        // Navigation links
+        const navHome = document.getElementById('navHomeLink');
+        const navShop = document.getElementById('navShopLink');
+        const navKitchen = document.getElementById('navKitchenLink');
+        const navGroup = document.getElementById('navGroupLink');
+        const navSeed = document.getElementById('navSeedLink');
+        const navLogin = document.getElementById('navLoginBtn');
+        const navSignup = document.getElementById('navSignupBtn');
+        if (navHome) navHome.textContent = isTa ? 'முகப்பு' : 'Home';
+        if (navShop) navShop.textContent = isTa ? 'விளைபொருட்கள்' : 'Shop';
+        if (navKitchen) navKitchen.textContent = isTa ? 'சமுதாய சமையலறை' : 'Community Kitchen';
+        if (navGroup) navGroup.textContent = isTa ? 'குழு கொள்முதல்' : 'Group Buying';
+        if (navSeed) navSeed.textContent = isTa ? 'விதையிலிருந்து தட்டு வரை' : 'Seed to Plate';
+        if (navLogin) navLogin.textContent = isTa ? 'உள்நுழைக' : 'Login';
+        if (navSignup) navSignup.textContent = isTa ? 'பதிவு செய்க' : 'Sign Up';
+
+        loadFeaturedProducts();
+    }
+
+    // ==========================================
+    // THEME TOGGLE (Delegates to centralized FTF_THEME)
+    // ==========================================
+    function toggleTheme() {
+        if (window.FTF_THEME && typeof window.FTF_THEME.toggle === 'function') {
+            window.FTF_THEME.toggle();
+        } else {
+            const current = document.documentElement.classList.contains('dark-theme') ? 'dark' : 'light';
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.classList.toggle('dark-theme', next === 'dark');
+            document.body.classList.toggle('dark-theme', next === 'dark');
+            localStorage.setItem('ftf_theme', next);
+        }
+    }
+
+    // ==========================================
+    // SEARCH TOGGLE
+    // ==========================================
+    function toggleSearch() {
+        const overlay = document.getElementById('searchOverlay');
+        if (overlay) {
+            overlay.classList.toggle('active');
+            if (overlay.classList.contains('active')) {
+                document.getElementById('searchInput').focus();
+            }
+        }
+    }
+
+    // ==========================================
+    // MENU TOGGLE (Mobile)
+    // ==========================================
+    function toggleMenu() {
+        const nav = document.getElementById('navLinks');
+        if (nav) {
+            nav.classList.toggle('active');
+        }
+    }
+
+    // ==========================================
+    // NOTIFICATION
+    // ==========================================
+    function showNotification(message) {
+        const toast = document.createElement('div');
+        toast.innerHTML = message;
+        toast.style.cssText = `
+            position: fixed; bottom: 30px; right: 30px;
+            background: var(--white); padding: 16px 24px;
+            border-radius: 12px; box-shadow: var(--shadow-hover);
+            border-left: 4px solid var(--primary);
+            z-index: 9999; animation: slideUp 0.5s ease;
+            font-size: 0.95rem; max-width: 400px;
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    // ==========================================
+    // DYNAMIC PRODUCE TRACEABILITY LOGIC (NO HARDCODED TOMATO)
+    // ==========================================
+    const traceableCrops = {
+        tomato: {
+            id: 1,
+            name: 'Organic Country Tomatoes',
+            batch: 'FTF-TOM-2026-08',
+            avatar: '🍅',
+            farmer: 'Sundaram Perumal (Dindigul)',
+            location: 'Green Valley Farm • Dindigul, Tamil Nadu',
+            soil: 'Panchagavya Enriched',
+            harvestSummary: '2 Days Ago (Fresh)',
+            purity: '0.0% Chemicals ✅',
+            step1: 'Native heirloom seeds treated with Panchagavya and organic bio-fertilizers.',
+            step2: 'Handpicked at sunrise with zero chemical ripening or preservatives.',
+            step3: '0.0% Pesticide Residue Tested • 100% Organic Certified.',
+            step4: 'Biodegradable crates & cold-chain transit to regional dispatch hub.'
+        },
+        spinach: {
+            id: 2,
+            name: 'Fresh Farm Spinach (பசலை)',
+            batch: 'FTF-SPN-2026-11',
+            avatar: '🥬',
+            farmer: 'Murugan Ramasamy (Nilgiris)',
+            location: 'Nilgiris High-Altitude Organic Farm • Ooty, Tamil Nadu',
+            soil: 'Jeevamrutham Soil',
+            harvestSummary: 'Yesterday (Crisp & Fresh)',
+            purity: '0.0% Chemical Residues ✅',
+            step1: 'Traditional local variety grown with vermicompost & cold mist micro-climate.',
+            step2: 'Harvested fresh before 6 AM to preserve chlorophyll and essential iron.',
+            step3: 'Lab certified zero organophosphates • Iron & Folate verified.',
+            step4: 'Eco-paper moisture-lock packaging delivered in under 12 hours.'
+        },
+        honey: {
+            id: 3,
+            name: 'Raw Forest Wild Honey',
+            batch: 'FTF-HNY-2026-03',
+            avatar: '🍯',
+            farmer: 'Kavitha Natarajan (Artisan)',
+            location: 'Jawadhu Tribal Honey Sanctuary • Tiruvannamalai Hills',
+            soil: 'Forest Canopy Flora',
+            harvestSummary: 'Preserved Raw Honey',
+            purity: 'NMR Certified Pure ✅',
+            step1: 'Sustainable cruelty-free nectar collection from deep forest wild honeycombs.',
+            step2: 'Gravity cold-strained through muslin cloths; never heated or adulterated.',
+            step3: 'NMR tested 100% pure flower nectar; zero corn/sugar syrup additives.',
+            step4: 'Sealed in reusable glass jars and dispatched via eco-fulfillment.'
+        },
+        apples: {
+            id: 4,
+            name: 'Shimla Heritage Apples',
+            batch: 'FTF-APL-2026-05',
+            avatar: '🍎',
+            farmer: 'Rajesh Thakur (Kotgarh)',
+            location: 'Kotgarh Valley Organic Orchards • Shimla, Himachal Pradesh',
+            soil: 'Glacial Spring Soil',
+            harvestSummary: 'Cold-Stored Fresh',
+            purity: '0.0% Wax & Fungicides ✅',
+            step1: 'Heritage Royal Delicious apple trees irrigated by Himalayan glacial melt.',
+            step2: 'Hand-plucked with natural bloom intact; zero diphenylamine treatment.',
+            step3: 'Certified free from post-harvest fungicides & artificial gloss waxes.',
+            step4: 'Cushioned corrugated paper dividers for shock-free cold transit.'
+        },
+        turmeric: {
+            id: 8,
+            name: 'Salem Organic Turmeric',
+            batch: 'FTF-TRM-2026-02',
+            avatar: '🫚',
+            farmer: 'Velusamy G. (Salem)',
+            location: 'Kaveri River Basin Organic Estate • Salem, Tamil Nadu',
+            soil: 'River Silt & Bio-char',
+            harvestSummary: 'Naturally Cured',
+            purity: '5.4% High Curcumin ✅',
+            step1: 'Traditional heirloom mother rhizomes planted in mineral-rich river silt.',
+            step2: 'Harvested after 9 months of sun and boiled with Vedic wood ash boilers.',
+            step3: 'NABL lab tested: 5.4% active Curcumin, zero synthetic yellow dyes.',
+            step4: 'Stone ground at slow RPM to preserve volatile aromatic curcuminoids.'
+        }
+    };
+
+    let activeTraceCropKey = 'tomato';
+
+    function selectTraceProduce(cropKey) {
+        if (!traceableCrops[cropKey]) return;
+        activeTraceCropKey = cropKey;
+        const crop = traceableCrops[cropKey];
+
+        // Update chips UI
+        document.querySelectorAll('.produce-chip').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.crop === cropKey);
+        });
+
+        // Update active card
+        const avatarEl = document.getElementById('demoProduceAvatar');
+        if (avatarEl) avatarEl.textContent = crop.avatar;
+        const nameEl = document.getElementById('demoProduceName');
+        if (nameEl) nameEl.textContent = crop.name;
+        const batchEl = document.getElementById('demoBatchTag');
+        if (batchEl) batchEl.textContent = crop.batch;
+        const farmerEl = document.getElementById('demoFarmerTag');
+        if (farmerEl) farmerEl.innerHTML = `<i class="fas fa-user-circle"></i> ${crop.farmer}`;
+        const soilEl = document.getElementById('demoSoilText');
+        if (soilEl) soilEl.textContent = crop.soil;
+        const harvestEl = document.getElementById('demoHarvestText');
+        if (harvestEl) harvestEl.textContent = crop.harvestSummary;
+        const purityEl = document.getElementById('demoPurityText');
+        if (purityEl) purityEl.textContent = crop.purity;
+
+        // Update batch input
+        const inputEl = document.getElementById('demoBatchInput');
+        if (inputEl) inputEl.value = crop.batch;
+
+        // Update QR Graphic
+        const qrImg = document.getElementById('demoQrGraphic');
+        if (qrImg) {
+            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://farmtofork.local/seed-to-plate?batch=${crop.batch}`;
+        }
+        const qrLabel = document.getElementById('demoQrLabel');
+        if (qrLabel) qrLabel.textContent = `Batch: ${crop.batch}`;
+    }
+
+    function onCustomBatchInput(val) {
+        const clean = val.trim().toUpperCase();
+        for (const [key, crop] of Object.entries(traceableCrops)) {
+            if (crop.batch === clean || clean.includes(key.toUpperCase().slice(0, 3))) {
+                selectTraceProduce(key);
+                return;
+            }
+        }
+    }
+
+    function triggerTraceModal(cropKey) {
+        const key = cropKey || activeTraceCropKey;
+        const crop = traceableCrops[key] || traceableCrops.tomato;
+
+        const avatar = document.getElementById('modalProduceAvatar');
+        if (avatar) avatar.textContent = crop.avatar;
+        const title = document.getElementById('modalProduceTitle');
+        if (title) title.textContent = crop.name;
+        const badge = document.getElementById('modalBatchBadge');
+        if (badge) badge.textContent = crop.batch;
+        const farmer = document.getElementById('modalFarmerSub');
+        if (farmer) farmer.innerHTML = `<i class="fas fa-map-marker-alt" style="color:#ef4444;"></i> ${crop.location}`;
+        const s1 = document.getElementById('modalStep1');
+        if (s1) s1.textContent = crop.step1;
+        const s2 = document.getElementById('modalStep2');
+        if (s2) s2.textContent = crop.step2;
+        const s3 = document.getElementById('modalStep3');
+        if (s3) s3.textContent = crop.step3;
+        const s4 = document.getElementById('modalStep4');
+        if (s4) s4.textContent = crop.step4;
+
+        const journeyBtn = document.getElementById('modalFullJourneyBtn');
+        if (journeyBtn) {
+            journeyBtn.href = `pages/seed-to-plate.html?batch=${crop.batch}`;
+        }
+
+        const modal = document.getElementById('homeTraceModal');
+        if (modal) modal.style.display = 'flex';
+    }
+
+    function closeTraceModal() {
+        const modal = document.getElementById('homeTraceModal');
+        if (modal) modal.style.display = 'none';
+    }
+
+    // Dynamic QR Scan Simulation replacing legacy hardcoded tomato
+    function scanQRCode(productId) {
+        if (productId) {
+            const matchedKey = Object.keys(traceableCrops).find(k => traceableCrops[k].id === productId);
+            if (matchedKey) {
+                selectTraceProduce(matchedKey);
+                triggerTraceModal(matchedKey);
+                return;
+            }
+        }
+        triggerTraceModal();
+    }
+
+    // ==========================================
+    // COUNTER ANIMATION
+    // ==========================================
+    function animateCounters() {
+        document.querySelectorAll('.impact-number, .stat-number').forEach(el => {
+            const target = parseInt(el.dataset.count);
+            if (!target) return;
+            let current = 0;
+            const increment = Math.ceil(target / 80);
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                el.textContent = current.toLocaleString();
+            }, 30);
+        });
+    }
+
+    // ==========================================
+    // LOAD FEATURED PRODUCTS (DYNAMIC API + FALLBACK)
+    // ==========================================
+    async function loadFeaturedProducts() {
+        const container = document.getElementById('featuredProducts');
+        if (!container) return;
+
+        let displayProducts = [];
+        if (window.FTF_API && window.FTF_API.products) {
+            try {
+                const res = await window.FTF_API.products.getAll();
+                if (res && res.success && Array.isArray(res.products) && res.products.length > 0) {
+                    displayProducts = res.products.slice(0, 8);
+                }
+            } catch (err) {
+                console.warn('API fetch featured products fallback:', err);
+            }
+        }
+
+        if (displayProducts.length === 0 && typeof products !== 'undefined') {
+            displayProducts = products.slice(0, 8);
+        }
+
+        const curLang = (window.FTF_I18N && typeof window.FTF_I18N.getCurrentLang === 'function')
+            ? window.FTF_I18N.getCurrentLang()
+            : (localStorage.getItem('ftf_lang') || 'en');
+        const langMap = (window.FTF_I18N && window.FTF_I18N.productNames && window.FTF_I18N.productNames[curLang]) || {};
+        const dict = (window.FTF_I18N && window.FTF_I18N.translations && window.FTF_I18N.translations[curLang]) || {};
+        const addBtnText = dict.shopAddToCart || 'Add to Cart 🛒';
+
+        container.innerHTML = displayProducts.map(p => {
+            const clean = (p.image || '').replace(/^\/+/, '');
+            const imgSrc = typeof getProductImagePath === 'function' ? getProductImagePath(p.image) : clean;
+            const displayName = langMap[p.id] || (curLang === 'ta' && p.productNameTamil ? p.productNameTamil : p.name);
+
+            return `
+            <div class="product-card animate-scale" onclick="window.location.href='pages/product-details.html?id=${p.id}'" style="cursor: pointer;">
+                <div style="position: relative;">
+                    <img src="${imgSrc}" alt="${p.name}" onerror="this.onerror=null; this.src='assets/images/products/organic-honey.jpg';">
+                    <div class="product-badge badge-organic">${p.badge || '🌿 Organic'}</div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">${displayName}</h3>
+                    <p class="product-seller">${p.seller}</p>
+                    <div>
+                        <span class="product-price">₹${p.price}</span>
+                        <span class="product-original">₹${p.originalPrice || Math.round(p.price * 1.25)}</span>
+                        <span>/${p.unit}</span>
+                    </div>
+                    <button onclick="event.stopPropagation(); addToCart(${p.id})" style="margin-top:12px; width:100%; padding:12px; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:white; border:none; border-radius:10px; font-weight:600; cursor:pointer; transition:var(--transition);">
+                        ${addBtnText}
+                    </button>
+                </div>
+            </div>
+            `;
+        }).join('');
+    }
+
+    // ==========================================
+    // INIT
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', function() {
+        loadFeaturedProducts();
+        animateCounters();
+
+        // Listen for language change to update featured products dynamically
+        window.addEventListener('languageChanged', function() {
+            loadFeaturedProducts();
+        });
+
+        // Close search on ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const overlay = document.getElementById('searchOverlay');
+                if (overlay && overlay.classList.contains('active')) {
+                    overlay.classList.remove('active');
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

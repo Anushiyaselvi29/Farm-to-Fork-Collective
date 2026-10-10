@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard - Farm to Fork Collective</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+    <style>
+        .dashboard-page { padding: 40px 0 80px; background: var(--bg); min-height: 100vh; }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 40px; }
+        .dashboard-header h1 { font-size: 2rem; }
+        .user-badge { padding: 10px 20px; background: linear-gradient(135deg, #FF6F00, #E65100); color: white; border-radius: 50px; font-weight: 600; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 30px; }
+        .stat-card { background: var(--white); padding: 20px 16px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center; transition: var(--transition); cursor: pointer; }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+        .stat-card .stat-icon { font-size: 2.2rem; margin-bottom: 6px; }
+        .stat-card .stat-number { font-size: 1.8rem; font-weight: 800; color: #E65100; }
+        .stat-card.stat-alert .stat-number { color: #DC2626; }
+        .stat-card .stat-label { color: var(--text-light); font-size: 0.85rem; font-weight: 600; }
+        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        .dashboard-card { background: var(--white); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 24px; }
+        .dashboard-card h3 { margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        
+        .product-item { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(0,0,0,0.06); align-items: center; flex-wrap: wrap; gap: 10px; }
+        .product-item:last-child { border-bottom: none; }
+        .product-stock { font-weight: 600; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; }
+        .stock-high { background: #4CAF50; color: white; }
+        .stock-low { background: #FF9800; color: white; }
+        .stock-out { background: #F44336; color: white; }
+
+        .quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .quick-action { padding: 16px; background: var(--bg); border-radius: 10px; text-align: center; cursor: pointer; transition: var(--transition); border: none; font-family: inherit; }
+        .quick-action:hover { background: #FFF3E0; }
+        .quick-action .qa-icon { font-size: 1.8rem; display: block; margin-bottom: 4px; }
+        .quick-action.upload-journey { background: #E8F5E9; border: 2px solid var(--primary); }
+        .quick-action.upload-journey:hover { background: #C8E6C9; transform: scale(1.02); }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-content { background: var(--white); padding: 36px; border-radius: var(--radius); max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; }
+        .modal-content h2 { margin-bottom: 20px; }
+        .modal-content .form-group { margin-bottom: 16px; }
+        .modal-content .form-group label { display: block; font-weight: 600; margin-bottom: 4px; }
+        .modal-content .form-group input, .modal-content .form-group select, .modal-content .form-group textarea { width: 100%; padding: 12px 14px; border: 2px solid rgba(0,0,0,0.1); border-radius: 8px; font-size: 1rem; }
+        .modal-content .form-group input[type="file"] { padding: 8px; }
+        .modal-close { float: right; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+        .btn-modal { padding: 12px 30px; background: linear-gradient(135deg, #FF6F00, #E65100); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; }
+        .btn-modal-edit { background: linear-gradient(135deg, #1565C0, #0D47A1); }
+        .preview-image { max-width: 150px; max-height: 120px; border-radius: 8px; margin-top: 6px; border: 2px solid #ddd; display: none; }
+        .preview-image.show { display: block; }
+        .btn-edit { padding: 4px 12px; background: #1565C0; color: white; border: none; border-radius: 15px; font-size: 0.7rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
+        .btn-edit:hover { background: #0D47A1; transform: scale(1.05); }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .quick-actions { grid-template-columns: 1fr 1fr; }
+            .product-item { flex-direction: column; align-items: flex-start; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .quick-actions { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+    <div class="dashboard-sidebar-backdrop" id="sidebarBackdrop" onclick="closeMobileSidebar()"></div>
+    
+    <!-- LEFT SIDE ELEMENTS (FARMER SIDEBAR) -->
+    <aside class="dashboard-sidebar" id="dashboardSidebar">
+        <div class="sidebar-brand">
+            <a href="../index.html">
+                <div class="sidebar-brand-icon"><i class="fas fa-seedling"></i></div>
+                <div class="sidebar-brand-text">
+                    <span class="sidebar-brand-title">Farm to Fork</span>
+                    <span class="sidebar-brand-sub">Collective • Farmer</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="sidebar-user-card">
+            <div class="sidebar-user-avatar farmer-avatar">
+                <i class="fas fa-tractor"></i>
+            </div>
+            <div class="sidebar-user-info">
+                <h4 class="sidebar-user-name" id="farmerSidebarName">Sundaram Perumal</h4>
+                <span class="sidebar-user-role farmer-role"><i class="fas fa-certificate"></i> Certified Farmer</span>
+                <span class="sidebar-user-email">Dindigul, Tamil Nadu</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="sidebar-nav-heading">FARM MANAGEMENT</div>
+            <a href="#farmerStatsOverview" class="sidebar-nav-link active">
+                <i class="fas fa-chart-line"></i> <span>Overview & Stats</span>
+            </a>
+            <a href="#farmerProductsCard" class="sidebar-nav-link">
+                <i class="fas fa-seedling"></i> <span>My Crops & Stock</span>
+            </a>
+            <a href="farmer-upload-journey.html" class="sidebar-nav-link">
+                <i class="fas fa-qrcode"></i> <span>Upload Journey</span>
+            </a>
+            <a href="farmer-store.html" class="sidebar-nav-link">
+                <i class="fas fa-store"></i> <span>My Storefront</span>
+            </a>
+            <a href="farmer-marketplace.html" class="sidebar-nav-link">
+                <i class="fas fa-balance-scale"></i> <span>Marketplace</span>
+            </a>
+            <a href="profile.html" class="sidebar-nav-link">
+                <i class="fas fa-user-cog"></i> <span>Profile & Notifications</span>
+            </a>
+            <div class="sidebar-nav-heading">EXPLORER & STORE</div>
+            <a href="products.html" class="sidebar-nav-link">
+                <i class="fas fa-shopping-basket"></i> <span>View Catalog</span>
+            </a>
+            <a href="seed-to-plate.html" class="sidebar-nav-link">
+                <i class="fas fa-route"></i> <span>Seed to Plate</span>
+            </a>
+            <a href="../index.html" class="sidebar-nav-link">
+                <i class="fas fa-home"></i> <span>Main Home</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-pref-row">
+                <button class="sidebar-theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+                    <i class="fas fa-moon"></i>
+                    <span>Theme</span>
+                </button>
+                <button class="sidebar-lang-btn" onclick="toggleLanguage()" title="Switch Language">
+                    <i class="fas fa-globe"></i> <span>EN</span>
+                </button>
+            </div>
+            <!-- Logout Button in Left Sidebar -->
+            <button class="sidebar-logout-btn" onclick="logoutUser()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout to Top Menu</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="dashboard-main-area">
+        <header class="dashboard-topbar">
+            <div class="topbar-left">
+                <button class="sidebar-toggle-btn" id="sidebarToggleBtn" onclick="toggleMobileSidebar()" aria-label="Toggle Navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="topbar-breadcrumb">
+                    <span class="crumb-root"><i class="fas fa-tractor"></i> Grower Console</span>
+                    <span class="crumb-sep">/</span>
+                    <span class="crumb-active">Farm Operations & Batch Tracking</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-status-badge">
+                    <span class="status-dot-pulse"></span>
+                    <span>Farm Ledger: <strong>Synced 100%</strong></span>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-content-body">
+            <div class="dashboard-header" style="margin-bottom: 24px;">
+                <div>
+                    <h1 style="font-size: 1.85rem; margin: 0 0 6px;">👨‍🌾 Welcome, <span id="farmerName">Farmer</span>!</h1>
+                    <p style="color:var(--text-light); margin: 0;">Manage your farm products & upload seed to plant journey</p>
+                </div>
+                <div class="user-badge" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-tractor"></i> Certified Organic Farmer
+                </div>
+            </div>
+
+            <div class="stats-grid" id="farmerStatsOverview">
+            <div class="stat-card" onclick="openModal('addProduct')"><div class="stat-icon">🌾</div><div class="stat-number" id="productCount">12</div><div class="stat-label">Active Crops</div></div>
+            <div class="stat-card" onclick="openModal('orders')"><div class="stat-icon">📦</div><div class="stat-number">48</div><div class="stat-label">Total Orders</div></div>
+            <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-number">4.7</div><div class="stat-label">Customer Rating</div></div>
+            <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-number">₹12,500</div><div class="stat-label">Net Earnings</div></div>
+            <div class="stat-card stat-alert" onclick="focusLowStockBanner()"><div class="stat-icon">⚠️</div><div class="stat-number" id="lowStockStatCount">2</div><div class="stat-label">Low Stock Alerts</div></div>
+            <div class="stat-card" onclick="document.getElementById('dashboardNotificationCenter').scrollIntoView({behavior:'smooth'})" style="border: 1.5px solid rgba(230, 81, 0, 0.3); background: linear-gradient(135deg, rgba(230, 81, 0, 0.05), transparent);">
+                <div class="stat-icon">🔔</div>
+                <div class="stat-number" id="farmerNotifStatCount" style="color: #E65100;">4</div>
+                <div class="stat-label">Farm Alerts</div>
+            </div>
+        </div>
+
+        <!-- 🚨 CRITICAL LOW-STOCK INVENTORY NOTIFICATION BANNER -->
+        <div class="low-stock-alert-banner" id="farmerLowStockBanner">
+            <div class="alert-banner-header">
+                <div class="alert-icon-pulse"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="alert-banner-info">
+                    <h3 id="lowStockBannerTitle">⚠️ Low Stock Alert: Crops Running Low on Inventory!</h3>
+                    <p id="lowStockBannerDesc">Your available produce stock is below safe threshold. Restock now to prevent missed orders from customers.</p>
+                </div>
+                <div class="alert-banner-actions">
+                    <button class="btn-restock-quick" onclick="openRestockModal('all')">
+                        <i class="fas fa-bolt"></i> 1-Click Fast Restock
+                    </button>
+                    <button class="btn-dismiss-alert" onclick="dismissLowStockBanner()">✕ Dismiss</button>
+                </div>
+            </div>
+            <div class="low-stock-chips-row" id="lowStockChipsRow">
+                <!-- Dynamically populated chips e.g. Spinach: 8 bunches (+25), Tomatoes: 5 kg (+50) -->
+            </div>
+        </div>
+
+        <!-- 🔔 DEDICATED FARMER NOTIFICATIONS FEED -->
+        <div id="dashboardNotificationCenter"></div>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
+                    <div>
+                        <h3 style="margin:0;"><i class="fas fa-seedling" style="color:#E65100;"></i> My Active Farm Produce</h3>
+                        <p style="margin:2px 0 0; font-size:0.8rem; color:var(--text-light);">Real-time inventory levels, price per kg, and batch tracking.</p>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn-primary btn-small" onclick="openRestockModal('all')" style="background: linear-gradient(135deg, #D97706, #B45309);">⚡ Restock</button>
+                        <button class="btn-primary btn-small" onclick="openModal('addProduct')">+ Add New Crop</button>
+                    </div>
+                </div>
+                <div id="farmerProductList">
+                    <!-- Populated dynamically by renderFarmerProductsList() -->
+                </div>
+            </div>
+
+            <div>
+                <div class="dashboard-card">
+                    <h3>⚡ Quick Actions</h3>
+                    <div class="quick-actions">
+                        <button class="quick-action" onclick="openModal('addProduct')"><span class="qa-icon">➕</span>Add Crop</button>
+                        <button class="quick-action" onclick="openRestockModal('all')"><span class="qa-icon">⚡</span>Restock Stock</button>
+                        <button class="quick-action" onclick="openModal('orders')"><span class="qa-icon">📋</span>Orders</button>
+                        <button class="quick-action" onclick="openModal('donate')"><span class="qa-icon">🤝</span>Zero Waste</button>
+                        <button class="quick-action" onclick="window.location.href='seed-to-plate.html'"><span class="qa-icon">📱</span>QR Batches</button>
+                        <button class="quick-action upload-journey" onclick="openModal('journey')"><span class="qa-icon">📸</span>Upload Journey</button>
+                    </div>
+
+                    <!-- 🌤️ SMART AGRO-CLIMATE & HARVEST ADVISORY WIDGET -->
+                    <div class="weather-advisory-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <strong style="color:var(--primary-dark); font-size:0.92rem; display:flex; align-items:center; gap:6px;">
+                                <i class="fas fa-cloud-sun-rain" style="color: var(--primary);"></i> Dindigul Farm Climate
+                            </strong>
+                            <span style="font-size:0.75rem; background:#DCFCE7; color:#166534; padding:2px 8px; border-radius:12px; font-weight:700;">Live Sensor</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.86rem; margin-bottom:6px;">
+                            <span>🌤️ <strong>Sunny (31°C)</strong> • Humidity: 65%</span>
+                            <span style="color:#D97706; font-weight:700;"><i class="fas fa-umbrella"></i> Rain: 15%</span>
+                        </div>
+                        <div style="font-size:0.8rem; color:var(--text-light); line-height:1.4; border-top:1px solid rgba(0,0,0,0.06); padding-top:6px; margin-top:6px;">
+                            🌾 <strong>Agronomy Advisory:</strong> Optimal morning picking window between 6:00 AM – 10:30 AM before afternoon showers. Next organic neem compost treatment in 3 days.
+                        </div>
+                    </div>
+
+                    <!-- ⏳ HARVEST FRESHNESS & ZERO-WASTE GUARD -->
+                    <div style="margin-top:14px; background:#FFF7ED; border:1px solid #FFEDD5; padding:14px; border-radius:12px; font-size:0.84rem;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <strong style="color:#9A3412;"><i class="fas fa-hourglass-half"></i> Freshness Shelf-Life Guard</strong>
+                            <span style="font-size:0.7rem; background:#FFEDD5; color:#9A3412; font-weight:800; padding:1px 6px; border-radius:4px;">Zero Waste</span>
+                        </div>
+                        <p style="color:#7C2D12; margin:0 0 8px; font-size:0.78rem;">
+                            Batch #BAT-TOM-89 harvested 3 days ago. Take action before quality dips:
+                        </p>
+                        <div style="display:flex; gap:6px;">
+                            <button onclick="triggerZeroWasteAction('discount', 'Organic Tomatoes')" style="flex:1; padding:6px 8px; background:#EA580C; color:white; border:none; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer;">
+                                ⚡ Flash 20% Off
+                            </button>
+                            <button onclick="triggerZeroWasteAction('donate', 'Organic Tomatoes')" style="flex:1; padding:6px 8px; background:white; color:#9A3412; border:1px solid #FDBA74; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer;">
+                                🤝 Donate to Kitchen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CUSTOMER REVIEWS & FARMER REPLY HUB -->
+        <div class="dashboard-card" style="margin-top: 28px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:10px;">
+                <div>
+                    <h3 style="margin-bottom:4px;"><i class="fas fa-comments" style="color:var(--primary);"></i> Customer Reviews & Grower Replies</h3>
+                    <p style="color:var(--text-light); font-size:0.88rem; margin:0;">Engage directly with buyers of your organic harvest and post official grower replies.</p>
+                </div>
+                <span class="status-pill status-delivered"><i class="fas fa-check-circle"></i> Direct Grower Interaction</span>
+            </div>
+            <div id="farmerReviewsHubList">
+                <div style="text-align:center; padding:20px; color:var(--text-light);">
+                    <i class="fas fa-spinner fa-spin"></i> Loading consumer feedback...
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================== -->
+<!-- ⚡ QUICK RESTOCK & HARVEST INVENTORY MODAL -->
+<!-- ========================================== -->
+<div class="modal" id="restockModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('restockModal')">✕</button>
+        <h2><i class="fas fa-bolt" style="color:#D97706;"></i> Fast Inventory Restock</h2>
+        <p style="color:var(--text-light); font-size:0.88rem; margin-bottom:16px;">
+            Increment available harvest quantity for your crops. Changes reflect instantly in consumer searches.
+        </p>
+        <form onsubmit="handleRestockSubmit(event)">
+            <div class="form-group">
+                <label>Select Crop to Restock *</label>
+                <select id="restockCropSelect" class="form-input" onchange="onRestockCropChange()" required style="width:100%; padding:12px; border-radius:8px; border:1.5px solid #cbd5e1; background:var(--bg); color:var(--text);">
+                    <!-- Populated dynamically -->
+                </select>
+            </div>
+            <div class="form-group" style="margin-top:12px;">
+                <label>Current Available Stock: <span id="currentStockDisplay" style="font-weight:800; color:#DC2626;">5 kg</span></label>
+                <div style="display:flex; gap:8px; margin:8px 0; flex-wrap:wrap;">
+                    <button type="button" class="btn-chip-add" style="padding:7px 12px; font-size:0.85rem;" onclick="addStockPreset(10)">+10 kg</button>
+                    <button type="button" class="btn-chip-add" style="padding:7px 12px; font-size:0.85rem;" onclick="addStockPreset(25)">+25 kg</button>
+                    <button type="button" class="btn-chip-add" style="padding:7px 12px; font-size:0.85rem;" onclick="addStockPreset(50)">+50 kg</button>
+                    <button type="button" class="btn-chip-add" style="padding:7px 12px; font-size:0.85rem;" onclick="addStockPreset(100)">+100 kg</button>
+                </div>
+                <input type="number" id="addStockAmount" placeholder="Enter additional quantity to add (e.g. 25)" min="1" required style="width:100%; padding:12px; border-radius:8px; border:1.5px solid #cbd5e1; background:var(--bg); color:var(--text);">
+            </div>
+            <div class="form-group" style="margin:12px 0;">
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.85rem;">
+                    <input type="checkbox" id="markMorningHarvest" checked>
+                    <span>Mark as fresh morning harvest batch with active QR trace</span>
+                </label>
+            </div>
+            <button type="submit" class="btn-modal" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); width:100%;">
+                <i class="fas fa-check"></i> Confirm & Update Inventory
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- ✅ ADD PRODUCT MODAL -->
+<!-- ========================================== -->
+<div class="modal" id="addProductModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('addProductModal')">✕</button>
+        <h2><i class="fas fa-plus" style="color:#E65100;"></i> Add Farm Produce</h2>
+        <form onsubmit="handleAddProductSubmit(event)">
+            <div class="form-group">
+                <label>Crop Name *</label>
+                <input type="text" id="newCropName" placeholder="e.g. Organic Bell Peppers" required>
+            </div>
+            <div class="form-group">
+                <label>Category *</label>
+                <select id="newCropCat">
+                    <option value="vegetables">Vegetables</option>
+                    <option value="fruits">Fruits</option>
+                    <option value="frozen">Frozen Packs</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Price (₹) *</label>
+                <input type="number" id="newCropPrice" placeholder="60" required>
+            </div>
+            <div class="form-group">
+                <label>Quantity (kg) *</label>
+                <input type="number" id="newCropQty" placeholder="50" required>
+            </div>
+            <button type="submit" class="btn-modal"><i class="fas fa-check"></i> Publish & Generate Packaging QR</button>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- ========================================== -->
+<!-- ✅ PRODUCT PACKAGING QR STICKER MODAL -->
+<!-- ========================================== -->
+<div class="modal" id="productQrStickerModal">
+    <div class="modal-content" style="max-width: 460px; text-align: center;">
+        <button class="modal-close" onclick="closeModal('productQrStickerModal')">✕</button>
+        <div style="font-size: 2.2rem; color: #16a34a; margin-bottom: 4px;">✅</div>
+        <h2 style="font-size: 1.35rem; margin-bottom: 4px; color: #0f172a;">Product Added Successfully</h2>
+        <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 14px;">
+            Unique Product ID, Traceability ID, and Seed-to-Plate QR Code generated automatically by verified backend service.
+        </p>
+
+        <!-- Printable QR & IDs Preview -->
+        <div id="printableQrSticker" style="background: #ffffff; border: 2px dashed #16a34a; border-radius: 14px; padding: 18px; margin-bottom: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center;">
+            <div style="font-size: 0.72rem; font-weight: 800; color: #15803d; text-transform: uppercase; letter-spacing: 1px;">
+                🌱 Farm to Fork Collective
+            </div>
+            <h3 id="stickerProductName" style="font-size: 1.15rem; color: #0f172a; margin: 4px 0 6px;">Organic Tomatoes</h3>
+            
+            <div style="display:flex; flex-direction:column; gap:4px; margin-bottom:10px;">
+                <div style="font-size:0.8rem; color:#64748b;">
+                    <strong>Product ID:</strong>
+                    <span id="stickerProductId" style="font-family: monospace; font-weight: 700; color: #1e40af; background: #eff6ff; padding: 2px 8px; border-radius: 4px;">FTF-P-2026-000001</span>
+                </div>
+                <div style="font-size:0.8rem; color:#64748b;">
+                    <strong>Traceability ID:</strong>
+                    <span id="stickerTraceId" style="font-family: monospace; font-weight: 700; color: #065f46; background: #ecfdf5; padding: 2px 8px; border-radius: 4px;">FTF-TR-XXXXXXXX</span>
+                </div>
+            </div>
+
+            <div style="margin: 6px auto; width: 170px; height: 170px; display: flex; align-items: center; justify-content: center; background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 8px;">
+                <img id="stickerQrImage" src="" alt="Verified Packaging QR Code" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+            <div style="font-size: 0.78rem; font-weight: 700; color: #16a34a; margin-top: 6px;">
+                ✓ 100% Certified Organic • Seed to Plate
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 8px; flex-direction: column;">
+            <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn-primary" onclick="printPackagingSticker()" style="flex: 1; padding: 10px; font-size: 0.88rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i class="fas fa-print"></i> Print QR
+                </button>
+                <button type="button" class="btn-secondary" onclick="downloadPackagingQrPng()" style="flex: 1; padding: 10px; font-size: 0.88rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i class="fas fa-download"></i> Download QR
+                </button>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <a id="btnViewTraceabilityLink" href="traceability.html" target="_blank" style="flex: 1; background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 8px; padding: 8px; font-size: 0.82rem; font-weight: 700; color: #065f46; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i class="fas fa-route"></i> View Traceability
+                </a>
+                <a href="products.html" target="_blank" style="flex: 1; background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 8px; padding: 8px; font-size: 0.82rem; font-weight: 700; color: #1e40af; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i class="fas fa-box-open"></i> View Product
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- ✅ EDIT PRODUCT MODAL -->
+<!-- ========================================== -->
+<div class="modal" id="editProductModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('editProductModal')">✕</button>
+        <h2><i class="fas fa-edit" style="color:#1565C0;"></i> Edit Product</h2>
+        <form onsubmit="handleEditProductSubmit(event)">
+            <div class="form-group">
+                <label>Product Name</label>
+                <input type="text" id="editProductName" required>
+            </div>
+            <div class="form-group">
+                <label>Price (₹)</label>
+                <input type="number" id="editProductPrice" required>
+            </div>
+            <div class="form-group">
+                <label>Stock Quantity</label>
+                <input type="number" id="editProductStock" required>
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="editProductCategory">
+                    <option value="vegetables">Vegetables</option>
+                    <option value="fruits">Fruits</option>
+                    <option value="frozen">Frozen Packs</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>📸 Update Journey Photo</label>
+                <input type="file" accept="image/*" onchange="previewImage(this, 'editPreview')">
+                <img class="preview-image" id="editPreview">
+            </div>
+            <button type="submit" class="btn-modal btn-modal-edit"><i class="fas fa-save"></i> Update Product</button>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- ✅ SEED TO PLANT JOURNEY MODAL -->
+<!-- ========================================== -->
+<div class="modal" id="journeyModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('journeyModal')">✕</button>
+        <h2><i class="fas fa-seedling" style="color:#E65100;"></i> Upload Seed to Plant Journey</h2>
+        <p style="color:var(--text-light); margin-bottom:16px;">Share photos and details of your crop's growth journey from seed to harvest.</p>
+
+        <form onsubmit="event.preventDefault(); closeModal('journeyModal'); showNotification('✅ Journey uploaded successfully! Customers can now see your crop\'s story! 🌱')">
+            <div class="form-group">
+                <label>Product Name</label>
+                <select required>
+                    <option>Organic Tomatoes</option>
+                    <option>Organic Spinach</option>
+                    <option>Organic Carrots</option>
+                    <option>Organic Broccoli</option>
+                </select>
+            </div>
+
+            <!-- Stage 1: Seed Sowing -->
+            <div style="border:1px solid #ddd; border-radius:10px; padding:16px; margin-bottom:12px;">
+                <h4 style="color:#4CAF50;">🌱 Stage 1: Seed Sowing</h4>
+                <div class="form-group"><label>Date</label><input type="date"></div>
+                <div class="form-group"><label>Description</label><textarea rows="2" placeholder="Describe the seed sowing process..."></textarea></div>
+                <div class="form-group"><label>Upload Photo</label><input type="file" accept="image/*" onchange="previewImage(this, 'preview1')"><img class="preview-image" id="preview1"></div>
+            </div>
+
+            <!-- Stage 2: Germination -->
+            <div style="border:1px solid #ddd; border-radius:10px; padding:16px; margin-bottom:12px;">
+                <h4 style="color:#8BC34A;">🌿 Stage 2: Germination</h4>
+                <div class="form-group"><label>Date</label><input type="date"></div>
+                <div class="form-group"><label>Description</label><textarea rows="2" placeholder="Describe the germination process..."></textarea></div>
+                <div class="form-group"><label>Upload Photo</label><input type="file" accept="image/*" onchange="previewImage(this, 'preview2')"><img class="preview-image" id="preview2"></div>
+            </div>
+
+            <!-- Stage 3: Growing Phase -->
+            <div style="border:1px solid #ddd; border-radius:10px; padding:16px; margin-bottom:12px;">
+                <h4 style="color:#FFC107;">🌾 Stage 3: Growing Phase</h4>
+                <div class="form-group"><label>Date</label><input type="date"></div>
+                <div class="form-group"><label>Description</label><textarea rows="2" placeholder="Describe the growing phase..."></textarea></div>
+                <div class="form-group"><label>Upload Photo</label><input type="file" accept="image/*" onchange="previewImage(this, 'preview3')"><img class="preview-image" id="preview3"></div>
+            </div>
+
+            <!-- Stage 4: Flowering -->
+            <div style="border:1px solid #ddd; border-radius:10px; padding:16px; margin-bottom:12px;">
+                <h4 style="color:#FF9800;">🌻 Stage 4: Flowering</h4>
+                <div class="form-group"><label>Date</label><input type="date"></div>
+                <div class="form-group"><label>Description</label><textarea rows="2" placeholder="Describe the flowering stage..."></textarea></div>
+                <div class="form-group"><label>Upload Photo</label><input type="file" accept="image/*" onchange="previewImage(this, 'preview4')"><img class="preview-image" id="preview4"></div>
+            </div>
+
+            <!-- Stage 5: Harvesting -->
+            <div style="border:1px solid #ddd; border-radius:10px; padding:16px; margin-bottom:12px;">
+                <h4 style="color:#F44336;">🥔 Stage 5: Harvesting</h4>
+                <div class="form-group"><label>Date</label><input type="date"></div>
+                <div class="form-group"><label>Description</label><textarea rows="2" placeholder="Describe the harvesting process..."></textarea></div>
+                <div class="form-group"><label>Upload Photo</label><input type="file" accept="image/*" onchange="previewImage(this, 'preview5')"><img class="preview-image" id="preview5"></div>
+            </div>
+
+            <button type="submit" class="btn-modal"><i class="fas fa-upload"></i> Upload Journey</button>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- ✅ ORDERS MODAL -->
+<!-- ========================================== -->
+<div class="modal" id="ordersModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('ordersModal')">✕</button>
+        <h2><i class="fas fa-box" style="color:#E65100;"></i> All Orders</h2>
+        <div class="product-item"><div><strong>#FTF-98214</strong><div style="font-size:0.85rem;">Customer: Priya • 3 items • ₹225</div></div><span style="color:#2196F3; font-weight:600;">Out for Delivery</span></div>
+        <div class="product-item"><div><strong>#FTF-87421</strong><div style="font-size:0.85rem;">Anna Nagar Kitchen • 4 items • ₹610</div></div><span style="color:#4CAF50; font-weight:600;">Delivered</span></div>
+        <div class="product-item"><div><strong>#FTF-87211</strong><div style="font-size:0.85rem;">Customer: Ravi • 2 items • ₹340</div></div><span style="color:#FFC107; font-weight:600;">Processing</span></div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- ✅ DONATE MODAL -->
+<!-- ========================================== -->
+<div class="modal" id="donateModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('donateModal')">✕</button>
+        <h2><i class="fas fa-hand-holding-heart" style="color:#E65100;"></i> Donate Surplus</h2>
+        <form id="farmerDonateForm" onsubmit="handleDonateSubmit(event)">
+            <div class="form-group">
+                <label>Surplus Produce</label>
+                <select id="donateProduceSelect">
+                    <option value="Organic Tomatoes (15 kg)">Organic Tomatoes (15 kg)</option>
+                    <option value="Organic Spinach (10 bunches)">Organic Spinach (10 bunches)</option>
+                    <option value="Organic Pumpkins (20 kg)">Organic Pumpkins (20 kg)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Receiving Kitchen / Partner NGO</label>
+                <select id="donateKitchenSelect">
+                    <option value="Sunshine Community Kitchen (Anna Nagar)">Sunshine Community Kitchen (Anna Nagar)</option>
+                    <option value="Green Valley Kitchen (T. Nagar)">Green Valley Kitchen (T. Nagar)</option>
+                    <option value="Healthy Harvest Kitchen (Adyar)">Healthy Harvest Kitchen (Adyar)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-modal"><i class="fas fa-heart"></i> Confirm Donation</button>
+        </form>
+    </div>
+</div>
+
+        </div><!-- .dashboard-content-body -->
+
+        <footer class="footer" style="margin-top: auto; border-top: 1px solid rgba(0,0,0,0.06); padding: 24px 32px; background: var(--white);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 0.82rem; color: var(--text-light);">
+                <div>&copy; 2024 Farm to Fork Collective • Farmer Operations Center 🌱</div>
+                <div style="display: flex; gap: 16px;">
+                    <a href="../index.html" style="color: var(--text-light); text-decoration: none;">Public Home</a>
+                    <a href="products.html" style="color: var(--text-light); text-decoration: none;">Shop Products</a>
+                    <a href="farmer-store.html" style="color: var(--text-light); text-decoration: none;">My Storefront</a>
+                </div>
+            </div>
+        </footer>
+    </main>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/script.js"></script>
+<script src="../js/feedback.js"></script>
+<script src="../js/notifications.js"></script>
+<script src="../js/i18n.js"></script>
+<script>
+    // ==========================================
+    // MODAL FUNCTIONS
+    // ==========================================
+    function openModal(id) {
+        const map = { 
+            'addProduct': 'addProductModal', 
+            'orders': 'ordersModal', 
+            'donate': 'donateModal', 
+            'journey': 'journeyModal',
+            'restock': 'restockModal'
+        };
+        const el = document.getElementById(map[id] || id);
+        if (el) el.classList.add('active');
+    }
+
+    function closeModal(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('active');
+    }
+
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal')) {
+            e.target.classList.remove('active');
+        }
+    });
+
+    // ==========================================
+    // LIVE FARMER PRODUCTS & ORDERS STATE
+    // ==========================================
+    let farmerProducts = [];
+    let currentEditProductId = null;
+
+    async function loadFarmerDashboardData() {
+        const farmerName = localStorage.getItem('userName') || 'Farmer';
+        
+        // 1. Fetch live products from backend
+        if (window.FTF_API && window.FTF_API.products) {
+            try {
+                const res = await window.FTF_API.products.getAll();
+                if (res && res.success && Array.isArray(res.products)) {
+                    // Show all farm produce (vegetables, fruits, or seller's produce)
+                    farmerProducts = res.products.filter(p => 
+                        p.category === 'vegetables' || 
+                        p.category === 'fruits' || 
+                        (p.seller && p.seller.toLowerCase().includes(farmerName.toLowerCase()))
+                    );
+                    renderFarmerProductsList();
+                }
+            } catch (err) {
+                console.warn('Error fetching live farmer products:', err);
+            }
+        }
+
+        // 2. Fetch live orders from backend
+        if (window.FTF_API && window.FTF_API.orders) {
+            try {
+                const orderRes = await window.FTF_API.orders.getAll();
+                if (orderRes && orderRes.success && Array.isArray(orderRes.orders)) {
+                    const orderStat = document.querySelectorAll('.stats-grid .stat-card .stat-number')[1];
+                    if (orderStat) orderStat.textContent = orderRes.orders.length;
+                }
+            } catch (err) {
+                console.warn('Error fetching orders:', err);
+            }
+        }
+
+        // 3. Load live customer reviews & reply threads
+        if (window.FTF_Feedback && typeof window.FTF_Feedback.renderProductReviews === 'function') {
+            await window.FTF_Feedback.renderProductReviews(null, 'farmerReviewsHubList');
+        }
+    }
+
+    function renderFarmerProductsList() {
+        const container = document.getElementById('farmerProductList');
+        if (!container) return;
+
+        const countEl = document.getElementById('productCount');
+        if (countEl) countEl.textContent = farmerProducts.length;
+
+        // 🚨 SCAN FOR LOW-STOCK CROPS (Safe Threshold: < 15 kg/units)
+        const lowStockCrops = farmerProducts.filter(p => {
+            const s = (p.stock !== undefined && p.stock !== null) ? Number(p.stock) : 50;
+            return s < 15;
+        });
+
+        // Update Low Stock Alert Stat Card
+        const lowStockStat = document.getElementById('lowStockStatCount');
+        if (lowStockStat) lowStockStat.textContent = lowStockCrops.length;
+
+        // Update Critical Low Stock Notification Banner
+        const banner = document.getElementById('farmerLowStockBanner');
+        const bannerTitle = document.getElementById('lowStockBannerTitle');
+        const bannerDesc = document.getElementById('lowStockBannerDesc');
+        const chipsRow = document.getElementById('lowStockChipsRow');
+
+        if (banner && chipsRow) {
+            if (lowStockCrops.length > 0) {
+                banner.style.display = 'block';
+                if (bannerTitle) bannerTitle.innerHTML = `⚠️ Low Stock Alert: <strong>${lowStockCrops.length} ${lowStockCrops.length === 1 ? 'Crop is' : 'Crops are'}</strong> running low on inventory!`;
+                if (bannerDesc) bannerDesc.textContent = `Immediate harvest replenishment recommended to prevent stockouts and customer checkout errors.`;
+                chipsRow.innerHTML = lowStockCrops.map(c => `
+                    <div class="low-stock-chip">
+                        <span class="chip-name"><strong>${c.name}</strong> (${c.stock || 0} ${c.unit || 'kg'} left)</span>
+                        <button type="button" class="btn-chip-add" onclick="quickAddStock(${c.id}, 25)">⚡ +25 ${c.unit || 'kg'}</button>
+                        <button type="button" class="btn-chip-add" onclick="quickAddStock(${c.id}, 50)">⚡ +50 ${c.unit || 'kg'}</button>
+                    </div>
+                `).join('');
+            } else {
+                banner.style.display = 'none';
+            }
+        }
+
+        // Populate Restock Crop Select dropdown
+        const restockSelect = document.getElementById('restockCropSelect');
+        if (restockSelect) {
+            restockSelect.innerHTML = farmerProducts.map(p => `
+                <option value="${p.id}" ${lowStockCrops.length && lowStockCrops[0].id === p.id ? 'selected' : ''}>
+                    ${p.name} (${p.stock || 0} ${p.unit || 'kg'} available)
+                </option>
+            `).join('');
+        }
+
+        if (farmerProducts.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 30px; color: var(--text-light);">
+                    <i class="fas fa-seedling" style="font-size: 2rem; opacity: 0.4; margin-bottom: 8px;"></i>
+                    <p>No crops listed yet. Click <strong>+ Add New Crop</strong> to publish produce.</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = farmerProducts.map(p => {
+            const stock = (p.stock !== undefined && p.stock !== null) ? Number(p.stock) : 50;
+            let stockBadge = '';
+            if (stock <= 0) {
+                stockBadge = `<span class="stock-pill out-of-stock">🔴 Sold Out</span>`;
+            } else if (stock < 15) {
+                stockBadge = `<span class="stock-pill low-stock">⚠️ Low: ${stock} ${p.unit || 'kg'} left</span>`;
+            } else {
+                stockBadge = `<span class="stock-pill healthy">🟢 In Stock: ${stock} ${p.unit || 'kg'}</span>`;
+            }
+
+            const emoji = p.category === 'fruits' ? '🍎' : '🥬';
+
+            return `
+                <div class="product-item animate-scale" data-product-id="${p.id}" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid rgba(0,0,0,0.06); gap: 12px;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                        <img src="${p.image}" alt="${p.name}" style="width: 46px; height: 46px; border-radius: 8px; object-fit: cover;" onerror="this.src='https://via.placeholder.com/60'">
+                        <div>
+                            <h4 style="margin: 0; font-size: 1rem;">${emoji} ${p.name}</h4>
+                            <p style="color:var(--text-light); font-size:0.85rem; margin: 3px 0 0;">
+                                ₹${p.price}/${p.unit || 'kg'} • ${p.origin || 'Tamil Nadu'} • ${p.badge || '🌿 Organic'}
+                            </p>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                        ${stockBadge}
+                        <button class="btn-restock-quick" style="padding: 4px 10px; font-size: 0.72rem; border-radius: 15px;" onclick="quickAddStock(${p.id}, 25)" title="Quick 1-Click Restock +25kg">⚡ +25kg</button>
+                        <button class="btn-edit" onclick="openEditModal(${p.id})">✏️ Edit</button>
+                        <button onclick="handleDeleteProduct(${p.id})" style="background: none; border: 1px solid #FFCDD2; color: #D32F2F; border-radius: 6px; padding: 6px 10px; cursor: pointer;" title="Delete Crop">🗑️</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // ==========================================
+    // ⚡ RESTOCK LOGIC & HANDLERS
+    // ==========================================
+    function focusLowStockBanner() {
+        const banner = document.getElementById('farmerLowStockBanner');
+        if (banner) {
+            banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            banner.style.transform = 'scale(1.02)';
+            setTimeout(() => { banner.style.transform = 'scale(1)'; }, 400);
+        }
+    }
+
+    function dismissLowStockBanner() {
+        const banner = document.getElementById('farmerLowStockBanner');
+        if (banner) banner.style.display = 'none';
+    }
+
+    function openRestockModal(targetCropId) {
+        const select = document.getElementById('restockCropSelect');
+        if (select && targetCropId && targetCropId !== 'all') {
+            select.value = targetCropId;
+        }
+        onRestockCropChange();
+        openModal('restockModal');
+    }
+
+    function onRestockCropChange() {
+        const select = document.getElementById('restockCropSelect');
+        const display = document.getElementById('currentStockDisplay');
+        if (!select || !display) return;
+        const cropId = parseInt(select.value, 10);
+        const prod = farmerProducts.find(p => p.id === cropId);
+        if (prod) {
+            const s = (prod.stock !== undefined && prod.stock !== null) ? Number(prod.stock) : 0;
+            display.textContent = `${s} ${prod.unit || 'kg'}`;
+            display.style.color = s < 15 ? '#DC2626' : '#16a34a';
+        }
+    }
+
+    function addStockPreset(amt) {
+        const input = document.getElementById('addStockAmount');
+        if (input) input.value = amt;
+    }
+
+    async function handleRestockSubmit(e) {
+        e.preventDefault();
+        const select = document.getElementById('restockCropSelect');
+        const input = document.getElementById('addStockAmount');
+        if (!select || !input) return;
+
+        const cropId = parseInt(select.value, 10);
+        const addAmount = parseInt(input.value, 10);
+        if (isNaN(addAmount) || addAmount <= 0) {
+            alert('Please enter a valid stock quantity.');
+            return;
+        }
+
+        await quickAddStock(cropId, addAmount);
+        closeModal('restockModal');
+        input.value = '';
+    }
+
+    async function quickAddStock(productId, amountToAdd) {
+        const prod = farmerProducts.find(p => p.id === productId);
+        if (!prod) return;
+
+        const currentStock = (prod.stock !== undefined && prod.stock !== null) ? Number(prod.stock) : 50;
+        const newStock = currentStock + amountToAdd;
+
+        // Backend update
+        if (window.FTF_API && window.FTF_API.products) {
+            try {
+                const res = await window.FTF_API.products.update(productId, { stock: newStock });
+                if (res && res.success) {
+                    prod.stock = newStock;
+                    renderFarmerProductsList();
+                    showNotification(`⚡ Restocked ${prod.name}! New available stock: ${newStock} ${prod.unit || 'kg'}`);
+                    
+                    if (window.FTF_NOTIFICATIONS && typeof window.FTF_NOTIFICATIONS.addNotification === 'function') {
+                        window.FTF_NOTIFICATIONS.addNotification({
+                            type: 'stock',
+                            title: 'Stock Replenished',
+                            message: `Successfully added ${amountToAdd} ${prod.unit || 'kg'} to ${prod.name}. Total: ${newStock} ${prod.unit || 'kg'}.`
+                        });
+                    }
+                    return;
+                }
+            } catch (err) {
+                console.warn('Backend restock update failed, falling back to local state:', err);
+            }
+        }
+
+        // Local state fallback
+        prod.stock = newStock;
+        renderFarmerProductsList();
+        showNotification(`⚡ Restocked ${prod.name}! New available stock: ${newStock} ${prod.unit || 'kg'}`);
+    }
+
+    // Zero-waste shelf-life quick actions
+    function triggerZeroWasteAction(action, cropName) {
+        if (action === 'discount') {
+            showNotification(`🏷️ 20% Flash Discount applied to ${cropName} to guarantee zero spoilage!`);
+        } else if (action === 'donate') {
+            showNotification(`🤝 ${cropName} flagged for community kitchen pickup dispatch! Zero Waste achieved.`);
+        }
+    }
+
+    // ==========================================
+    // EDIT PRODUCT
+    // ==========================================
+    function openEditModal(productId) {
+        currentEditProductId = productId;
+        const prod = farmerProducts.find(p => p.id === productId);
+        if (prod) {
+            document.getElementById('editProductName').value = prod.name;
+            document.getElementById('editProductPrice').value = prod.price;
+            document.getElementById('editProductStock').value = prod.stock || 50;
+            const catSelect = document.getElementById('editProductCategory');
+            if (catSelect) catSelect.value = prod.category || 'vegetables';
+            openModal('editProductModal');
+        }
+    }
+
+    async function handleEditProductSubmit(e) {
+        e.preventDefault();
+        const name = document.getElementById('editProductName').value;
+        const price = parseFloat(document.getElementById('editProductPrice').value);
+        const stock = parseInt(document.getElementById('editProductStock').value, 10);
+        const cat = document.getElementById('editProductCategory') ? document.getElementById('editProductCategory').value : 'vegetables';
+
+        if (window.FTF_API && window.FTF_API.products && currentEditProductId) {
+            try {
+                const updateRes = await window.FTF_API.products.update(currentEditProductId, {
+                    name,
+                    price,
+                    stock,
+                    category: cat
+                });
+                if (updateRes && updateRes.success) {
+                    showNotification('✅ Product updated successfully on server!');
+                    closeModal('editProductModal');
+                    await loadFarmerDashboardData();
+                    return;
+                }
+            } catch (err) {
+                console.warn('Backend update failed:', err);
+            }
+        }
+
+        // Fallback local update
+        const idx = farmerProducts.findIndex(p => p.id === currentEditProductId);
+        if (idx !== -1) {
+            farmerProducts[idx].name = name;
+            farmerProducts[idx].price = price;
+            farmerProducts[idx].stock = stock;
+            farmerProducts[idx].category = cat;
+            renderFarmerProductsList();
+        }
+        closeModal('editProductModal');
+        showNotification('✅ Product updated!');
+    }
+
+    // ==========================================
+    // ADD PRODUCT
+    // ==========================================
+    async function handleAddProductSubmit(e) {
+        e.preventDefault();
+        const name = document.getElementById('newCropName').value.trim();
+        const cat = document.getElementById('newCropCat').value;
+        const price = parseFloat(document.getElementById('newCropPrice').value);
+        const qty = parseInt(document.getElementById('newCropQty').value, 10);
+        const farmerName = localStorage.getItem('userName') || 'Green Valley Farm';
+
+        const newProdData = {
+            name,
+            category: cat,
+            price,
+            stock: qty,
+            unit: 'kg',
+            seller: farmerName,
+            origin: 'Tamil Nadu',
+            badge: '🌿 Farm Fresh',
+            freshness: 'Fresh',
+            freshnessScore: 95,
+            image: `/assets/images/products/${cat === 'fruits' ? 'organic-apples.jpg' : 'organic-tomatoes.jpg'}`
+        };
+
+        if (window.FTF_API && window.FTF_API.products) {
+            try {
+                const res = await window.FTF_API.products.create(newProdData);
+                if (res && res.success) {
+                    showNotification(`🎉 ${name} published with verified QR code!`);
+                    closeModal('addProductModal');
+                    document.getElementById('newCropName').value = '';
+                    document.getElementById('newCropPrice').value = '';
+                    document.getElementById('newCropQty').value = '';
+                    await loadFarmerDashboardData();
+
+                    // Open QR code modal with generated Product ID & Traceability ID
+                    const created = res.product || {};
+                    showCreatedProductModal(created);
+                    return;
+                }
+            } catch (err) {
+                console.warn('Backend product creation error:', err);
+            }
+        }
+
+        // Fallback local add
+        newProdData.id = Date.now();
+        newProdData.productId = 'FTF-P-2026-' + String(newProdData.id).slice(-6);
+        newProdData.traceabilityId = 'FTF-TR-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+        farmerProducts.unshift(newProdData);
+        renderFarmerProductsList();
+        closeModal('addProductModal');
+        showNotification(`🎉 ${name} published!`);
+        showCreatedProductModal(newProdData);
+    }
+
+    async function handleDonateSubmit(event) {
+        if (event) event.preventDefault();
+        const prodEl = document.getElementById('donateProduceSelect');
+        const ngoEl = document.getElementById('donateKitchenSelect');
+        const produce = prodEl ? prodEl.value : 'Organic Tomatoes (15 kg)';
+        const ngo = ngoEl ? ngoEl.value : 'Sunshine Community Kitchen (Anna Nagar)';
+        const donorName = localStorage.getItem('userName') || 'Organic Farmer';
+        const donorEmail = localStorage.getItem('userEmail') || '';
+
+        try {
+            if (window.FTF_API && window.FTF_API.community && window.FTF_API.community.donate) {
+                await window.FTF_API.community.donate({ donorName, donorEmail, produce, ngo });
+            }
+        } catch (err) {
+            console.warn('Donation API call fallback:', err);
+        }
+
+        closeModal('donateModal');
+        showNotification('🤝 Surplus donation recorded! Confirmation email dispatched to donor and admin.');
+    }
+
+    function showCreatedProductModal(prod) {
+        if (!prod) return;
+        const nameEl = document.getElementById('stickerProductName');
+        if (nameEl) nameEl.textContent = prod.name || 'Organic Produce';
+
+        const pIdEl = document.getElementById('stickerProductId');
+        if (pIdEl) pIdEl.textContent = prod.productId || 'FTF-P-2026-000001';
+
+        const trIdEl = document.getElementById('stickerTraceId');
+        if (trIdEl) trIdEl.textContent = prod.traceabilityId || 'FTF-TR-XXXXXXXX';
+
+        const qrImg = document.getElementById('stickerQrImage');
+        if (qrImg) {
+            if (prod.qrCode) {
+                qrImg.src = prod.qrCode;
+            } else {
+                const traceTarget = window.location.origin + '/traceability/' + (prod.traceabilityId || prod.productId);
+                qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=${encodeURIComponent(traceTarget)}`;
+            }
+        }
+
+        const traceLink = document.getElementById('btnViewTraceabilityLink');
+        if (traceLink) {
+            const trId = prod.traceabilityId || prod.productId || '';
+            traceLink.href = `/traceability/${encodeURIComponent(trId)}`;
+        }
+
+        openModal('productQrStickerModal');
+    }
+
+    function printPackagingSticker() {
+        window.print();
+    }
+
+    function downloadPackagingQrPng() {
+        const qrImg = document.getElementById('stickerQrImage');
+        if (!qrImg || !qrImg.src) return;
+        const trId = (document.getElementById('stickerTraceId') && document.getElementById('stickerTraceId').textContent) || 'QR';
+        const a = document.createElement('a');
+        a.href = qrImg.src;
+        a.download = `FTF_Product_${trId}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    // ==========================================
+    // DELETE PRODUCT
+    // ==========================================
+    async function handleDeleteProduct(id) {
+        if (!confirm('Are you sure you want to delete this crop listing?')) return;
+
+        if (window.FTF_API && window.FTF_API.products) {
+            try {
+                const res = await window.FTF_API.products.delete(id);
+                if (res && res.success) {
+                    showNotification('🗑️ Product deleted from marketplace.');
+                    await loadFarmerDashboardData();
+                    return;
+                }
+            } catch (err) {
+                console.warn('Backend delete error:', err);
+            }
+        }
+
+        farmerProducts = farmerProducts.filter(p => p.id !== id);
+        renderFarmerProductsList();
+        showNotification('🗑️ Product deleted.');
+    }
+
+    // ==========================================
+    // IMAGE PREVIEW
+    // ==========================================
+    function previewImage(input, previewId) {
+        const preview = document.getElementById(previewId);
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.add('show');
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // ==========================================
+    // NOTIFICATION
+    // ==========================================
+    function showNotification(msg) {
+        const toast = document.createElement('div');
+        toast.innerHTML = msg;
+        toast.style.cssText = `
+            position: fixed; bottom: 30px; right: 30px;
+            background: var(--white); padding: 16px 24px;
+            border-radius: 12px; box-shadow: var(--shadow-hover);
+            border-left: 4px solid #E65100;
+            z-index: 9999; animation: slideUp 0.5s ease;
+            font-size: 0.95rem; max-width: 400px;
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    // ==========================================
+    // LOGOUT
+    // ==========================================
+    function logoutUser() {
+        if (confirm('Are you sure you want to logout?')) {
+            if (window.FTF_API && window.FTF_API.auth) window.FTF_API.auth.logout();
+            localStorage.clear();
+            window.location.href = '../index.html';
+        }
+    }
+
+    // ==========================================
+    // USER NAME ON LOAD & DATA FETCH
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', async function() {
+        const name = localStorage.getItem('userName');
+        const role = localStorage.getItem('userRole');
+        if (name && role === 'farmer') {
+            const bar = document.getElementById('userInfoBar');
+            if (bar) bar.style.display = 'block';
+            if (document.getElementById('displayUserName')) document.getElementById('displayUserName').textContent = name;
+            if (document.getElementById('displayUserRole')) document.getElementById('displayUserRole').textContent = 'Farmer';
+            if (document.getElementById('farmerName')) document.getElementById('farmerName').textContent = name;
+        } else if (!name) {
+            // Demo fallback credentials for quick inspection
+            localStorage.setItem('userName', 'Sundaram R.');
+            localStorage.setItem('userRole', 'farmer');
+            if (document.getElementById('farmerName')) document.getElementById('farmerName').textContent = 'Sundaram R.';
+        }
+
+        await loadFarmerDashboardData();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Farm to Fork Collective 🌱</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Mukta+Malar:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/respnsive.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html, body {
+            min-height: 100%;
+            overflow-x: hidden;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', 'Mukta Malar', sans-serif;
+            background: radial-gradient(circle at 10% 20%, rgba(220, 252, 231, 0.75) 0%, transparent 45%),
+                        radial-gradient(circle at 90% 80%, rgba(254, 243, 199, 0.75) 0%, transparent 45%),
+                        linear-gradient(135deg, #F0FDF4 0%, #FFFBEB 100%);
+            min-height: 100vh;
+            color: var(--text, #1B2E24);
+            line-height: 1.5;
+        }
+
+        /* Desktop Page Layout Container */
+        .auth-page {
+            min-height: 100vh;
+            min-height: 100dvh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* Full Desktop Split-Screen Card */
+        .auth-desktop-card {
+            background: #ffffff;
+            border-radius: 28px;
+            border: 1px solid rgba(45, 106, 79, 0.15);
+            box-shadow: 0 25px 65px -15px rgba(27, 67, 50, 0.18), 0 0 0 1px rgba(255, 255, 255, 0.9);
+            width: 100%;
+            max-width: 1180px;
+            min-height: 720px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1.05fr 1.2fr;
+            overflow: hidden;
+            position: relative;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        /* ==================================================== */
+        /* LEFT COLUMN: BRAND HERO & SOCIAL PROOF PANEL         */
+        /* ==================================================== */
+        .auth-showcase-panel {
+            background: linear-gradient(145deg, #081C15 0%, #1B4332 45%, #2D6A4F 100%);
+            color: #ffffff;
+            padding: 52px 44px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Ambient Glow & Organic Graphic Accents */
+        .auth-showcase-panel::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(116, 198, 157, 0.28) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .auth-showcase-panel::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -40px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(233, 196, 106, 0.18) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .showcase-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand-pill-header {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 8px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 28px;
+        }
+        .brand-pill-header .logo-badge {
+            width: 32px;
+            height: 32px;
+            background: #52B788;
+            color: #081C15;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+        .brand-pill-header span {
+            font-size: 0.88rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #E8F5E9;
+        }
+
+        .showcase-heading {
+            font-size: 2.35rem;
+            font-weight: 800;
+            line-height: 1.22;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+        .showcase-heading span {
+            background: linear-gradient(135deg, #74C69D, #E9C46A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .showcase-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.82);
+            margin-bottom: 32px;
+        }
+
+        /* Pillars list */
+        .showcase-features {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 36px;
+        }
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+        .feature-icon-box {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #74C69D;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .feature-text strong {
+            display: block;
+            font-size: 0.94rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+        .feature-text p {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.72);
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        /* Floating Trust & Metric Badges */
+        .showcase-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 14px;
+            padding: 14px 10px;
+            text-align: center;
+        }
+        .stat-card .stat-val {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #74C69D;
+            display: block;
+            line-height: 1.2;
+        }
+        .stat-card .stat-label {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.75);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* Testimonial Quote Box */
+        .showcase-testimonial {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            position: relative;
+            z-index: 2;
+        }
+        .testimonial-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #52B788;
+            color: #081C15;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+        .testimonial-text p {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-style: italic;
+            line-height: 1.4;
+            margin-bottom: 3px;
+        }
+        .testimonial-text span {
+            font-size: 0.74rem;
+            color: #E9C46A;
+            font-weight: 700;
+        }
+
+        /* ==================================================== */
+        /* RIGHT COLUMN: INTERACTIVE AUTH FORM PANEL            */
+        /* ==================================================== */
+        .auth-form-panel {
+            padding: 44px 46px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: #ffffff;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .logo-header {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+        .logo-header h1 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #0f172a;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-header p {
+            color: #64748b;
+            font-size: 0.92rem;
+            margin: 0 0 10px;
+        }
+
+        .auth-protocol-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.74rem;
+            font-weight: 700;
+        }
+
+        /* 1-CLICK QUICK DEMO USERS */
+        .demo-section-box {
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin: 14px 0 14px;
+            box-sizing: border-box;
+        }
+        .demo-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.76rem;
+            font-weight: 800;
+            color: #334155;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .demo-users-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .demo-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 7px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        .demo-chip:hover {
+            border-color: var(--primary);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            background: #f0fdf4;
+        }
+        .demo-chip-avatar {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        .demo-chip-info {
+            min-width: 0;
+            flex: 1;
+            overflow: hidden;
+        }
+        .demo-chip-info strong {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #1e293b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .demo-chip-info small {
+            display: block;
+            font-size: 0.68rem;
+            color: #64748b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Role Selector */
+        .role-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .role-option {
+            padding: 10px 8px;
+            text-align: center;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            box-sizing: border-box;
+        }
+        .role-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+        .role-option.active {
+            border-color: var(--primary);
+            background: #f0fdf4;
+            box-shadow: 0 4px 14px rgba(22, 163, 74, 0.15);
+        }
+        .role-option .role-icon { font-size: 1.35rem; display: block; margin-bottom: 2px; }
+        .role-option .role-name { font-weight: 700; font-size: 0.82rem; color: #1e293b; }
+        .role-option .role-sub { font-size: 0.68rem; color: #64748b; }
+
+        .selected-role-badge {
+            text-align: left;
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 800;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Form Inputs */
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            color: #334155;
+        }
+        .form-input {
+            width: 100%;
+            height: 46px;
+            padding: 10px 14px;
+            font-size: 0.94rem;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            transition: all 0.25s ease;
+            background: #f8fafc;
+            box-sizing: border-box;
+            outline: none;
+            font-family: inherit;
+        }
+        .form-input:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3.5px rgba(22, 163, 74, 0.14);
+        }
+
+        .password-wrapper { position: relative; width: 100%; }
+        .password-wrapper .form-input { padding-right: 44px; }
+        .password-toggle {
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; font-size: 1rem;
+            color: #94a3b8; transition: all 0.2s ease; padding: 4px;
+        }
+        .password-toggle:hover { color: var(--primary); }
+        .password-toggle .fa-eye-slash { display: none; }
+        .password-toggle.show .fa-eye { display: none; }
+        .password-toggle.show .fa-eye-slash { display: inline; }
+
+        .login-options {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px; font-size: 0.84rem;
+        }
+        .login-options label { display: flex; align-items: center; gap: 7px; cursor: pointer; color: #475569; }
+        .login-options a { color: var(--primary); font-weight: 700; text-decoration: none; }
+        .login-options a:hover { text-decoration: underline; }
+
+        .btn-submit {
+            width: 100%;
+            height: 48px;
+            padding: 0 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 6px 20px rgba(22, 163, 74, 0.28);
+            box-sizing: border-box;
+        }
+        .btn-submit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 26px rgba(22, 163, 74, 0.38);
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 16px 0 12px;
+        }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #e2e8f0; }
+        .divider span { padding: 0 12px; color: #94a3b8; font-size: 0.76rem; font-weight: 700; text-transform: uppercase; }
+
+        /* Google OAuth Button */
+        .oauth-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            height: 44px;
+            padding: 0 16px;
+            background: white;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #1e293b;
+            box-sizing: border-box;
+        }
+        .oauth-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+            border-color: #4285F4;
+            color: #1a73e8;
+        }
+
+        .register-link {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.88rem;
+            margin-top: 14px;
+        }
+        .register-link a { color: var(--primary); font-weight: 700; text-decoration: none; }
+        .register-link a:hover { text-decoration: underline; }
+
+        .back-home { text-align: center; margin-top: 10px; }
+        .back-home a { color: #94a3b8; font-size: 0.84rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+        .back-home a:hover { color: var(--primary); }
+
+        /* Modal for OAuth simulation */
+        .oauth-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(5px);
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .oauth-modal-box {
+            background: white;
+            border-radius: 22px;
+            max-width: 480px;
+            width: 100%;
+            max-height: 90vh;
+            max-height: 90dvh;
+            overflow-y: auto;
+            padding: 28px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+            text-align: center;
+            position: relative;
+            box-sizing: border-box;
+        }
+        .oauth-account-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            box-sizing: border-box;
+        }
+        .oauth-account-item:hover {
+            border-color: #4285F4;
+            background: #f8faff;
+            transform: scale(1.01);
+        }
+        .oauth-avatar-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            background: #e0e7ff;
+            color: #3730a3;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        /* ==================================================== */
+        /* RESPONSIVE BREAKPOINTS: Desktop, Tablet, Mobile      */
+        /* ==================================================== */
+        @media (max-width: 991px) {
+            .auth-desktop-card {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+                min-height: auto;
+            }
+            .auth-showcase-panel {
+                padding: 36px 30px;
+            }
+            .showcase-heading {
+                font-size: 1.75rem;
+            }
+            .showcase-features {
+                margin-bottom: 24px;
+            }
+            .auth-form-panel {
+                padding: 36px 30px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .auth-page {
+                padding: 16px 12px;
+            }
+            .auth-desktop-card {
+                border-radius: 20px;
+            }
+            .auth-showcase-panel {
+                padding: 24px 18px;
+            }
+            .showcase-heading {
+                font-size: 1.45rem;
+            }
+            .showcase-description {
+                font-size: 0.88rem;
+                margin-bottom: 16px;
+            }
+            .showcase-features, .showcase-testimonial {
+                display: none; /* Keep mobile view clean and concise */
+            }
+            .auth-form-panel {
+                padding: 24px 18px;
+            }
+            .demo-users-grid {
+                grid-template-columns: 1fr;
+            }
+            .demo-chip {
+                grid-column: span 1 !important;
+            }
+            .role-option .role-sub {
+                display: none;
+            }
+        }
+    </style>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<div class="auth-page">
+    <div class="auth-desktop-card">
+        
+        <!-- ============================================ -->
+        <!-- LEFT: BRAND & COMMUNITY SHOWCASE PANEL       -->
+        <!-- ============================================ -->
+        <div class="auth-showcase-panel">
+            <div class="showcase-content">
+                <!-- Header Badge -->
+                <div class="brand-pill-header">
+                    <div class="logo-badge"><i class="fas fa-seedling"></i></div>
+                    <span>Farm to Fork Collective</span>
+                </div>
+
+                <h2 class="showcase-heading">
+                    Fresh from Soil, <br>
+                    <span>Direct to Your Plate.</span>
+                </h2>
+
+                <p class="showcase-description">
+                    Empowering South India's organic farmers and culinary artisans with zero middlemen, transparent origins, and authentic wholesome harvests.
+                </p>
+
+                <!-- Value Pillars -->
+                <div class="showcase-features">
+                    <div class="feature-item">
+                        <div class="feature-icon-box"><i class="fas fa-leaf"></i></div>
+                        <div class="feature-text">
+                            <strong>100% Certified Organic & Pure</strong>
+                            <p>Soil-tested pesticide-free produce with transparent provenance.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon-box"><i class="fas fa-hand-holding-heart"></i></div>
+                        <div class="feature-text">
+                            <strong>85%+ Direct Farmer Payout</strong>
+                            <p>Eliminating middlemen so rural cultivators receive fair dignity pricing.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon-box"><i class="fas fa-truck-fast"></i></div>
+                        <div class="feature-text">
+                            <strong>Sunrise Harvest, Same-Day Dispatch</strong>
+                            <p>Packed within hours of harvest for peak nutrition and flavor.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Metrics -->
+                <div class="showcase-stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-val">500+</span>
+                        <span class="stat-label">Organic Growers</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-val">15,000+</span>
+                        <span class="stat-label">Families Fed</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-val">4.9 ★</span>
+                        <span class="stat-label">Trust Rating</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testimonial Quote -->
+            <div class="showcase-testimonial">
+                <div class="testimonial-avatar">👨‍🌾</div>
+                <div class="testimonial-text">
+                    <p>"Knowing our harvest reaches families directly without commissions has restored our generational farming joy."</p>
+                    <span>— Sundaram P., Organic Farmer, Thanjavur</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- RIGHT: INTERACTIVE AUTH FORM PANEL           -->
+        <!-- ============================================ -->
+        <div class="auth-form-panel">
+            
+            <!-- Header -->
+            <div class="logo-header">
+                <h1 id="txtLoginTitle">
+                    <span>Farm to Fork Sign In</span>
+                    <span style="font-size: 1.4rem;">🌱</span>
+                </h1>
+                <p id="txtLoginSub">Access your orders, farmer harvest logs, or artisan kitchen</p>
+                <div class="auth-protocol-pill">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Secure & Verified Authentication</span>
+                </div>
+            </div>
+
+            <!-- ⚡ 1-CLICK QUICK DEMO LOGINS (MANDATORY 5 USERS) -->
+            <div class="demo-section-box">
+                <div class="demo-section-header">
+                    <span><i class="fas fa-bolt" style="color: #f59e0b;"></i> Quick Demo Login (5 Accounts)</span>
+                    <span style="color: var(--primary); font-size: 0.72rem;">1-Click Instant</span>
+                </div>
+                <div class="demo-users-grid">
+                    <!-- User 1: Admin -->
+                    <div class="demo-chip" onclick="quickFillAndLogin('admin@farmtofork.com', 'admin123', 'admin', 'Platform Administrator')">
+                        <span class="demo-chip-avatar">👑</span>
+                        <div class="demo-chip-info">
+                            <strong>Administrator</strong>
+                            <small>admin@farmtofork.com</small>
+                        </div>
+                    </div>
+                    <!-- User 2: Farmer -->
+                    <div class="demo-chip" onclick="quickFillAndLogin('farmer@farmtofork.com', 'farmer123', 'farmer', 'Sundaram Perumal')">
+                        <span class="demo-chip-avatar">👨‍🌾</span>
+                        <div class="demo-chip-info">
+                            <strong>Farmer Sundaram</strong>
+                            <small>farmer@farmtofork.com</small>
+                        </div>
+                    </div>
+                    <!-- User 3: Artisan -->
+                    <div class="demo-chip" onclick="quickFillAndLogin('artisan@farmtofork.com', 'artisan123', 'artisan', 'Kavitha Natarajan')">
+                        <span class="demo-chip-avatar">🧺</span>
+                        <div class="demo-chip-info">
+                            <strong>Artisan Kavitha</strong>
+                            <small>artisan@farmtofork.com</small>
+                        </div>
+                    </div>
+                    <!-- User 4: Customer Retail -->
+                    <div class="demo-chip" onclick="quickFillAndLogin('priya@example.com', 'customer123', 'customer', 'Priya Sharma')">
+                        <span class="demo-chip-avatar">👩</span>
+                        <div class="demo-chip-info">
+                            <strong>Customer Priya</strong>
+                            <small>priya@example.com</small>
+                        </div>
+                    </div>
+                    <!-- User 5: Customer Bulk/Group -->
+                    <div class="demo-chip" onclick="quickFillAndLogin('customer@farmtofork.com', 'customer123', 'customer', 'Ananya Krishnan')" style="grid-column: span 2;">
+                        <span class="demo-chip-avatar">🍳</span>
+                        <div class="demo-chip-info">
+                            <strong>Customer Ananya (Community Cook Circle)</strong>
+                            <small>customer@farmtofork.com</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role Selector -->
+            <div class="role-selector" id="roleSelector">
+                <div class="role-option active" data-role="customer" onclick="selectRole('customer')">
+                    <span class="role-icon">👤</span>
+                    <span class="role-name">Customer</span>
+                    <span class="role-sub">Buy & Track</span>
+                </div>
+                <div class="role-option" data-role="farmer" onclick="selectRole('farmer')">
+                    <span class="role-icon">👨‍🌾</span>
+                    <span class="role-name">Farmer</span>
+                    <span class="role-sub">List Crops</span>
+                </div>
+                <div class="role-option" data-role="artisan" onclick="selectRole('artisan')">
+                    <span class="role-icon">🧺</span>
+                    <span class="role-name">Artisan</span>
+                    <span class="role-sub">Handmade</span>
+                </div>
+            </div>
+            <div id="selectedRoleDisplay" class="selected-role-badge">
+                <i class="fas fa-check-circle"></i> ACTIVE ROLE: CUSTOMER
+            </div>
+
+            <!-- Standard Form -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-envelope" style="color: var(--primary); margin-right:4px;"></i> Email or Username</label>
+                    <input type="text" id="loginEmail" class="form-input" placeholder="e.g. farmer@farmtofork.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-lock" style="color: var(--primary); margin-right:4px;"></i> Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword()" aria-label="Toggle password visibility">
+                            <i class="fas fa-eye"></i>
+                            <i class="fas fa-eye-slash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="login-options">
+                    <label><input type="checkbox" id="rememberMe" checked> <span id="txtRememberMe">Remember me</span></label>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <a href="javascript:void(0)" onclick="openForgotPasswordModal()" style="color: #059669; font-weight: 700; text-decoration: none;" id="btnForgotPwdLink">
+                            <i class="fas fa-key"></i> Forgot Password?
+                        </a>
+                        <span style="color: #cbd5e1;">|</span>
+                        <a href="admin-login.html" style="color: #64748b; font-weight: 600;">
+                            <i class="fas fa-shield-alt"></i> Admin
+                        </a>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btnSubmitLogin">
+                    <i class="fas fa-sign-in-alt"></i> Sign In to Account
+                </button>
+            </form>
+
+            <div class="divider"><span>Or continue with Google</span></div>
+
+            <!-- GOOGLE SIGN IN (REAL OAUTH 2.0 FLOW) -->
+            <div style="margin-bottom: 12px;">
+                <button type="button" class="oauth-btn google" onclick="triggerRealGoogleAuth(selectedRole)" id="btnContinueGoogle">
+                    <i class="fab fa-google" style="color: #ea4335; font-size: 1.15rem;"></i>
+                    <span>Continue with Google</span>
+                </button>
+                <div id="googleAuthErrorNotice" style="display: none; padding: 10px 14px; background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; border-radius: 8px; font-size: 0.84rem; margin-top: 10px;"></div>
+            </div>
+
+            <div class="register-link">
+                Don't have an account? <a href="register.html">Create an Account</a>
+            </div>
+
+            <div class="back-home">
+                <a href="../index.html"><i class="fas fa-arrow-left"></i> Back to Homepage</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================================================== -->
+<!-- OAUTH 2.0 CONSENT & ACCOUNT SELECTOR MODAL -->
+<!-- ==================================================== -->
+<div class="oauth-modal-backdrop" id="oauthModal">
+    <div class="oauth-modal-box">
+        <button onclick="closeOAuthModal()" style="position:absolute; top:16px; right:16px; background:none; border:none; font-size:1.2rem; cursor:pointer; color:#94a3b8;">✕</button>
+        
+        <div id="oauthModalIcon" style="font-size:2.2rem; margin-bottom:10px;">
+            <i class="fab fa-google" style="color:#ea4335;"></i>
+        </div>
+        <h3 id="oauthModalTitle" style="font-size:1.25rem; font-weight:800; margin-bottom:4px;">Sign in with Google</h3>
+        <p style="color:#64748b; font-size:0.85rem; margin-bottom:20px;">Choose an account to continue to <strong>Farm to Fork Collective</strong></p>
+
+        <div id="oauthAccountsList">
+            <!-- Injected by JS -->
+        </div>
+
+        <div style="margin-top:16px; padding-top:16px; border-top:1px solid #e2e8f0; font-size:0.75rem; color:#94a3b8;">
+            To continue, Google will share your name, email address, and profile picture with Farm to Fork.
+        </div>
+    </div>
+</div>
+
+<!-- ==================================================== -->
+<!-- FORGOT PASSWORD & OTP MODAL -->
+<!-- ==================================================== -->
+<div class="oauth-modal-backdrop" id="forgotPasswordModal">
+    <div class="oauth-modal-box" style="max-width: 480px; text-align: left; position: relative;">
+        <button onclick="closeForgotPasswordModal()" style="position:absolute; top:16px; right:16px; background:none; border:none; font-size:1.25rem; cursor:pointer; color:#94a3b8; padding: 4px 8px; border-radius: 6px;">✕</button>
+        
+        <!-- STEP 1: ENTER REGISTERED EMAIL -->
+        <div id="fpStep1">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 56px; height: 56px; border-radius: 50%; background: #ecfdf5; color: #16a34a; font-size: 1.6rem; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 6px;">Forgot Password?</h3>
+                <p style="color: #64748b; font-size: 0.88rem; line-height: 1.45; margin: 0;">
+                    Enter your registered Gmail or email address. We'll generate a <strong>6-digit OTP</strong> and a <strong>direct password reset link</strong>.
+                </p>
+            </div>
+
+            <form onsubmit="handleFpSendOtp(event)">
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label style="font-weight: 700; color: #334155; margin-bottom: 6px; display: block;">
+                        <i class="fas fa-envelope" style="color: var(--primary); margin-right:4px;"></i> Enter your registered Gmail / Email address
+                    </label>
+                    <input type="email" id="fpEmail" class="form-input" placeholder="e.g. your-email@gmail.com" required>
+                </div>
+
+                <div id="fpErrorStep1" style="display: none; padding: 10px 14px; background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; border-radius: 8px; font-size: 0.84rem; margin-bottom: 14px;"></div>
+
+                <button type="submit" class="btn-submit" id="fpBtnSendOtp" style="height: 46px;">
+                    <i class="fas fa-paper-plane"></i> Send OTP & Reset Link
+                </button>
+            </form>
+        </div>
+
+        <!-- STEP 2: ENTER OTP -->
+        <div id="fpStep2" style="display: none;">
+            <div style="text-align: center; margin-bottom: 16px;">
+                <div style="width: 56px; height: 56px; border-radius: 50%; background: #eff6ff; color: #2563eb; font-size: 1.6rem; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 style="font-size: 1.3rem; font-weight: 800; color: #0f172a; margin-bottom: 4px;">Enter Verification OTP</h3>
+                <p style="color: #64748b; font-size: 0.85rem; line-height: 1.4; margin: 0;">
+                    We sent a real 6-digit OTP and reset link to <strong id="fpSentEmailDisplay" style="color: #1e293b;"></strong>
+                </p>
+            </div>
+
+            <!-- REAL GMAIL DELIVERY NOTICE -->
+            <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px; padding: 14px; margin-bottom: 16px; text-align: left;">
+                <div style="font-size: 0.88rem; font-weight: 700; color: #166534; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                    <i class="fas fa-envelope-circle-check"></i> Check Your Gmail Inbox
+                </div>
+                <div style="font-size: 0.82rem; color: #374151; line-height: 1.45;">
+                    Please check your Gmail inbox for the 6-digit OTP code or click the direct password reset link in the email. This OTP is valid for <strong>10 minutes</strong>.
+                </div>
+            </div>
+
+            <form onsubmit="handleFpVerifyOtp(event)">
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label style="text-align: center; display: block; font-weight: 700; color: #334155;">Enter 6-Digit OTP</label>
+                    <input type="text" id="fpOtpInput" class="form-input" placeholder="••••••" maxlength="6" pattern="[0-9]{6}" required style="font-size: 1.8rem; letter-spacing: 8px; text-align: center; font-family: monospace; font-weight: 800; height: 50px;">
+                </div>
+
+                <div id="fpErrorStep2" style="display: none; padding: 10px 14px; background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; border-radius: 8px; font-size: 0.84rem; margin-bottom: 14px;"></div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; font-size: 0.82rem; color: #64748b;">
+                    <span id="fpTimerDisplay"><i class="fas fa-clock"></i> Expires in: 10:00</span>
+                    <span id="fpResendContainer">
+                        <a href="javascript:void(0)" id="fpResendBtn" onclick="resendFpOtp()" style="color: var(--primary); font-weight: 700; text-decoration: none;">Resend OTP</a>
+                        <span id="fpResendCooldown" style="display: none; color: #94a3b8; font-weight: 600;">Resend in <span id="fpCooldownCount">60</span>s</span>
+                    </span>
+                </div>
+
+                <button type="submit" class="btn-submit" id="fpBtnVerifyOtp" style="height: 46px; margin-bottom: 8px;">
+                    <i class="fas fa-check-circle"></i> Verify OTP & Proceed
+                </button>
+
+                <button type="button" onclick="goToFpStep(1)" style="width: 100%; background: none; border: none; color: #64748b; font-size: 0.82rem; cursor: pointer; padding: 6px;">
+                    ← Use different email
+                </button>
+            </form>
+        </div>
+
+        <!-- STEP 3: SET NEW PASSWORD -->
+        <div id="fpStep3" style="display: none;">
+            <div style="text-align: center; margin-bottom: 16px;">
+                <div style="width: 56px; height: 56px; border-radius: 50%; background: #ecfdf5; color: #16a34a; font-size: 1.6rem; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <i class="fas fa-key"></i>
+                </div>
+                <h3 style="font-size: 1.3rem; font-weight: 800; color: #0f172a; margin-bottom: 4px;">Set New Password</h3>
+                <p style="color: #64748b; font-size: 0.85rem; margin: 0;">Create a strong new password for your account.</p>
+            </div>
+
+            <form onsubmit="handleFpSubmitNewPassword(event)">
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label style="font-weight: 700; color: #334155; margin-bottom: 6px; display: block;">New Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="fpNewPassword" class="form-input" placeholder="At least 4 characters" minlength="4" required>
+                        <button type="button" class="password-toggle" onclick="toggleFpPassword('fpNewPassword', this)">
+                            <i class="fas fa-eye"></i>
+                            <i class="fas fa-eye-slash" style="display:none;"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label style="font-weight: 700; color: #334155; margin-bottom: 6px; display: block;">Confirm New Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="fpConfirmPassword" class="form-input" placeholder="Repeat new password" minlength="4" required>
+                        <button type="button" class="password-toggle" onclick="toggleFpPassword('fpConfirmPassword', this)">
+                            <i class="fas fa-eye"></i>
+                            <i class="fas fa-eye-slash" style="display:none;"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="fpErrorStep3" style="display: none; padding: 10px 14px; background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; border-radius: 8px; font-size: 0.84rem; margin-bottom: 14px;"></div>
+
+                <button type="submit" class="btn-submit" id="fpBtnSavePassword" style="height: 46px;">
+                    <i class="fas fa-save"></i> Save New Password
+                </button>
+            </form>
+        </div>
+
+        <!-- STEP 4: SUCCESS -->
+        <div id="fpStep4" style="display: none; text-align: center; padding: 12px 0;">
+            <div style="width: 64px; height: 64px; border-radius: 50%; background: #dcfce7; color: #16a34a; font-size: 2.2rem; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px;">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 6px;">Password Updated!</h3>
+            <p style="color: #64748b; font-size: 0.88rem; line-height: 1.45; margin-bottom: 22px;">
+                Your password has been successfully updated and synced with MongoDB Compass. You can now log in with your new password.
+            </p>
+            <button type="button" class="btn-submit" onclick="closeForgotPasswordModal()" style="height: 46px;">
+                <i class="fas fa-sign-in-alt"></i> Back to Login
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/google-auth.js"></script>
+<script src="../js/script.js"></script>
+<script src="../js/i18n.js"></script>
+<script>
+    let selectedRole = 'customer';
+
+    function togglePassword() {
+        const passwordInput = document.getElementById('loginPassword');
+        const toggleBtn = document.querySelector('.password-toggle');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleBtn.classList.add('show');
+        } else {
+            passwordInput.type = 'password';
+            toggleBtn.classList.remove('show');
+        }
+    }
+
+    function selectRole(role) {
+        selectedRole = role;
+        document.querySelectorAll('.role-option').forEach(el => {
+            el.classList.toggle('active', el.dataset.role === role);
+        });
+        const displayEl = document.getElementById('selectedRoleDisplay');
+        if (displayEl) {
+            displayEl.innerHTML = '<i class="fas fa-check-circle"></i> ACTIVE ROLE: ' + role.toUpperCase();
+        }
+    }
+
+    // Quick Fill & Login
+    async function quickFillAndLogin(email, password, role, name) {
+        document.getElementById('loginEmail').value = email;
+        document.getElementById('loginPassword').value = password;
+        selectRole(role);
+        
+        const btn = document.getElementById('btnSubmitLogin');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
+
+        try {
+            const res = await window.FTF_API.auth.login(email, password, role);
+            if (res && res.success) {
+                console.log('✅ LOGIN SUCCESS:', res);
+                localStorage.setItem('farmToForkUser', JSON.stringify(res.user));
+                localStorage.setItem('userName', res.user.name);
+                localStorage.setItem('userEmail', res.user.email);
+                localStorage.setItem('userRole', res.user.role);
+                localStorage.setItem('isLoggedIn', 'true');
+                if (res.token) localStorage.setItem('farmToForkToken', res.token);
+                redirectToDashboard(res.user.role || role);
+                return;
+            }
+        } catch (err) {
+            console.warn('Quick login API fallback:', err);
+        }
+
+        // Fallback local session
+        const userData = { name, email, role };
+        localStorage.setItem('userName', name);
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userRole', role);
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('farmToForkUser', JSON.stringify(userData));
+        if (!localStorage.getItem('farmToForkToken')) {
+            localStorage.setItem('farmToForkToken', 'mock_jwt_token_' + Date.now());
+        }
+        redirectToDashboard(role);
+    }
+
+    // Standard Form Login
+    async function handleLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+
+        const btn = document.getElementById('btnSubmitLogin');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
+
+        if (window.FTF_API && window.FTF_API.auth) {
+            try {
+                const res = await window.FTF_API.auth.login(email, password, selectedRole);
+                if (res && res.success) {
+                    alert(`✅ Welcome back, ${res.user.name}!`);
+                    localStorage.setItem('farmToForkUser', JSON.stringify(res.user));
+                    localStorage.setItem('userName', res.user.name);
+                    localStorage.setItem('userEmail', res.user.email);
+                    localStorage.setItem('userRole', res.user.role);
+                    localStorage.setItem('isLoggedIn', 'true');
+                    if (res.token) localStorage.setItem('farmToForkToken', res.token);
+                    redirectToDashboard(res.user.role || selectedRole);
+                    return;
+                } else if (res && !res.success) {
+                    alert('⚠️ ' + res.message);
+                    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In to Account';
+                    return;
+                }
+            } catch (err) {
+                console.warn('Backend login fallback:', err);
+            }
+        }
+
+        // Local fallback
+        const rawName = email.split('@')[0];
+        const formattedName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+        const userData = { name: formattedName, email, role: selectedRole };
+        localStorage.setItem('userName', formattedName);
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userRole', selectedRole);
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('farmToForkUser', JSON.stringify(userData));
+        if (!localStorage.getItem('farmToForkToken')) {
+            localStorage.setItem('farmToForkToken', 'mock_jwt_token_' + Date.now());
+        }
+        redirectToDashboard(selectedRole);
+    }
+
+    // Real Google OAuth 2.0 flow is managed by js/google-auth.js
+    function openOAuthModal(provider) {
+        if (window.triggerRealGoogleAuth) {
+            window.triggerRealGoogleAuth(selectedRole || 'customer');
+        }
+    }
+
+    function redirectToDashboard(role) {
+        let url = 'dashboard-customer.html';
+        if (role === 'farmer') url = 'dashboard-farmer.html';
+        else if (role === 'artisan') url = 'dashboard-artisan.html';
+        else if (role === 'admin') url = 'dashboard-admin.html';
+        window.location.href = url;
+    }
+
+    // ====================================================
+    // FORGOT PASSWORD MODAL CONTROLLER
+    // ====================================================
+    let currentFpEmail = '';
+    let currentFpOtp = '';
+    let currentFpToken = '';
+    let fpTimerInterval = null;
+
+    function openForgotPasswordModal() {
+        const loginEmail = document.getElementById('loginEmail').value.trim();
+        if (loginEmail) {
+            document.getElementById('fpEmail').value = loginEmail;
+        }
+        goToFpStep(1);
+        document.getElementById('forgotPasswordModal').style.display = 'flex';
+    }
+
+    function closeForgotPasswordModal() {
+        document.getElementById('forgotPasswordModal').style.display = 'none';
+        if (fpTimerInterval) clearInterval(fpTimerInterval);
+    }
+
+    function goToFpStep(step) {
+        document.getElementById('fpStep1').style.display = step === 1 ? 'block' : 'none';
+        document.getElementById('fpStep2').style.display = step === 2 ? 'block' : 'none';
+        document.getElementById('fpStep3').style.display = step === 3 ? 'block' : 'none';
+        document.getElementById('fpStep4').style.display = step === 4 ? 'block' : 'none';
+        
+        // Hide errors
+        const err1 = document.getElementById('fpErrorStep1');
+        const err2 = document.getElementById('fpErrorStep2');
+        const err3 = document.getElementById('fpErrorStep3');
+        if (err1) err1.style.display = 'none';
+        if (err2) err2.style.display = 'none';
+        if (err3) err3.style.display = 'none';
+    }
+
+    let fpCooldownInterval = null;
+
+    function startResendCooldown(durationSeconds = 60) {
+        if (fpCooldownInterval) clearInterval(fpCooldownInterval);
+        const resendBtn = document.getElementById('fpResendBtn');
+        const resendCooldown = document.getElementById('fpResendCooldown');
+        const cooldownCount = document.getElementById('fpCooldownCount');
+        if (!resendBtn || !resendCooldown) return;
+
+        resendBtn.style.display = 'none';
+        resendCooldown.style.display = 'inline';
+        let remaining = durationSeconds;
+        cooldownCount.textContent = remaining;
+
+        fpCooldownInterval = setInterval(() => {
+            remaining--;
+            if (remaining <= 0) {
+                clearInterval(fpCooldownInterval);
+                resendCooldown.style.display = 'none';
+                resendBtn.style.display = 'inline';
+            } else {
+                cooldownCount.textContent = remaining;
+            }
+        }, 1000);
+    }
+
+    function startFpTimer(durationSeconds = 600) {
+        if (fpTimerInterval) clearInterval(fpTimerInterval);
+        let rem = durationSeconds;
+        const display = document.getElementById('fpTimerDisplay');
+        fpTimerInterval = setInterval(() => {
+            rem--;
+            if (rem <= 0) {
+                clearInterval(fpTimerInterval);
+                display.innerHTML = '<span style="color:#dc2626;"><i class="fas fa-exclamation-triangle"></i> OTP Expired. Please request a new code.</span>';
+                return;
+            }
+            const mins = Math.floor(rem / 60);
+            const secs = rem % 60;
+            display.innerHTML = `<i class="fas fa-clock"></i> Expires in: ${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }, 1000);
+    }
+
+    async function handleFpSendOtp(e) {
+        if (e) e.preventDefault();
+        const email = document.getElementById('fpEmail').value.trim();
+        const btn = document.getElementById('fpBtnSendOtp');
+        const errBox = document.getElementById('fpErrorStep1');
+        errBox.style.display = 'none';
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending OTP...';
+
+        try {
+            let res;
+            if (window.FTF_API && window.FTF_API.auth && window.FTF_API.auth.forgotPassword) {
+                res = await window.FTF_API.auth.forgotPassword(email);
+            } else {
+                const raw = await fetch('/api/auth/forgot-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                res = await raw.json();
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send OTP & Reset Link';
+
+            if (res && res.success) {
+                currentFpEmail = res.email || email;
+                currentFpOtp = '';
+                currentFpToken = '';
+
+                document.getElementById('fpSentEmailDisplay').textContent = currentFpEmail;
+                const otpInput = document.getElementById('fpOtpInput');
+                if (otpInput) otpInput.value = '';
+
+                startFpTimer(res.expiresInSeconds || 600);
+                startResendCooldown(60);
+                goToFpStep(2);
+            } else {
+                errBox.textContent = res ? res.message : 'Error sending password reset. Please try again.';
+                errBox.style.display = 'block';
+            }
+        } catch (err) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send OTP & Reset Link';
+            errBox.textContent = 'Server connection error. Please verify your connection and try again.';
+            errBox.style.display = 'block';
+        }
+    }
+
+    async function resendFpOtp() {
+        if (!currentFpEmail) return;
+        document.getElementById('fpEmail').value = currentFpEmail;
+        const errBox = document.getElementById('fpErrorStep2');
+        if (errBox) errBox.style.display = 'none';
+        await handleFpSendOtp(null);
+    }
+
+    async function handleFpVerifyOtp(e) {
+        if (e) e.preventDefault();
+        const otp = document.getElementById('fpOtpInput').value.trim();
+        const btn = document.getElementById('fpBtnVerifyOtp');
+        const errBox = document.getElementById('fpErrorStep2');
+        errBox.style.display = 'none';
+
+        if (otp.length !== 6) {
+            errBox.textContent = 'Please enter a valid 6-digit OTP code.';
+            errBox.style.display = 'block';
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+
+        try {
+            let res;
+            if (window.FTF_API && window.FTF_API.auth && window.FTF_API.auth.verifyOtp) {
+                res = await window.FTF_API.auth.verifyOtp(currentFpEmail, otp);
+            } else {
+                const raw = await fetch('/api/auth/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: currentFpEmail, otp })
+                });
+                res = await raw.json();
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> Verify OTP & Proceed';
+
+            if (res && res.success) {
+                currentFpOtp = otp;
+                currentFpToken = res.resetToken || '';
+                goToFpStep(3);
+            } else {
+                errBox.textContent = res ? res.message : 'Invalid or expired OTP. Please check code.';
+                errBox.style.display = 'block';
+            }
+        } catch (err) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> Verify OTP & Proceed';
+            errBox.textContent = 'Connection error. Please try again.';
+            errBox.style.display = 'block';
+        }
+    }
+
+    function toggleFpPassword(inputId, btn) {
+        const input = document.getElementById(inputId);
+        const iconEye = btn.querySelector('.fa-eye');
+        const iconEyeSlash = btn.querySelector('.fa-eye-slash');
+        if (input.type === 'password') {
+            input.type = 'text';
+            if (iconEye) iconEye.style.display = 'none';
+            if (iconEyeSlash) iconEyeSlash.style.display = 'inline';
+        } else {
+            input.type = 'password';
+            if (iconEye) iconEye.style.display = 'inline';
+            if (iconEyeSlash) iconEyeSlash.style.display = 'none';
+        }
+    }
+
+    async function handleFpSubmitNewPassword(e) {
+        if (e) e.preventDefault();
+        const p1 = document.getElementById('fpNewPassword').value;
+        const p2 = document.getElementById('fpConfirmPassword').value;
+        const btn = document.getElementById('fpBtnSavePassword');
+        const errBox = document.getElementById('fpErrorStep3');
+        errBox.style.display = 'none';
+
+        if (p1 !== p2) {
+            errBox.textContent = 'Passwords do not match. Please re-enter.';
+            errBox.style.display = 'block';
+            return;
+        }
+
+        if (p1.length < 4) {
+            errBox.textContent = 'Password must be at least 4 characters long.';
+            errBox.style.display = 'block';
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving Password...';
+
+        try {
+            const payload = {
+                email: currentFpEmail,
+                otp: currentFpOtp,
+                token: currentFpToken,
+                newPassword: p1
+            };
+
+            let res;
+            if (window.FTF_API && window.FTF_API.auth && window.FTF_API.auth.resetPassword) {
+                res = await window.FTF_API.auth.resetPassword(payload);
+            } else {
+                const raw = await fetch('/api/auth/reset-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                res = await raw.json();
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Save New Password';
+
+            if (res && res.success) {
+                // Update login form
+                document.getElementById('loginEmail').value = currentFpEmail;
+                document.getElementById('loginPassword').value = p1;
+                goToFpStep(4);
+            } else {
+                errBox.textContent = res ? res.message : 'Could not reset password. Please try again.';
+                errBox.style.display = 'block';
+            }
+        } catch (err) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Save New Password';
+            errBox.textContent = 'Connection error. Please try again.';
+            errBox.style.display = 'block';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        selectRole('customer');
+    });
+</script>
+</body>
+</html>

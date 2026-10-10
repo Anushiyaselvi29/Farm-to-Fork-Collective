@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Profile & Notification Settings - Farm to Fork Collective</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Mukta+Malar:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/respnsive.css">
+    <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+    <style>
+        .profile-page-wrapper {
+            min-height: 100vh;
+            background: var(--bg);
+            padding: 30px 20px 80px;
+        }
+        .profile-container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .profile-nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .profile-nav-bar .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: var(--white);
+            color: var(--primary);
+            font-weight: 700;
+            border-radius: 10px;
+            text-decoration: none;
+            border: 1px solid rgba(45, 106, 79, 0.15);
+            box-shadow: var(--shadow);
+            transition: all 0.2s ease;
+        }
+        .profile-nav-bar .back-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-1px);
+        }
+        .profile-hero-card {
+            background: linear-gradient(135deg, #1B4332 0%, #2D6A4F 60%, #40916C 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 32px 36px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+            box-shadow: 0 16px 36px -10px rgba(27, 67, 50, 0.28);
+            position: relative;
+            overflow: hidden;
+        }
+        .profile-hero-card::after {
+            content: '';
+            position: absolute;
+            right: -40px;
+            bottom: -40px;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .profile-user-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        .profile-avatar-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #ffffff;
+            color: #1B4332;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            border: 3px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+        .profile-user-meta h1 {
+            font-size: 1.85rem;
+            margin: 0 0 4px;
+            font-weight: 800;
+        }
+        .profile-user-meta p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 0.92rem;
+        }
+        .profile-role-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin-top: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.35fr;
+            gap: 28px;
+        }
+        .profile-card {
+            background: var(--white);
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(45, 106, 79, 0.12);
+        }
+        .profile-card h3 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
+        }
+        .profile-card-sub {
+            font-size: 0.84rem;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.84rem;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+        .form-input {
+            width: 100%;
+            height: 46px;
+            padding: 10px 14px;
+            font-size: 0.92rem;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            background: #f8fafc;
+            color: var(--text);
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        .form-input:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3.5px rgba(22, 163, 74, 0.14);
+        }
+
+        /* Notification channel card */
+        .notif-channel-row {
+            background: var(--bg);
+            border: 1.5px solid rgba(0, 0, 0, 0.08);
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.25s ease;
+        }
+        .notif-channel-row:hover {
+            border-color: var(--primary);
+            box-shadow: 0 6px 16px rgba(45, 106, 79, 0.08);
+        }
+        .channel-info-col {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            flex: 1;
+        }
+        .channel-icon-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            flex-shrink: 0;
+        }
+        .channel-icon-circle.sms { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+        .channel-icon-circle.email { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .channel-icon-circle.whatsapp { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+
+        .channel-text-col { flex: 1; }
+        .channel-title-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .channel-title-line strong {
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+        .channel-desc-text {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin: 0 0 6px 0;
+            line-height: 1.4;
+        }
+        .channel-badge {
+            font-size: 0.74rem;
+            font-weight: 700;
+        }
+
+        .btn-test-channel {
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1.5px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            flex-shrink: 0;
+        }
+        .btn-test-channel.sms { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+        .btn-test-channel.sms:hover { background: #1d4ed8; color: white; }
+        .btn-test-channel.email { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+        .btn-test-channel.email:hover { background: #b91c1c; color: white; }
+        .btn-test-channel.whatsapp { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+        .btn-test-channel.whatsapp:hover { background: #047857; color: white; }
+
+        /* Pure CSS Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 25px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 19px;
+            width: 19px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+        input:checked + .slider:before {
+            transform: translateX(21px);
+        }
+
+        .save-bar {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+        .btn-save-main {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.96rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(22, 163, 74, 0.25);
+            transition: all 0.25s ease;
+        }
+        .btn-save-main:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 22px rgba(22, 163, 74, 0.35);
+        }
+
+        @media (max-width: 860px) {
+            .profile-main-grid {
+                grid-template-columns: 1fr;
+            }
+            .notif-channel-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn-test-channel {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="profile-page-wrapper">
+    <div class="profile-container">
+        
+        <!-- Top Nav & Breadcrumbs -->
+        <div class="profile-nav-bar">
+            <a href="javascript:void(0)" onclick="goBackToRoleDashboard()" class="back-btn" id="btnBackDashboard">
+                <i class="fas fa-arrow-left"></i> <span>Back to Dashboard</span>
+            </a>
+            <div style="font-size: 0.85rem; color: var(--text-light); display: flex; align-items: center; gap: 8px;">
+                <span>Farm to Fork Collective</span>
+                <span>/</span>
+                <strong style="color: var(--text);">Personal Profile & Notifications</strong>
+            </div>
+        </div>
+
+        <!-- Hero Header -->
+        <div class="profile-hero-card">
+            <div class="profile-user-left">
+                <div class="profile-avatar-circle" id="userAvatarText">👤</div>
+                <div class="profile-user-meta">
+                    <h1 id="userHeroName">User Profile</h1>
+                    <p id="userHeroEmail">user@farmtofork.com</p>
+                    <div class="profile-role-pill" id="userRoleBadge">
+                        <i class="fas fa-user-shield"></i> Verified Account
+                    </div>
+                </div>
+            </div>
+            <div>
+                <a href="javascript:void(0)" onclick="goBackToRoleDashboard()" class="btn-secondary" style="background: rgba(255,255,255,0.92); color: #1B4332; font-weight: 700; padding: 10px 18px; border-radius: 10px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard Home
+                </a>
+            </div>
+        </div>
+
+        <!-- 2-Column Main Form Grid -->
+        <div class="profile-main-grid">
+            
+            <!-- Left: Contact & Personal Info -->
+            <div class="profile-card">
+                <h3><i class="fas fa-id-card" style="color: var(--primary);"></i> Personal Details</h3>
+                <p class="profile-card-sub">Your personal contact and delivery details used across the platform.</p>
+
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="profName" class="form-input" placeholder="Your Full Name">
+                </div>
+
+                <div class="form-group">
+                    <label>Gmail / Email Address <span style="font-size: 0.72rem; color: #ea4335;">(For Invoices & Reports)</span></label>
+                    <input type="email" id="profEmail" class="form-input" placeholder="you@gmail.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Mobile Phone Number <span style="font-size: 0.72rem; color: #2563eb;">(For SMS & WhatsApp)</span></label>
+                    <input type="tel" id="profPhone" class="form-input" placeholder="+91 98765 43210">
+                </div>
+
+                <div class="form-group">
+                    <label>Delivery / Farm Address</label>
+                    <input type="text" id="profAddress" class="form-input" placeholder="House no, Street, Area, City - Pincode">
+                </div>
+
+                <!-- Google Verified Identity Section -->
+                <div id="googleIdentityCard" style="display: none; background: #f8fafc; border: 1.5px solid #bfdbfe; border-radius: 12px; padding: 14px; margin-top: 18px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="font-size: 0.8rem; font-weight: 800; color: #1e40af; display: flex; align-items: center; gap: 6px;">
+                            <i class="fab fa-google" style="color: #ea4335;"></i> Verified Google Identity
+                        </span>
+                        <span style="font-size: 0.7rem; font-weight: 700; background: #dbeafe; color: #1e40af; padding: 2px 8px; border-radius: 20px;">
+                            <i class="fas fa-check-circle"></i> OAuth 2.0
+                        </span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.82rem; margin-bottom: 8px;">
+                        <div>
+                            <span style="color: #64748b; display: block; font-size: 0.72rem; font-weight: 600;">Given Name</span>
+                            <strong id="profGivenName" style="color: #0f172a;">-</strong>
+                        </div>
+                        <div>
+                            <span style="color: #64748b; display: block; font-size: 0.72rem; font-weight: 600;">Family Name</span>
+                            <strong id="profFamilyName" style="color: #0f172a;">-</strong>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.82rem; margin-bottom: 8px;">
+                        <span style="color: #64748b; display: block; font-size: 0.72rem; font-weight: 600;">Google Account ID (sub)</span>
+                        <code id="profGoogleId" style="color: #1e3a8a; background: #eff6ff; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; word-break: break-all;">-</code>
+                    </div>
+                    <div style="font-size: 0.82rem;">
+                        <span style="color: #64748b; display: block; font-size: 0.72rem; font-weight: 600;">Authentication Provider</span>
+                        <span id="profAuthProvider" style="font-weight: 700; color: #15803d;">Google OAuth 2.0</span>
+                    </div>
+                </div>
+
+                <!-- Conditional fields for Farmer / Artisan -->
+                <div id="farmerProfileFields" style="display: none; padding-top: 10px; border-top: 1px dashed #cbd5e1; margin-top: 14px;">
+                    <div class="form-group">
+                        <label>Farm Name</label>
+                        <input type="text" id="profFarmName" class="form-input" placeholder="e.g. Green Valley Organic Farm">
+                    </div>
+                    <div class="form-group">
+                        <label>Farm Location</label>
+                        <input type="text" id="profFarmLocation" class="form-input" placeholder="e.g. Dindigul, Tamil Nadu">
+                    </div>
+                </div>
+
+                <div id="artisanProfileFields" style="display: none; padding-top: 10px; border-top: 1px dashed #cbd5e1; margin-top: 14px;">
+                    <div class="form-group">
+                        <label>Artisan Craft Specialty</label>
+                        <input type="text" id="profArtisanType" class="form-input" placeholder="e.g. Cold-Processed Herbal Soaps">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Multi-Channel Notification Settings -->
+            <div class="profile-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <h3 style="margin: 0;"><i class="fas fa-bell" style="color: var(--primary);"></i> Notification Channels</h3>
+                    <span style="font-size: 0.72rem; font-weight: 700; color: #15803d; background: #dcfce7; padding: 2px 10px; border-radius: 12px;">3 Channels</span>
+                </div>
+                <p class="profile-card-sub">Choose how you want to be notified by Farm to Fork. You can toggle any channel at any time!</p>
+
+                <!-- Channel 1: SMS -->
+                <div class="notif-channel-row">
+                    <div class="channel-info-col">
+                        <div class="channel-icon-circle sms"><i class="fas fa-sms"></i></div>
+                        <div class="channel-text-col">
+                            <div class="channel-title-line">
+                                <strong>SMS Notifications</strong>
+                                <label class="switch">
+                                    <input type="checkbox" id="prefSMS" checked onchange="updateLiveStatus()">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <p class="channel-desc-text">Receive SMS text alerts for critical order confirmations, courier arrival, and delivery OTPs.</p>
+                            <div class="channel-badge" id="smsStatusBadge">
+                                <span style="color:#16a34a;"><i class="fas fa-check-circle"></i> Active • SMS to phone</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-test-channel sms" onclick="triggerTest('sms')" title="Send simulated test SMS">
+                        <i class="fas fa-paper-plane"></i> Test SMS
+                    </button>
+                </div>
+
+                <!-- Channel 2: Gmail / Email -->
+                <div class="notif-channel-row">
+                    <div class="channel-info-col">
+                        <div class="channel-icon-circle email"><i class="fab fa-google"></i></div>
+                        <div class="channel-text-col">
+                            <div class="channel-title-line">
+                                <strong>Gmail / Email Alerts</strong>
+                                <label class="switch">
+                                    <input type="checkbox" id="prefEmail" checked onchange="updateLiveStatus()">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <p class="channel-desc-text">Receive PDF invoices, payment receipts, weekly farm harvest specials, and community kitchen menus.</p>
+                            <div class="channel-badge" id="emailStatusBadge">
+                                <span style="color:#16a34a;"><i class="fas fa-check-circle"></i> Active • Deliver to Gmail</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-test-channel email" onclick="triggerTest('email')" title="Send simulated test Gmail notification">
+                        <i class="fas fa-envelope"></i> Test Gmail
+                    </button>
+                </div>
+
+                <!-- Channel 3: WhatsApp -->
+                <div class="notif-channel-row">
+                    <div class="channel-info-col">
+                        <div class="channel-icon-circle whatsapp"><i class="fab fa-whatsapp"></i></div>
+                        <div class="channel-text-col">
+                            <div class="channel-title-line">
+                                <strong>WhatsApp Messages</strong>
+                                <label class="switch">
+                                    <input type="checkbox" id="prefWhatsApp" checked onchange="updateLiveStatus()">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <p class="channel-desc-text">Receive instant WhatsApp alerts with live electric vehicle courier GPS link and 7-stage QR trace certificates.</p>
+                            <div class="channel-badge" id="whatsappStatusBadge">
+                                <span style="color:#16a34a;"><i class="fas fa-check-circle"></i> Active • WhatsApp instant messaging</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-test-channel whatsapp" onclick="triggerTest('whatsapp')" title="Send simulated test WhatsApp message">
+                        <i class="fab fa-whatsapp"></i> Test WhatsApp
+                    </button>
+                </div>
+
+                <!-- Save Action Bar -->
+                <div class="save-bar">
+                    <button type="button" class="btn-save-main" id="btnSaveProfile" onclick="saveProfile()">
+                        <i class="fas fa-save"></i> Save Profile & Notification Preferences
+                    </button>
+                    <button type="button" class="btn-secondary" onclick="loadProfile()" style="padding: 10px 18px; border-radius: 10px; cursor: pointer;">
+                        <i class="fas fa-undo"></i> Reset
+                    </button>
+                </div>
+
+                <div id="saveFeedback" style="display: none; margin-top: 14px; padding: 12px 16px; border-radius: 10px; font-weight: 600; font-size: 0.88rem;"></div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/script.js"></script>
+<script src="../js/notifications.js"></script>
+<script src="../js/i18n.js"></script>
+<script>
+    function getRoleDashboardUrl(role) {
+        switch(role) {
+            case 'farmer': return 'dashboard-farmer.html';
+            case 'artisan': return 'dashboard-artisan.html';
+            case 'admin': return 'dashboard-admin.html';
+            default: return 'dashboard-customer.html';
+        }
+    }
+
+    function goBackToRoleDashboard() {
+        const role = localStorage.getItem('userRole') || 'customer';
+        window.location.href = getRoleDashboardUrl(role);
+    }
+
+    async function loadProfile() {
+        const storedUser = JSON.parse(localStorage.getItem('farmToForkUser') || '{}');
+        const storedPrefs = JSON.parse(localStorage.getItem('userNotificationPreferences') || '{"sms":true,"email":true,"whatsapp":true}');
+
+        let user = storedUser;
+        if (window.FTF_API && window.FTF_API.auth && window.FTF_API.auth.getProfile) {
+            try {
+                const res = await window.FTF_API.auth.getProfile();
+                if (res && res.success && res.user) {
+                    user = res.user;
+                }
+            } catch (e) {
+                console.warn('API getProfile error:', e);
+            }
+        }
+
+        const role = user.role || localStorage.getItem('userRole') || 'customer';
+        const name = user.name || localStorage.getItem('userName') || 'User';
+        const email = user.email || localStorage.getItem('userEmail') || 'user@example.com';
+        const phone = user.phone || '+91 98765 43210';
+        const address = user.address || 'Chennai, Tamil Nadu';
+        const prefs = user.notificationPreferences || storedPrefs;
+
+        // Set Hero values
+        document.getElementById('userHeroName').textContent = name;
+        document.getElementById('userHeroEmail').textContent = email;
+        const avatarEl = document.getElementById('userAvatarText');
+        const pic = user.profilePicture || user.avatar || localStorage.getItem('userAvatar');
+        if (pic) {
+            avatarEl.innerHTML = `<img src="${pic}" alt="${name}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;" onerror="this.parentElement.textContent='${name.charAt(0).toUpperCase()}';">`;
+            avatarEl.style.padding = '0';
+            avatarEl.style.overflow = 'hidden';
+        } else {
+            avatarEl.textContent = name.charAt(0).toUpperCase();
+        }
+
+        let roleText = 'Customer Verified';
+        if (role === 'farmer') roleText = '👨‍🌾 Organic Farmer';
+        else if (role === 'artisan') roleText = '🧺 Food Artisan';
+        else if (role === 'admin') roleText = '👑 Administrator';
+
+        const isGoogleAuth = user.authProvider === 'google' || user.oauthProvider === 'google' || user.googleId || localStorage.getItem('authProvider') === 'google';
+        if (isGoogleAuth) {
+            document.getElementById('userRoleBadge').innerHTML = `<i class="fab fa-google"></i> Google Verified ${role === 'customer' ? 'Customer' : roleText}`;
+            const gCard = document.getElementById('googleIdentityCard');
+            if (gCard) gCard.style.display = 'block';
+            if (document.getElementById('profGivenName')) document.getElementById('profGivenName').textContent = user.firstName || (name ? name.split(' ')[0] : '-');
+            if (document.getElementById('profFamilyName')) document.getElementById('profFamilyName').textContent = user.lastName || (name && name.includes(' ') ? name.split(' ').slice(1).join(' ') : '-');
+            if (document.getElementById('profGoogleId')) document.getElementById('profGoogleId').textContent = user.googleId || localStorage.getItem('userGoogleId') || 'Google Verified';
+            if (document.getElementById('profAuthProvider')) document.getElementById('profAuthProvider').textContent = 'Google Identity Services (OAuth 2.0)';
+        } else {
+            document.getElementById('userRoleBadge').innerHTML = `<i class="fas fa-shield-alt"></i> ${roleText}`;
+        }
+
+        // Set Form inputs
+        document.getElementById('profName').value = name;
+        document.getElementById('profEmail').value = email;
+        document.getElementById('profPhone').value = phone;
+        document.getElementById('profAddress').value = address;
+
+        // Conditional role inputs
+        if (role === 'farmer') {
+            document.getElementById('farmerProfileFields').style.display = 'block';
+            if (document.getElementById('profFarmName')) document.getElementById('profFarmName').value = user.farmName || 'Green Valley Organics';
+            if (document.getElementById('profFarmLocation')) document.getElementById('profFarmLocation').value = user.farmLocation || 'Dindigul, Tamil Nadu';
+        } else if (role === 'artisan') {
+            document.getElementById('artisanProfileFields').style.display = 'block';
+            if (document.getElementById('profArtisanType')) document.getElementById('profArtisanType').value = user.artisanType || 'Handmade Craft';
+        }
+
+        // Set Channel switches
+        document.getElementById('prefSMS').checked = prefs.sms !== false;
+        document.getElementById('prefEmail').checked = prefs.email !== false;
+        document.getElementById('prefWhatsApp').checked = prefs.whatsapp !== false;
+
+        updateLiveStatus();
+    }
+
+    function updateLiveStatus() {
+        const sms = document.getElementById('prefSMS').checked;
+        const email = document.getElementById('prefEmail').checked;
+        const whatsapp = document.getElementById('prefWhatsApp').checked;
+        const phone = document.getElementById('profPhone').value || '+91 98765 43210';
+        const emailAddr = document.getElementById('profEmail').value || 'you@gmail.com';
+
+        document.getElementById('smsStatusBadge').innerHTML = sms
+            ? `<span style="color:#16a34a;"><i class="fas fa-check-circle"></i> Active • SMS to ${phone}</span>`
+            : `<span style="color:#94a3b8;"><i class="fas fa-ban"></i> Disabled</span>`;
+
+        document.getElementById('emailStatusBadge').innerHTML = email
+            ? `<span style="color:#16a34a;"><i class="fas fa-check-circle"></i> Active • Deliver to ${emailAddr}</span>`
+            : `<span style="color:#94a3b8;"><i class="fas fa-ban"></i> Disabled</span>`;
+
+        document.getElementById('whatsappStatusBadge').innerHTML = whatsapp
+            ? `<span style="color:#16a34a;"><i class="fas fa-check-circle"></i> Active • WhatsApp to ${phone}</span>`
+            : `<span style="color:#94a3b8;"><i class="fas fa-ban"></i> Disabled</span>`;
+    }
+
+    async function saveProfile() {
+        const name = document.getElementById('profName').value.trim();
+        const email = document.getElementById('profEmail').value.trim();
+        const phone = document.getElementById('profPhone').value.trim();
+        const address = document.getElementById('profAddress').value.trim();
+
+        const sms = document.getElementById('prefSMS').checked;
+        const emailPref = document.getElementById('prefEmail').checked;
+        const whatsapp = document.getElementById('prefWhatsApp').checked;
+
+        const notificationPreferences = { sms, email: emailPref, whatsapp };
+        const notifications = [];
+        if (sms) notifications.push('sms');
+        if (emailPref) notifications.push('email');
+        if (whatsapp) notifications.push('whatsapp');
+
+        const payload = {
+            name,
+            email,
+            phone,
+            address,
+            notificationPreferences,
+            notifications
+        };
+
+        const role = localStorage.getItem('userRole') || 'customer';
+        if (role === 'farmer') {
+            payload.farmName = document.getElementById('profFarmName') ? document.getElementById('profFarmName').value : '';
+            payload.farmLocation = document.getElementById('profFarmLocation') ? document.getElementById('profFarmLocation').value : '';
+        } else if (role === 'artisan') {
+            payload.artisanType = document.getElementById('profArtisanType') ? document.getElementById('profArtisanType').value : '';
+        }
+
+        const fb = document.getElementById('saveFeedback');
+        if (fb) {
+            fb.style.display = 'block';
+            fb.style.background = '#e0f2fe';
+            fb.style.color = '#0369a1';
+            fb.style.border = '1px solid #bae6fd';
+            fb.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating profile and notification channels in database...';
+        }
+
+        if (window.FTF_API && window.FTF_API.auth && window.FTF_API.auth.updateProfile) {
+            try {
+                await window.FTF_API.auth.updateProfile(payload);
+            } catch(e) {
+                console.warn('API update error:', e);
+            }
+        }
+
+        // Local storage updates
+        localStorage.setItem('userName', name);
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userNotificationPreferences', JSON.stringify(notificationPreferences));
+        const user = JSON.parse(localStorage.getItem('farmToForkUser') || '{}');
+        user.name = name;
+        user.email = email;
+        user.phone = phone;
+        user.address = address;
+        user.notificationPreferences = notificationPreferences;
+        localStorage.setItem('farmToForkUser', JSON.stringify(user));
+
+        document.getElementById('userHeroName').textContent = name;
+        document.getElementById('userHeroEmail').textContent = email;
+        document.getElementById('userAvatarText').textContent = name.charAt(0).toUpperCase();
+
+        updateLiveStatus();
+
+        const activeChannels = [];
+        if (sms) activeChannels.push('SMS');
+        if (emailPref) activeChannels.push('Gmail');
+        if (whatsapp) activeChannels.push('WhatsApp');
+        const activeChannelsStr = activeChannels.length > 0 ? activeChannels.join(', ') : 'None (Silent)';
+
+        if (fb) {
+            fb.style.background = '#dcfce7';
+            fb.style.color = '#15803d';
+            fb.style.border = '1px solid #bbf7d0';
+            fb.innerHTML = `🎉 <strong>Profile Updated Successfully!</strong> Notification channels configured: <strong>${activeChannelsStr}</strong>.`;
+            setTimeout(() => { fb.style.display = 'none'; }, 6000);
+        }
+    }
+
+    function triggerTest(channel) {
+        const phone = document.getElementById('profPhone').value || '+91 98765 43210';
+        const email = document.getElementById('profEmail').value || 'you@gmail.com';
+        const name = document.getElementById('profName').value || 'User';
+        const role = localStorage.getItem('userRole') || 'customer';
+
+        if (channel === 'sms') {
+            if (!document.getElementById('prefSMS').checked) {
+                alert('⚠️ SMS notifications are turned OFF in your settings. Turn the toggle ON to enable!');
+                return;
+            }
+            if (window.showSmsToast) {
+                window.showSmsToast(role, phone, `[FTF-ALERTS] Vanakkam ${name}! Your SMS channel is active. Order status and OTPs will be delivered here.`, '📱 SMS Notification Verified');
+            } else {
+                alert(`📱 [SMS DISPATCH]\nTo: ${phone}\nVanakkam ${name}! SMS alerts verified.`);
+            }
+        } else if (channel === 'email') {
+            if (!document.getElementById('prefEmail').checked) {
+                alert('⚠️ Gmail notifications are turned OFF in your settings. Turn the toggle ON to enable!');
+                return;
+            }
+            fetch('/api/notifications/test', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + (localStorage.getItem('farmToForkToken') || '')
+                },
+                body: JSON.stringify({
+                    channel: 'email',
+                    email,
+                    name,
+                    notificationPreferences: { email: true }
+                })
+            })
+            .then(r => r.json())
+            .then(res => {
+                if (res && res.success) {
+                    if (window.showEmailToast) {
+                        window.showEmailToast(role, email, `Real test email delivered to ${email}. Check your Gmail inbox!`, '📧 Real Gmail Sent');
+                    } else {
+                        alert(`✅ Real test email dispatched to ${email}! Please check your Gmail inbox.`);
+                    }
+                } else {
+                    alert(`ℹ️ Email test notice: ${res ? res.message : 'Could not deliver email. Verify SMTP / Gmail credentials in server/.env.'}`);
+                }
+            })
+            .catch(err => {
+                alert(`⚠️ Network error calling notification service: ${err.message}`);
+            });
+        } else if (channel === 'whatsapp') {
+            if (!document.getElementById('prefWhatsApp').checked) {
+                alert('⚠️ WhatsApp notifications are turned OFF in your settings. Turn the toggle ON to enable!');
+                return;
+            }
+            if (window.showWhatsAppToast) {
+                window.showWhatsAppToast(role, phone, `🌱 Vanakkam ${name}! Your WhatsApp notification channel is active. Live courier tracking links and 7-stage QR certificates will be delivered here!`, '💬 WhatsApp Notification Verified');
+            } else {
+                alert(`💬 [WHATSAPP DISPATCH]\nTo WhatsApp: ${phone}\nWhatsApp alerts verified for ${name}.`);
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadProfile();
+    });
+</script>
+</body>
+</html>

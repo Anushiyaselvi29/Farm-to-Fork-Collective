@@ -1,0 +1,47 @@
+{
+  "name": "farm-to-fork-collective",
+  "version": "1.0.0",
+  "description": "Farm to Fork Collective - Transparent organic food marketplace with seed-to-plate traceability and multi-role dashboards",
+  "main": "server/server.js",
+  "scripts": {
+    "dev": "vite",
+    "dev:frontend": "vite",
+    "dev:backend": "node server/server.js",
+    "frontend": "vite",
+    "backend": "node server/server.js",
+    "server": "node server/server.js",
+    "dev:all": "concurrently \"node server/server.js\" \"vite\"",
+    "start": "node server/server.js",
+    "vite": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node test/verify-mandatory-features.js",
+    "test:forgot-password": "node tests/test-forgot-password.js",
+    "db:connect": "node scripts/connect-mongodb.js",
+    "db:seed": "node scripts/connect-mongodb.js"
+  },
+  "keywords": [
+    "organic-food",
+    "marketplace",
+    "seed-to-plate",
+    "express",
+    "nodejs",
+    "traceability"
+  ],
+  "author": "Farm to Fork Collective Team",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^18.0.5",
+    "express": "^4.19.2",
+    "jsqr": "^1.4.0",
+    "mongodb": "^7.7.0",
+    "mongoose": "^9.10.4",
+    "nodemailer": "^10.0.15",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5",
+    "vite": "^8.3.2"
+  }
+}

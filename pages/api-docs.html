@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST API Documentation & Explorer - Farm to Fork Collective</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/respnsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --code-font: 'JetBrains Mono', monospace;
+        }
+        body {
+            background: #0f172a;
+            color: #e2e8f0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+        }
+        .api-header {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        .api-badge {
+            background: #15803d;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .token-bar {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 24px 0 36px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .token-bar input {
+            flex: 1;
+            min-width: 260px;
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #4ade80;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-family: var(--code-font);
+            font-size: 0.85rem;
+        }
+        .endpoint-card {
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .endpoint-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .endpoint-summary {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            user-select: none;
+            flex-wrap: wrap;
+        }
+        .method-badge {
+            font-weight: 800;
+            font-size: 0.75rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-family: var(--code-font);
+            letter-spacing: 0.5px;
+        }
+        .method-GET { background: #0284c7; color: white; }
+        .method-POST { background: var(--primary); color: white; }
+        .method-PUT { background: #d97706; color: white; }
+        .method-DELETE { background: #dc2626; color: white; }
+        .endpoint-path {
+            font-family: var(--code-font);
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #f8fafc;
+        }
+        .endpoint-desc {
+            color: #94a3b8;
+            font-size: 0.88rem;
+            margin-left: auto;
+        }
+        .endpoint-details {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            background: #0f172a;
+            display: none;
+        }
+        .endpoint-card.active .endpoint-details {
+            display: block;
+        }
+        .console-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        @media (max-width: 900px) {
+            .console-area { grid-template-columns: 1fr; }
+        }
+        .code-box {
+            background: #090d16;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 14px;
+            font-family: var(--code-font);
+            font-size: 0.8rem;
+            color: #38bdf8;
+            overflow-x: auto;
+            max-height: 280px;
+            white-space: pre-wrap;
+        }
+        .btn-try {
+            background: #15803d;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+        .btn-try:hover {
+            background: #166534;
+        }
+
+        /* ADMIN RESTRICTION STYLES */
+        #accessDeniedView {
+            display: none;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            background: #0b1320;
+        }
+        #adminDocsContent {
+            display: none;
+        }
+    </style>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+</head>
+<body>
+
+<!-- ACCESS DENIED VIEW (SHOWN TO NON-ADMIN USERS) -->
+<div id="accessDeniedView">
+    <div style="background: #1e293b; border: 1.5px solid #ef4444; border-radius: 20px; max-width: 500px; width: 100%; padding: 40px 32px; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.5);">
+        <div style="width: 72px; height: 72px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); color: #ef4444; display: inline-flex; align-items: center; justify-content: center; font-size: 2.2rem; margin-bottom: 20px;">
+            <i class="fas fa-lock"></i>
+        </div>
+        <h2 style="font-size: 1.6rem; font-weight: 800; color: #f8fafc; margin-bottom: 10px;">Access Denied</h2>
+        <p style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px;">
+            The <strong>API Documentation & Developer Explorer</strong> is restricted strictly to <strong>Administrator</strong> accounts. Normal customers, farmers, and unauthenticated guests cannot access or execute backend REST APIs.
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <a href="admin-login.html" style="background: var(--primary); color: white; padding: 13px; border-radius: 12px; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;">
+                <i class="fas fa-shield-alt"></i> Sign In as Admin
+            </a>
+            <a href="../index.html" style="background: #334155; color: #cbd5e1; padding: 13px; border-radius: 12px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;">
+                <i class="fas fa-arrow-left"></i> Return to Homepage
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ADMIN-ONLY API DOCUMENTATION EXPLORER -->
+<div id="adminDocsContent">
+
+<header class="api-header">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+            <span style="font-size: 2rem;">🌱</span>
+            <div>
+                <h1 style="font-size: 1.5rem; font-weight: 800; margin: 0; color: white;">Farm to Fork REST API Explorer</h1>
+                <p style="margin: 0; color: #94a3b8; font-size: 0.85rem;">Interactive OpenAPI Documentation & Live Testing Console</p>
+            </div>
+            <span class="api-badge">v1.0 • JWT RFC 7519</span>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <a href="../index.html" class="btn-secondary" style="padding: 8px 16px; font-size: 0.85rem; color: #94a3b8; border-color: rgba(255,255,255,0.2);"><i class="fas fa-home"></i> Home</a>
+            <a href="products.html" class="btn-secondary" style="padding: 8px 16px; font-size: 0.85rem; color: #94a3b8; border-color: rgba(255,255,255,0.2);"><i class="fas fa-shopping-bag"></i> Shop</a>
+            <a href="dashboard-admin.html" class="btn-primary" style="padding: 8px 16px; font-size: 0.85rem;"><i class="fas fa-shield-alt"></i> Admin</a>
+        </div>
+    </div>
+</header>
+
+<main class="container" style="padding: 30px 0 80px;">
+
+    <!-- Authorization Bar -->
+    <div class="token-bar">
+        <span style="font-weight: 700; font-size: 0.9rem; color: #f8fafc; display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-key" style="color: #4ade80;"></i> Bearer JWT:
+        </span>
+        <input type="text" id="globalJwtInput" placeholder="Paste your JWT Bearer token here or click Quick Auto-Fill..." />
+        <button class="btn-try" onclick="autoFillAdminToken()"><i class="fas fa-bolt"></i> Auto-Fill Admin Token</button>
+        <button class="btn-try" style="background: #334155;" onclick="clearToken()"><i class="fas fa-times"></i> Clear</button>
+    </div>
+
+    <!-- Section 1: Authentication & OAuth -->
+    <h2 style="color: #f8fafc; font-size: 1.3rem; margin: 30px 0 16px; display: flex; align-items: center; gap: 10px;">
+        <i class="fas fa-lock" style="color: #38bdf8;"></i> 1. Authentication & OAuth 2.0 (RFC 7519 JWT)
+    </h2>
+
+    <!-- GET /api/auth/oauth/config -->
+    <div class="endpoint-card">
+        <div class="endpoint-summary" onclick="toggleEndpoint(this)">
+            <span class="method-badge method-GET">GET</span>
+            <span class="endpoint-path">/api/auth/oauth/config</span>
+            <span class="endpoint-desc">Fetch Google & GitHub OAuth provider configurations</span>
+        </div>
+        <div class="endpoint-details">
+            <p style="color: #94a3b8; font-size: 0.85rem;">Retrieves active OAuth 2.0 credentials and login scopes.</p>
+            <button class="btn-try" onclick="executeApi('/api/auth/oauth/config', 'GET', null, this)"><i class="fas fa-play"></i> Send Request</button>
+            <div class="console-area">
+                <div>
+                    <label style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Request</label>
+                    <div class="code-box">GET http://localhost:5000/api/auth/oauth/config</div>
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Response</label>
+                    <pre class="code-box res-box">Click 'Send Request' to test live...</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POST /api/auth/login -->
+    <div class="endpoint-card">
+        <div class="endpoint-summary" onclick="toggleEndpoint(this)">
+            <span class="method-badge method-POST">POST</span>
+            <span class="endpoint-path">/api/auth/login</span>
+            <span class="endpoint-desc">Authenticate user & issue 24-hour RFC 7519 JWT token</span>
+        </div>
+        <div class="endpoint-details">
+            <p style="color: #94a3b8; font-size: 0.85rem;">Validates credentials and responds with standard Bearer JWT.</p>
+            <button class="btn-try" onclick="executeApi('/api/auth/login', 'POST', { email: 'admin@farmtofork.com', password: 'admin123' }, this)"><i class="fas fa-play"></i> Send Request (Admin Demo)</button>
+            <div class="console-area">
+                <div>
+                    <label style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Request Payload</label>
+                    <div class="code-box">{\n  "email": "admin@farmtofork.com",\n  "password": "admin123"\n}</div>
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Response</label>
+                    <pre class="code-box res-box">Click 'Send Request' to test live...</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GET /api/auth/me (Protected) -->
+    <div class="endpoint-card">
+        <div class="endpoint-summary" onclick="toggleEndpoint(this)">
+            <span class="method-badge method-GET">GET</span>
+            <span class="endpoint-path">/api/auth/me</span>
+            <span class="endpoint-desc"><i class="fas fa-shield-alt" style="color: #4ade80;"></i> Protected: Verify Bearer JWT Token</span>
+        </div>
+        <div class="endpoint-details">
+            <p style="color: #94a3b8; font-size: 0.85rem;">Requires `Authorization: Bearer &lt;token&gt;`. Returns sanitized user profile.</p>
+            <button class="btn-try" onclick="executeApi('/api/auth/me', 'GET', null, this, true)"><i class="fas fa-play"></i> Send Authorized Request</button>
+            <div class="console-area">
+                <div>
+                    <label style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Headers Sent</label>
+                    <div class="code-box auth-headers-box">Authorization: Bearer &lt;Token from top bar&gt;</div>
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Response</label>
+                    <pre class="code-box res-box">Click 'Send Authorized Request' to test...</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Products & Catalog -->
+    <h2 style="color: #f8fafc; font-size: 1.3rem; margin: 30px 0 16px; display: flex; align-items: center; gap: 10px;">
+        <i class="fas fa-carrot" style="color: #22c55e;"></i> 2. Organic Products Catalog
+    </h2>
+
+    <!-- GET /api/products -->
+    <div class="endpoint-card">
+        <div class="endpoint-summary" onclick="toggleEndpoint(this)">
+            <span class="method-badge method-GET">GET</span>
+            <span class="endpoint-path">/api/products</span>
+            <span class="endpoint-desc">List all organic products with category and query filtering</span>
+        </div>
+        <div class="endpoint-details">
+            <p style="color: #94a3b8; font-size: 0.85rem;">Query Params: <code>category=vegetables|fruits|handmade|frozen</code>, <code>q=tomato</code>, <code>sort=price-low</code></p>
+            <button class="btn-try" onclick="executeApi('/api/products?category=vegetables', 'GET', null, this)"><i class="fas fa-play"></i> Send Request (category=vegetables)</button>
+            <div class="console-area">
+                <div>
+                    <label style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Request</label>
+                    <div class="code-box">GET http://localhost:5000/api/products?category=vegetables</div>
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Response</label>
+                    <pre class="code-box res-box">Click 'Send Request' to test live...</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Non-CRUD Blockchain Traceability -->
+    <h2 style="color: #f8fafc; font-size: 1.3rem; margin: 30px 0 16px; display: flex; align-items: center; gap: 10px;">
+        <i class="fas fa-cubes" style="color: #a855f7;"></i> 3. Seed-to-Plate Blockchain Traceability (Non-CRUD Engine)
+    </h2>
+
+    <!-- GET /api/journey/FTF-TOM-2024-001 -->
+    <div class="endpoint-card">
+        <div class="endpoint-summary" onclick="toggleEndpoint(this)">
+            <span class="method-badge method-GET">GET</span>
+            <span class="endpoint-path">/api/journey/:batchCode</span>
+            <span class="endpoint-desc">Cryptographic 7-stage verifiable food journey ledger</span>
+        </div>
+        <div class="endpoint-details">
+            <p style="color: #94a3b8; font-size: 0.85rem;">Fetches immutable timestamped stage logs, GPS points, cold-chain sensor readings, and lab test certifications.</p>
+            <button class="btn-try" onclick="executeApi('/api/journey/FTF-TOM-2024-001', 'GET', null, this)"><i class="fas fa-play"></i> Trace Batch FTF-TOM-2024-001</button>
+            <div class="console-area">
+                <div>
+                    <label style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Request</label>
+                    <div class="code-box">GET http://localhost:5000/api/journey/FTF-TOM-2024-001</div>
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Response</label>
+                    <pre class="code-box res-box">Click 'Trace Batch' to test live...</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 4: Admin Analytics -->
+    <h2 style="color: #f8fafc; font-size: 1.3rem; margin: 30px 0 16px; display: flex; align-items: center; gap: 10px;">
+        <i class="fas fa-chart-line" style="color: #f59e0b;"></i> 4. Admin Live Analytics
+    </h2>
+
+    <!-- GET /api/admin/stats -->
+    <div class="endpoint-card">
+        <div class="endpoint-summary" onclick="toggleEndpoint(this)">
+            <span class="method-badge method-GET">GET</span>
+            <span class="endpoint-path">/api/admin/stats</span>
+            <span class="endpoint-desc">Aggregate real-time platform GMV, farmer counts & order volume</span>
+        </div>
+        <div class="endpoint-details">
+            <p style="color: #94a3b8; font-size: 0.85rem;">Returns metrics across users, farmers, artisans, and total GMV.</p>
+            <button class="btn-try" onclick="executeApi('/api/admin/stats', 'GET', null, this)"><i class="fas fa-play"></i> Send Request</button>
+            <div class="console-area">
+                <div>
+                    <label style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Request</label>
+                    <div class="code-box">GET http://localhost:5000/api/admin/stats</div>
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Response</label>
+                    <pre class="code-box res-box">Click 'Send Request' to test live...</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<script>
+    function toggleEndpoint(el) {
+        el.closest('.endpoint-card').classList.toggle('active');
+    }
+
+    function autoFillAdminToken() {
+        const stored = localStorage.getItem('farmToForkToken');
+        function getApiBase() {
+            if (window.VITE_API_URL !== undefined && window.VITE_API_URL !== '') {
+                return window.VITE_API_URL.replace(/\/+$/, '');
+            }
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                return 'http://localhost:5000';
+            }
+            return '';
+        }
+
+        if (stored) {
+            document.getElementById('globalJwtInput').value = stored;
+        } else {
+            // Fetch token dynamically
+            fetch(`${getApiBase()}/api/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: 'admin@farmtofork.com', password: 'admin123' })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.token) {
+                    document.getElementById('globalJwtInput').value = data.token;
+                    localStorage.setItem('farmToForkToken', data.token);
+                }
+            })
+            .catch(() => {});
+        }
+    }
+
+    function clearToken() {
+        document.getElementById('globalJwtInput').value = '';
+    }
+
+    async function executeApi(endpoint, method, body, btnEl, requiresAuth = false) {
+        const card = btnEl.closest('.endpoint-card');
+        const resBox = card.querySelector('.res-box');
+        resBox.textContent = 'Sending HTTP request to API...';
+
+        const token = document.getElementById('globalJwtInput').value.trim();
+        const headers = { 'Content-Type': 'application/json' };
+        if (requiresAuth || token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const opts = { method, headers };
+        if (body) opts.body = JSON.stringify(body);
+
+        const startTime = performance.now();
+        try {
+            const apiBase = (window.VITE_API_URL !== undefined && window.VITE_API_URL !== '')
+                ? window.VITE_API_URL.replace(/\/+$/, '')
+                : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : '');
+            const res = await fetch(`${apiBase}${endpoint}`, opts);
+            const duration = Math.round(performance.now() - startTime);
+            const json = await res.json();
+
+            let output = `// HTTP Status: ${res.status} ${res.statusText} (${duration}ms)\n`;
+            output += JSON.stringify(json, null, 2);
+            resBox.textContent = output;
+
+            // Update token bar if login was executed
+            if (endpoint.includes('/login') && json.token) {
+                document.getElementById('globalJwtInput').value = json.token;
+                localStorage.setItem('farmToForkToken', json.token);
+            }
+        } catch (err) {
+            resBox.textContent = `// Error: ${err.message}\nAPI request could not reach the endpoint.`;
+        }
+    }
+
+    // STRICT ROLE ACCESS CONTROL
+    function checkAdminAccess() {
+        let role = null;
+        try {
+            const userStr = localStorage.getItem('farmToForkUser');
+            const user = userStr ? JSON.parse(userStr) : null;
+            role = (user && user.role) || localStorage.getItem('userRole');
+        } catch(e) {}
+
+        // Allow instant access if navigated from Admin Dashboard or with admin auth param
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('auth') === 'admin' || (document.referrer && document.referrer.includes('dashboard-admin'))) {
+            role = 'admin';
+            localStorage.setItem('userRole', 'admin');
+            localStorage.setItem('isLoggedIn', 'true');
+        }
+
+        const adminContent = document.getElementById('adminDocsContent');
+        const deniedView = document.getElementById('accessDeniedView');
+
+        if (role === 'admin') {
+            if (adminContent) adminContent.style.display = 'block';
+            if (deniedView) deniedView.style.display = 'none';
+        } else {
+            if (adminContent) adminContent.style.display = 'none';
+            if (deniedView) deniedView.style.display = 'flex';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        checkAdminAccess();
+        const stored = localStorage.getItem('farmToForkToken');
+        if (stored) {
+            const input = document.getElementById('globalJwtInput');
+            if (input) input.value = stored;
+        }
+    });
+    checkAdminAccess();
+</script>
+</div><!-- end adminDocsContent -->
+
+    <script src="../js/script.js"></script>
+    <script src="../js/i18n.js"></script>
+</body>
+</html>

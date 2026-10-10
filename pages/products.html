@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Shop Organic Products - Farm to Fork Collective</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/respnsive.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <style>
+        .products-page { padding: 40px 0 80px; }
+        .shop-controls {
+            background: var(--white);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 36px;
+        }
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .filter-btn {
+            padding: 10px 22px;
+            border: 2px solid var(--primary);
+            border-radius: 30px;
+            background: transparent;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary);
+            color: var(--white);
+        }
+        .search-sort-bar {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .shop-search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 16px;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background: var(--bg);
+            color: var(--text);
+        }
+        .sort-select {
+            padding: 12px 18px;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background: var(--bg);
+            color: var(--text);
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+        .product-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+        }
+        .product-card img {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+        }
+        .product-info {
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        .pagination button {
+            padding: 10px 18px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .pagination button:hover, .pagination button.active {
+            background: var(--primary);
+            color: var(--white);
+        }
+        .pagination button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+    </style>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+    <div class="container">
+        <div class="top-bar-left">
+            <span><i class="fas fa-leaf"></i> 100% Organic</span>
+            <span><i class="fas fa-truck"></i> Free Delivery</span>
+            <span><i class="fas fa-hand-holding-heart"></i> Zero Waste</span>
+            <span><i class="fas fa-snowflake"></i> Frozen Packs</span>
+        </div>
+        <div class="top-bar-right" style="display: flex; align-items: center;">
+            
+            <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar glass">
+    <div class="container">
+        <div class="nav-brand">
+            <a href="../index.html" class="brand-logo-link">
+                <div class="brand-icon-wrapper">
+                    <div class="brand-icon"><i class="fas fa-seedling"></i></div>
+                    <span class="brand-leaf-badge" title="100% Organic Produce"><i class="fas fa-leaf"></i></span>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-main">
+                        Farm to Fork
+                        <span class="brand-side-leaf" title="Fresh Organic"><i class="fas fa-leaf"></i></span>
+                    </span>
+                    <span class="brand-sub">Collective • 100% Organic</span>
+                </div>
+            </a>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="../index.html" id="navShopHome">Home</a>
+            <a href="products.html" class="active" id="navShopProducts">Shop</a>
+            <a href="farmer-marketplace.html" id="navShopFarmers" style="color: var(--primary); font-weight: 700;"><i class="fas fa-users"></i> Farmer Marketplace</a>
+            <a href="wishlist.html" id="navShopWishlist"><i class="fas fa-heart"></i> Wishlist</a>
+            <a href="community-kitchen.html" id="navShopKitchen">Community Kitchen</a>
+            <a href="group-buying.html" id="navShopGroup">Group Buying</a>
+            <a href="seed-to-plate.html" id="navShopSeed">Seed to Plate</a>
+            <a href="api-docs.html" id="navShopApiDocs" class="admin-only-nav" style="display: none;"><i class="fas fa-code"></i> API Docs</a>
+        </div>
+        <div class="nav-actions">
+            <!-- Language Pill in Navbar -->
+            
+            <a href="#" class="search-btn" onclick="toggleSearch()"><i class="fas fa-search"></i></a>
+            <a href="cart.html" class="cart-btn">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-badge" id="cartBadge">0</span>
+            </a>
+            <a href="login.html" class="btn-login" id="navShopLogin">Login</a>
+            <a href="register.html" class="btn-signup" id="navShopSignup">Sign Up</a>
+            <button class="hamburger" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+        </div>
+    </div>
+</nav>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay">
+    <button class="search-close" onclick="toggleSearch()">✕</button>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search products..." />
+        <div class="search-suggestions" id="searchSuggestions"></div>
+    </div>
+</div>
+
+<!-- PRODUCTS PAGE -->
+<section class="products-page">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">🛒 Shop All Organic</span>
+            <h2>Fresh & Certified <span class="gradient-text">Farm Produce</span></h2>
+            <p>From local certified farms straight to your door with QR transparency.</p>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="shop-controls">
+            <div class="filter-bar">
+                <button class="filter-btn active" data-filter="all">All Products (<span id="count-all">34</span>)</button>
+                <button class="filter-btn" data-filter="vegetables">🌾 Vegetables (<span id="count-veg">10</span>)</button>
+                <button class="filter-btn" data-filter="fruits">🍎 Fruits (<span id="count-fruit">8</span>)</button>
+                <button class="filter-btn" data-filter="handmade">🧺 Handmade (<span id="count-handmade">10</span>)</button>
+                <button class="filter-btn" data-filter="frozen">❄️ Frozen Packs (<span id="count-frozen">6</span>)</button>
+            </div>
+
+            <div class="search-sort-bar">
+                <input type="text" id="liveSearchInput" class="shop-search-input" placeholder="🔍 Search organic tomatoes, honey, apples..." />
+                
+                <select id="sortSelect" class="sort-select">
+                    <option value="featured">🌟 Featured & Recommended</option>
+                    <option value="price-low">💰 Price: Low to High</option>
+                    <option value="price-high">💎 Price: High to Low</option>
+                    <option value="rating">⭐ Highest Rated</option>
+                    <option value="freshness">🌿 Freshness & Eco Score</option>
+                </select>
+            </div>
+        <!-- RECENTLY ACCESSED ITEMS -->
+        <div id="recentlyAccessedShopContainer"></div>
+
+        <!-- GRID -->
+        <div class="products-grid" id="allProductsGrid"></div>
+        <div class="pagination" id="paginationControls"></div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="footer-logo"><i class="fas fa-seedling"></i><span>Farm to Fork Collective</span></div>
+                <p>Building a sustainable community through organic food, transparency, and collective action.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="products.html">Shop Products</a>
+                <a href="community-kitchen.html">Community Kitchen</a>
+                <a href="group-buying.html">Group Buying</a>
+                <a href="seed-to-plate.html">Seed to Plate</a>
+            </div>
+            <div class="footer-links">
+                <h4>Categories</h4>
+                <a href="products.html?category=vegetables">Vegetables</a>
+                <a href="products.html?category=fruits">Fruits</a>
+                <a href="products.html?category=handmade">Handmade</a>
+                <a href="products.html?category=frozen">❄️ Frozen Packs</a>
+            </div>
+            <div class="footer-links">
+                <h4>Support</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Farm to Fork Collective. All rights reserved. 🌱</p>
+        </div>
+    </div>
+</footer>
+
+<script src="../js/script.js"></script>
+<script src="../js/cart.js"></script>
+<script src="../js/animation.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/recently-accessed.js"></script>
+<script src="../js/chatbot.js"></script>
+<script src="../js/notifications.js"></script>
+<script src="../js/farmer-marketplace.js"></script>
+<script src="../js/i18n.js"></script>
+
+<script>
+    let activeFilter = 'all';
+    let activeSearch = '';
+    let activeSort = 'featured';
+    let currentPage = 1;
+    const perPage = 8;
+    let shopProducts = typeof products !== 'undefined' ? [...products] : [];
+    let currentShopLang = localStorage.getItem('ftf_lang') || 'en';
+
+    const tamilProductNames = {
+        1: "இயற்கை தக்காளி", 2: "இயற்கை பசலைக்கீரை", 3: "இயற்கை கேரட்", 4: "இயற்கை ப்ரோக்கோலி",
+        5: "இயற்கை காலிஃபிளவர்", 6: "இயற்கை குடைமிளகாய்", 7: "இயற்கை வெங்காயம்", 8: "இயற்கை உருளைக்கிழங்கு",
+        9: "இயற்கை பீட்ரூட்", 10: "இயற்கை பரங்கிக்காய்", 11: "இயற்கை ஆப்பிள்", 12: "இயற்கை வாழைப்பழம்",
+        13: "இயற்கை ஆரஞ்சு", 14: "இயற்கை திராட்சை", 15: "இயற்கை மாம்பழம்", 16: "இயற்கை ஸ்ட்ராபெர்ரி",
+        17: "இயற்கை தர்பூசணி", 18: "இயற்கை மாதுளை", 19: "இயற்கை காட்டுத் தேன்", 20: "இயற்கை கைவினை ரொட்டி",
+        21: "இயற்கை மூலிகை சோப்", 22: "பாரம்பரிய மாங்காய் ஊறுகாய்", 23: "இயற்கை வேர்க்கடலை வெண்ணெய்",
+        24: "பாரம்பரிய A2 பசு நெய்", 25: "இயற்கை வாசனை மசாலா தொகுப்பு", 26: "பாரம்பரிய நாட்டு வெல்லம்",
+        27: "மரச்செக்கு தேங்காய் எண்ணெய்", 28: "இயற்கை மூலிகை ஆரோக்கிய தேநீர்", 29: "கலவை காய்கறி பேக்",
+        30: "சீன வதக்கல் காய்கறி கலவை", 31: "சூப் காய்கறி கலவை", 32: "சாம்பார் & கறி காய்கறி பேக்",
+        33: "பிரீமியம் காய்கறி மெட்லி", 34: "புதிய பச்சை பட்டாணி பேக்"
+    };
+
+    function setShopLanguage(lang) {
+        currentShopLang = lang;
+        localStorage.setItem('ftf_lang', lang);
+
+        if (window.FTF_I18N && typeof window.FTF_I18N.apply === 'function') {
+            window.FTF_I18N.apply(lang);
+        }
+        
+        // Ensure legacy language switchers are removed
+        const legacyFloat = document.getElementById('globalFloatingLangBtn');
+        if (legacyFloat) legacyFloat.remove();
+        document.querySelectorAll('.floating-lang-btn, .nav-lang-pill, .lang-switch-wrap').forEach(el => el.remove());
+
+        // Translate Navbar links
+        const navHome = document.getElementById('navShopHome');
+        const navShop = document.getElementById('navShopProducts');
+        const navKitchen = document.getElementById('navShopKitchen');
+        const navGroup = document.getElementById('navShopGroup');
+        const navSeed = document.getElementById('navShopSeed');
+        const navLogin = document.getElementById('navShopLogin');
+        const navSignup = document.getElementById('navShopSignup');
+        if (navHome) navHome.textContent = lang === 'ta' ? 'முகப்பு' : 'Home';
+        if (navShop) navShop.textContent = lang === 'ta' ? 'விளைபொருட்கள்' : 'Shop';
+        if (navKitchen) navKitchen.textContent = lang === 'ta' ? 'சமுதாய சமையலறை' : 'Community Kitchen';
+        if (navGroup) navGroup.textContent = lang === 'ta' ? 'குழு கொள்முதல்' : 'Group Buying';
+        if (navSeed) navSeed.textContent = lang === 'ta' ? 'விதையிலிருந்து தட்டு வரை' : 'Seed to Plate';
+        if (navLogin) navLogin.textContent = lang === 'ta' ? 'உள்நுழைக' : 'Login';
+        if (navSignup) navSignup.textContent = lang === 'ta' ? 'பதிவு செய்க' : 'Sign Up';
+
+        // Translate filter buttons
+        const allBtn = document.querySelector('[data-filter="all"]');
+        const vegBtn = document.querySelector('[data-filter="vegetables"]');
+        const fruitBtn = document.querySelector('[data-filter="fruits"]');
+        const hmBtn = document.querySelector('[data-filter="handmade"]');
+        const frzBtn = document.querySelector('[data-filter="frozen"]');
+
+        const countAll = document.getElementById('count-all') ? document.getElementById('count-all').textContent : '34';
+        const countVeg = document.getElementById('count-veg') ? document.getElementById('count-veg').textContent : '10';
+        const countFruit = document.getElementById('count-fruit') ? document.getElementById('count-fruit').textContent : '8';
+        const countHm = document.getElementById('count-handmade') ? document.getElementById('count-handmade').textContent : '10';
+        const countFrz = document.getElementById('count-frozen') ? document.getElementById('count-frozen').textContent : '6';
+
+        if (lang === 'ta') {
+            if (allBtn) allBtn.innerHTML = `அனைத்து பொருட்கள் (<span id="count-all">${countAll}</span>)`;
+            if (vegBtn) vegBtn.innerHTML = `🌾 காய்கறிகள் (<span id="count-veg">${countVeg}</span>)`;
+            if (fruitBtn) fruitBtn.innerHTML = `🍎 பழங்கள் (<span id="count-fruit">${countFruit}</span>)`;
+            if (hmBtn) hmBtn.innerHTML = `🧺 கைவினைப் பொருட்கள் (<span id="count-handmade">${countHm}</span>)`;
+            if (frzBtn) frzBtn.innerHTML = `❄️ உறைந்த காய்கறிகள் (<span id="count-frozen">${countFrz}</span>)`;
+            const searchInput = document.getElementById('liveSearchInput');
+            if (searchInput) searchInput.placeholder = '🔍 இயற்கை தக்காளி, தேன், ஆப்பிள் தேடவும்...';
+        } else {
+            if (allBtn) allBtn.innerHTML = `All Products (<span id="count-all">${countAll}</span>)`;
+            if (vegBtn) vegBtn.innerHTML = `🌾 Vegetables (<span id="count-veg">${countVeg}</span>)`;
+            if (fruitBtn) fruitBtn.innerHTML = `🍎 Fruits (<span id="count-fruit">${countFruit}</span>)`;
+            if (hmBtn) hmBtn.innerHTML = `🧺 Handmade (<span id="count-handmade">${countHm}</span>)`;
+            if (frzBtn) frzBtn.innerHTML = `❄️ Frozen Packs (<span id="count-frozen">${countFrz}</span>)`;
+            const searchInput = document.getElementById('liveSearchInput');
+            if (searchInput) searchInput.placeholder = '🔍 Search organic tomatoes, honey, apples...';
+        }
+
+        applyFiltersAndRender();
+    }
+
+    document.addEventListener('DOMContentLoaded', async function() {
+        setShopLanguage(currentShopLang);
+        // Fetch live products from backend if available
+        if (window.FTF_API && window.FTF_API.products) {
+            try {
+                const res = await window.FTF_API.products.getAll();
+                if (res && res.success && res.products && res.products.length > 0) {
+                    shopProducts = res.products;
+                }
+            } catch (err) {
+                console.warn('Using local product catalog fallback:', err);
+            }
+        }
+
+        // Dynamic category counts
+        if (document.getElementById('count-all')) document.getElementById('count-all').textContent = shopProducts.length;
+        if (document.getElementById('count-veg')) document.getElementById('count-veg').textContent = shopProducts.filter(p => p.category === 'vegetables').length;
+        if (document.getElementById('count-fruit')) document.getElementById('count-fruit').textContent = shopProducts.filter(p => p.category === 'fruits').length;
+        if (document.getElementById('count-handmade')) document.getElementById('count-handmade').textContent = shopProducts.filter(p => p.category === 'handmade').length;
+        if (document.getElementById('count-frozen')) document.getElementById('count-frozen').textContent = shopProducts.filter(p => p.category === 'frozen').length;
+
+        // Read URL query parameter for category or search
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryParam = urlParams.get('category');
+        const searchParam = urlParams.get('search');
+
+        if (categoryParam) {
+            activeFilter = categoryParam.toLowerCase();
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === activeFilter);
+            });
+        }
+
+        if (searchParam) {
+            activeSearch = searchParam;
+            const searchEl = document.getElementById('liveSearchInput');
+            if (searchEl) searchEl.value = activeSearch;
+        }
+
+        setupEventListeners();
+        applyFiltersAndRender();
+    });
+
+    function setupEventListeners() {
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                activeFilter = this.dataset.filter;
+                currentPage = 1;
+                applyFiltersAndRender();
+            });
+        });
+
+        const searchInput = document.getElementById('liveSearchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                activeSearch = this.value.trim().toLowerCase();
+                currentPage = 1;
+                applyFiltersAndRender();
+            });
+        }
+
+        const sortSelect = document.getElementById('sortSelect');
+        if (sortSelect) {
+            sortSelect.addEventListener('change', function() {
+                activeSort = this.value;
+                applyFiltersAndRender();
+            });
+        }
+    }
+
+    function applyFiltersAndRender() {
+        let filtered = shopProducts;
+
+        // 1. Category Filter
+        if (activeFilter !== 'all') {
+            filtered = filtered.filter(p => p.category === activeFilter);
+        }
+
+        // 2. Search Filter
+        if (activeSearch) {
+            filtered = filtered.filter(p => 
+                p.name.toLowerCase().includes(activeSearch) ||
+                p.seller.toLowerCase().includes(activeSearch) ||
+                (p.origin && p.origin.toLowerCase().includes(activeSearch)) ||
+                (typeof tamilProductNames !== 'undefined' && tamilProductNames[p.id] && tamilProductNames[p.id].toLowerCase().includes(activeSearch)) ||
+                p.category.toLowerCase().includes(activeSearch)
+            );
+        }
+
+        // 3. Sorting
+        filtered = [...filtered].sort((a, b) => {
+            if (activeSort === 'price-low') return a.price - b.price;
+            if (activeSort === 'price-high') return b.price - a.price;
+            if (activeSort === 'rating') return b.rating - a.rating;
+            if (activeSort === 'freshness') return (b.freshnessScore || 0) - (a.freshnessScore || 0);
+            return a.id - b.id;
+        });
+
+        // 4. Render clean catalog products (each produce as a single clean card)
+        renderProductCards(filtered);
+        renderPagination(filtered);
+    }
+
+    function renderProductCards(items) {
+        const container = document.getElementById('allProductsGrid');
+        if (!container) return;
+
+        if (items.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--white); border-radius: var(--radius);">
+                    <i class="fas fa-search" style="font-size: 3rem; color: var(--text-light); opacity: 0.3; margin-bottom: 12px;"></i>
+                    <h3>${currentShopLang === 'ta' ? 'விளைபொருட்கள் எதுவும் கிடைக்கவில்லை' : 'No products found'}</h3>
+                    <p style="color: var(--text-light);">${currentShopLang === 'ta' ? 'வேறு பிரிவை தேர்வு செய்யவும் அல்லது தேடலை அழிக்கவும்.' : 'Try selecting another category or clearing your search.'}</p>
+                    <button class="btn-primary" style="margin-top: 16px;" onclick="resetFilters()">${currentShopLang === 'ta' ? 'அனைத்து பொருட்களையும் காண்க' : 'View All Products'}</button>
+                </div>
+            `;
+            return;
+        }
+
+        const start = (currentPage - 1) * perPage;
+        const paginated = items.slice(start, start + perPage);
+
+        const cardsHtml = paginated.map(p => {
+            let badgeClass = 'badge-fresh';
+            if (p.category === 'frozen') badgeClass = 'badge-frozen';
+            else if (p.freshness === 'Good') badgeClass = 'badge-good';
+
+            const clean = (p.image || '').replace(/^\/+/, '');
+            const imgSrc = typeof getProductImagePath === 'function' ? getProductImagePath(p.image) : ('../' + clean);
+            const localFallback = '../' + clean;
+            const absoluteFallback = '/' + clean;
+
+            const stock = (p.stock !== undefined && p.stock !== null) ? Number(p.stock) : 50;
+            let stockWarningHtml = '';
+            let actionBtnHtml = '';
+            if (stock <= 0) {
+                stockWarningHtml = `<div style="font-size:0.75rem; font-weight:700; color:#DC2626; background:#FEE2E2; padding:3px 8px; border-radius:6px; margin-bottom:6px; display:inline-block;">🔴 Sold Out</div>`;
+                actionBtnHtml = `
+                    <button onclick="event.stopPropagation(); triggerNotifyBackInStock('${p.name.replace(/'/g, "\\'")}');" class="btn-primary btn-small" style="padding: 6px 10px; font-size: 0.78rem; background: #4B5563;">
+                        <i class="fas fa-bell"></i> ${currentShopLang === 'ta' ? 'அறிவி' : 'Notify'}
+                    </button>
+                `;
+            } else if (stock <= 10) {
+                stockWarningHtml = `<div style="font-size:0.75rem; font-weight:700; color:#B45309; background:#FEF3C7; padding:3px 8px; border-radius:6px; margin-bottom:6px; display:inline-block;">⚡ Only ${stock} ${p.unit || 'kg'} left!</div>`;
+                actionBtnHtml = `
+                    <button onclick="event.stopPropagation(); addToCart(${p.id});" class="btn-primary btn-small" style="padding: 6px 12px; font-size: 0.8rem;">
+                        <i class="fas fa-plus"></i> ${currentShopLang === 'ta' ? 'சேர்' : 'Add'}
+                    </button>
+                `;
+            } else {
+                actionBtnHtml = `
+                    <button onclick="event.stopPropagation(); addToCart(${p.id});" class="btn-primary btn-small" style="padding: 6px 12px; font-size: 0.8rem;">
+                        <i class="fas fa-plus"></i> ${currentShopLang === 'ta' ? 'சேர்' : 'Add'}
+                    </button>
+                `;
+            }
+
+            return `
+                <div class="product-card animate-scale" onclick="window.location.href='product-details.html?id=${p.id}'">
+                    <div style="position: relative;">
+                        <img src="${imgSrc}" alt="${p.name}" onerror="if(this.src!=='${localFallback}'){this.src='${localFallback}';}else{this.onerror=null;this.src='${absoluteFallback}';}">
+                        <span class="product-badge ${badgeClass}">${p.badge}</span>
+                    </div>
+                    <div class="product-info">
+                        <div style="font-size: 0.75rem; color: var(--primary); font-weight: 700; text-transform: uppercase;">${p.category}</div>
+                        <h3 class="product-name" style="margin: 4px 0; font-size: 1.1rem;">${(currentShopLang === 'ta' && (tamilProductNames[p.id] || p.productNameTamil)) ? (tamilProductNames[p.id] || p.productNameTamil) : p.name}</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px;">
+                            <i class="fas fa-map-pin"></i> ${p.seller}
+                        </p>
+                        ${stockWarningHtml}
+                        <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px;">
+                            <span class="product-price" style="font-size: 1.25rem; font-weight: 800; color: var(--primary);">₹${p.price}</span>
+                            <span class="product-original" style="text-decoration: line-through; color: var(--text-light); font-size: 0.85rem;">₹${p.originalPrice}</span>
+                            <span style="font-size: 0.8rem; color: var(--text-light);">/${p.unit}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 10px; gap: 6px;">
+                            <span style="color: #FFB300; font-size: 0.85rem;">★ ${p.rating}</span>
+                            <div style="display: flex; gap: 6px;">
+                                ${actionBtnHtml}
+                                <button onclick="event.stopPropagation(); window.location.href='seed-to-plate.html?batch=' + (p.batchCode || 'FTF-TOM-2024-001');" style="padding: 6px 10px; font-size: 0.75rem; background: #f0fdf4; color: var(--primary-dark); border: 1.5px solid #86efac; border-radius: 6px; font-weight: 700; cursor: pointer;" title="Trace Seed to Plate">
+                                    <i class="fas fa-qrcode"></i> ${currentShopLang === 'ta' ? 'பயணம்' : 'Trace'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        container.innerHTML = cardsHtml;
+    }
+
+    function triggerNotifyBackInStock(cropName) {
+        if (window.FTF_NOTIFICATIONS && typeof window.FTF_NOTIFICATIONS.addNotification === 'function') {
+            window.FTF_NOTIFICATIONS.addNotification({
+                type: 'stock',
+                title: 'Restock Alert Subscribed',
+                message: `We will notify you immediately once fresh harvest of ${cropName} arrives from the farm!`
+            });
+        }
+        alert(`🔔 Restock Alert Subscribed!\nWe'll alert you the moment fresh ${cropName} is harvested and in stock.`);
+    }
+
+    function renderPagination(items) {
+        const container = document.getElementById('paginationControls');
+        if (!container) return;
+        const totalPages = Math.ceil(items.length / perPage);
+        container.innerHTML = '';
+
+        if (totalPages <= 1) return;
+
+        const prev = document.createElement('button');
+        prev.innerHTML = '‹ Prev';
+        prev.disabled = currentPage === 1;
+        prev.onclick = () => { currentPage--; applyFiltersAndRender(); window.scrollTo({ top: 200, behavior: 'smooth' }); };
+        container.appendChild(prev);
+
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement('button');
+            btn.textContent = i;
+            btn.className = i === currentPage ? 'active' : '';
+            btn.onclick = () => { currentPage = i; applyFiltersAndRender(); window.scrollTo({ top: 200, behavior: 'smooth' }); };
+            container.appendChild(btn);
+        }
+
+        const next = document.createElement('button');
+        next.innerHTML = 'Next ›';
+        next.disabled = currentPage === totalPages;
+        next.onclick = () => { currentPage++; applyFiltersAndRender(); window.scrollTo({ top: 200, behavior: 'smooth' }); };
+        container.appendChild(next);
+    }
+
+    function resetFilters() {
+        activeFilter = 'all';
+        activeSearch = '';
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === 'all'));
+        const s = document.getElementById('liveSearchInput');
+        if (s) s.value = '';
+        currentPage = 1;
+        applyFiltersAndRender();
+    }
+</script>
+</body>
+</html>

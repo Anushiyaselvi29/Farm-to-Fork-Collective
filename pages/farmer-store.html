@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Store - Farm to Fork Collective</title>
+    <meta name="description" content="View dedicated organic farmer store. Browse all farm-fresh vegetables, fruits, and handcrafted produce harvested directly by local smallholder farmers.">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/respnsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Mukta+Malar:wght@400;600;700;800&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .farmer-store-page {
+            padding: 30px 0 80px;
+            background: var(--bg);
+            min-height: 85vh;
+        }
+
+        /* Hero Farmer Profile Header */
+        .farmer-store-hero {
+            position: relative;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 36px;
+        }
+        .store-cover-banner {
+            height: 220px;
+            width: 100%;
+            object-fit: cover;
+            filter: brightness(0.85);
+            background: linear-gradient(135deg, #15803d, #2d6a4f);
+        }
+        .store-profile-bar {
+            padding: 0 32px 28px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 24px;
+            align-items: flex-end;
+            margin-top: -65px;
+            position: relative;
+        }
+        @media (max-width: 850px) {
+            .store-profile-bar {
+                grid-template-columns: 1fr;
+                align-items: center;
+                text-align: center;
+                margin-top: -55px;
+            }
+        }
+        .store-avatar-box {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            border: 4px solid var(--white);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            background: var(--white);
+            overflow: hidden;
+            flex-shrink: 0;
+            margin: 0 auto;
+        }
+        .store-avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .store-verified-pill {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            border: 2px solid white;
+        }
+        .store-title-group h1 {
+            font-size: 2rem;
+            margin: 0 0 4px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .store-farm-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .store-meta-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 8px;
+            align-items: center;
+        }
+        .meta-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .meta-location { background: #fef2f2; color: #b91c1c; }
+        .meta-distance { background: #eff6ff; color: #1d4ed8; }
+        .meta-farming-type { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        .meta-rating { background: #fef9c3; color: #854d0e; }
+
+        /* Farmer Store Details Cards Grid */
+        .store-details-grid {
+            display: grid;
+            grid-template-columns: 2fr 1.2fr;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        @media (max-width: 900px) {
+            .store-details-grid { grid-template-columns: 1fr; }
+        }
+        .store-info-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 26px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        .store-info-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
+        }
+        .store-about-text {
+            color: var(--text-light);
+            font-size: 0.98rem;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        .delivery-avail-box {
+            background: linear-gradient(135deg, rgba(22, 163, 74, 0.08), rgba(22, 163, 74, 0.02));
+            border: 1.5px solid #86efac;
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-top: 14px;
+        }
+        .delivery-avail-box i {
+            font-size: 1.6rem;
+            color: var(--primary);
+            margin-top: 2px;
+        }
+
+        /* Products Catalog Section */
+        .farmer-products-section {
+            margin-top: 20px;
+        }
+        .section-subhead {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .section-subhead h2 {
+            font-size: 1.7rem;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .store-category-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .store-cat-btn {
+            padding: 8px 16px;
+            border-radius: 30px;
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            color: var(--text);
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .store-cat-btn:hover, .store-cat-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Farmer Store Product Cards */
+        .store-products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        .store-item-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            position: relative;
+        }
+        .store-item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary);
+        }
+        .store-item-img-box {
+            position: relative;
+            height: 190px;
+            width: 100%;
+            overflow: hidden;
+            background: #f1f5f9;
+        }
+        .store-item-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .store-item-card:hover .store-item-img-box img {
+            transform: scale(1.05);
+        }
+        .store-item-body {
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .store-item-name {
+            font-size: 1.15rem;
+            margin: 0 0 6px;
+            color: var(--text);
+            font-weight: 700;
+        }
+        .store-item-price-box {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .store-price-main {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .store-price-orig {
+            font-size: 0.9rem;
+            text-decoration: line-through;
+            color: var(--text-light);
+        }
+        .store-price-unit {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        .store-item-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+            color: var(--text-light);
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+        .store-actions-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: auto;
+        }
+        .btn-store-cart {
+            padding: 9px 12px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+        .btn-store-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(45, 106, 79, 0.3);
+        }
+        .btn-store-buy {
+            padding: 9px 12px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+        .btn-store-buy:hover {
+            transform: translateY(-2px);
+            background: #b45309;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+        }
+
+        /* Dark Mode Overrides */
+        body.dark-theme .farmer-store-hero,
+        body.dark-theme .store-info-card,
+        body.dark-theme .store-item-card {
+            background: #18221c;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        body.dark-theme .store-avatar-box {
+            border-color: #18221c;
+            background: #18221c;
+        }
+        body.dark-theme .delivery-avail-box {
+            background: #111a14;
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+        body.dark-theme .store-cat-btn {
+            background: #111a14;
+            border-color: rgba(255, 255, 255, 0.12);
+            color: #e2e8f0;
+        }
+        body.dark-theme .store-item-meta {
+            border-bottom-color: rgba(255, 255, 255, 0.08);
+        }
+    </style>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('ftf_theme') || localStorage.getItem('farmToForkTheme') || 'emerald';
+            const active = (theme === 'dark') ? 'midnight' : (theme === 'light' ? 'emerald' : theme);
+            document.documentElement.setAttribute('data-theme', active);
+            if (active === 'midnight') document.documentElement.classList.add('dark-theme');
+            const lang = localStorage.getItem('ftf_lang') || 'en';
+            document.documentElement.setAttribute('lang', lang);
+        })();
+    </script>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+    <div class="container">
+        <div class="top-bar-left">
+            <span><i class="fas fa-leaf"></i> 100% Certified Organic</span>
+            <span><i class="fas fa-tractor"></i> Direct Farm Gate Pricing</span>
+            <span><i class="fas fa-store"></i> Verified Local Farmer Stores</span>
+        </div>
+        <div class="top-bar-right" style="display: flex; align-items: center;">
+            
+            <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar glass">
+    <div class="container">
+        <div class="nav-brand">
+            <a href="../index.html" class="brand-logo-link">
+                <div class="brand-icon-wrapper">
+                    <div class="brand-icon"><i class="fas fa-seedling"></i></div>
+                    <span class="brand-leaf-badge" title="100% Organic Produce"><i class="fas fa-leaf"></i></span>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-main">
+                        Farm to Fork
+                        <span class="brand-side-leaf" title="Fresh Organic"><i class="fas fa-leaf"></i></span>
+                    </span>
+                    <span class="brand-sub">Collective • 100% Organic</span>
+                </div>
+            </a>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="../index.html" id="navStoreHome">Home</a>
+            <a href="products.html" id="navStoreShop">Shop</a>
+            <a href="farmer-marketplace.html" id="navStoreMarket">Farmer Marketplace</a>
+            <a href="wishlist.html" id="navStoreWishlist">Wishlist</a>
+            <a href="seed-to-plate.html" id="navStoreSeed">Seed to Plate</a>
+            <a href="group-buying.html" id="navStoreGroup">Group Buying</a>
+            <a href="community-kitchen.html" id="navStoreKitchen">Community Kitchen</a>
+        </div>
+        <div class="nav-actions">
+            <a href="cart.html" class="cart-btn" aria-label="Shopping Cart">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-badge" id="cartBadge">0</span>
+            </a>
+            <a href="login.html" class="btn-login" id="navStoreLogin">Login</a>
+            <a href="register.html" class="btn-signup" id="navStoreSignup">Sign Up</a>
+        </div>
+    </div>
+</nav>
+
+<!-- MAIN FARMER STORE CONTENT -->
+<main class="farmer-store-page">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <div style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-light);">
+            <a href="../index.html" style="color: var(--primary);">Home</a> &gt; 
+            <a href="products.html" style="color: var(--primary);">Shop</a> &gt; 
+            <a href="farmer-marketplace.html" style="color: var(--primary);">Farmers</a> &gt; 
+            <span id="breadcrumbFarmerName" style="font-weight: 700; color: var(--text);">Farmer Store</span>
+        </div>
+
+        <!-- 1. FARMER PROFILE HERO BANNER -->
+        <section class="farmer-store-hero">
+            <img id="farmerStoreCover" src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1200" alt="Farm Banner" class="store-cover-banner">
+            
+            <div class="store-profile-bar">
+                <div class="store-avatar-box">
+                    <img id="farmerStoreAvatar" src="https://images.unsplash.com/photo-1544717305-2782549b5136?w=300" alt="Farmer Photo">
+                    <div class="store-verified-pill" title="Verified Organic Producer"><i class="fas fa-check"></i></div>
+                </div>
+
+                <div class="store-title-group">
+                    <h1 id="farmerStoreName">Sundaram Perumal</h1>
+                    <div class="store-farm-name" id="farmerStoreFarmName">
+                        <i class="fas fa-tractor"></i> Green Valley Organic Farm
+                    </div>
+                    
+                    <div class="store-meta-tags">
+                        <span class="meta-pill meta-location" id="farmerStoreLocation">
+                            <i class="fas fa-map-marker-alt"></i> Oddanchatram, Dindigul
+                        </span>
+                        <span class="meta-pill meta-distance" id="farmerStoreDistance">
+                            <i class="fas fa-location-arrow"></i> 18 km from your registered location
+                        </span>
+                        <span class="meta-pill meta-farming-type" id="farmerStoreFarmingType">
+                            <i class="fas fa-seedling"></i> Farming Type: Organic
+                        </span>
+                        <span class="meta-pill meta-rating" id="farmerStoreRating">
+                            ⭐ 4.8 (56 reviews)
+                        </span>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <button class="btn-primary" onclick="openShareStoreModal()" style="padding: 10px 18px; font-size: 0.85rem;">
+                        <i class="fas fa-share-alt"></i> Share Store
+                    </button>
+                    <a href="#farmerProductsSection" class="btn-secondary" style="padding: 10px 18px; font-size: 0.85rem; text-align: center;">
+                        <i class="fas fa-shopping-basket"></i> Browse Harvest
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. FARMER DETAILS GRID (ABOUT THE FARM & DELIVERY AVAILABILITY) -->
+        <section class="store-details-grid">
+            <!-- About the Farm -->
+            <div class="store-info-card">
+                <h3 id="headingAboutFarm"><i class="fas fa-info-circle" style="color: var(--primary);"></i> About the Farm</h3>
+                <p class="store-about-text" id="farmerStoreAbout">
+                    Cultivating 12 acres of certified organic land with indigenous heirloom seeds, Panchagavya, and solar drip irrigation. Over 20 years of dedication to chemical-free agriculture.
+                </p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 18px;">
+                    <div style="background: var(--bg); padding: 12px; border-radius: 10px; border: 1px solid var(--border);">
+                        <div style="font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; font-weight: 700;">Soil & Water</div>
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--text); margin-top: 4px;">Solar Drip & Well</div>
+                    </div>
+                    <div style="background: var(--bg); padding: 12px; border-radius: 10px; border: 1px solid var(--border);">
+                        <div style="font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; font-weight: 700;">Pesticide Residue</div>
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--primary); margin-top: 4px;">0.00% Lab Tested</div>
+                    </div>
+                    <div style="background: var(--bg); padding: 12px; border-radius: 10px; border: 1px solid var(--border);">
+                        <div style="font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; font-weight: 700;">Certification</div>
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--text); margin-top: 4px;" id="farmerStoreCertBadge">Jaivik Bharat</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delivery Availability & Direct Connect -->
+            <div class="store-info-card">
+                <h3 id="headingDeliveryAvail"><i class="fas fa-truck-clock" style="color: var(--secondary);"></i> Delivery Availability</h3>
+                
+                <div class="delivery-avail-box">
+                    <i class="fas fa-truck-fast"></i>
+                    <div>
+                        <strong style="color: var(--text); font-size: 0.95rem; display: block;" id="deliveryScheduleTitle">Direct Cold-Chain Dispatch</strong>
+                        <p style="margin: 4px 0 0; font-size: 0.88rem; color: var(--text-light); line-height: 1.5;" id="farmerStoreDeliveryAvail">
+                            Available Daily: Same-Day Cold-Chain Express (within 2-4 hrs) & Morning Slot (7:00 AM - 10:00 AM)
+                        </p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 6px;">
+                        <i class="fas fa-location-dot" style="color: #ef4444;"></i> Delivering to your address:
+                    </div>
+                    <div style="background: var(--bg); padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; color: var(--text-light); display: flex; justify-content: space-between; align-items: center;">
+                        <span id="customerAddressDisplay">Anna Nagar, Chennai</span>
+                        <button onclick="promptChangeLocation()" style="background: none; border: none; color: var(--primary); font-weight: 700; font-size: 0.8rem; cursor: pointer;">Change 📍</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. FARMER PRODUCTS (ALL VEGETABLES, FRUITS, ETC. SOLD BY THIS FARMER) -->
+        <section class="farmer-products-section" id="farmerProductsSection">
+            <div class="section-subhead">
+                <div>
+                    <h2 id="farmerHarvestTitle">
+                        <i class="fas fa-carrot" style="color: var(--primary);"></i> Fresh Harvest From This Farmer
+                    </h2>
+                    <p style="margin: 4px 0 0; font-size: 0.9rem; color: var(--text-light);" id="farmerHarvestSub">
+                        All organic crops grown with love and harvested fresh on order.
+                    </p>
+                </div>
+
+                <div class="store-category-filters">
+                    <button class="store-cat-btn active" data-cat="all" onclick="filterFarmerStoreProducts('all')">All Products</button>
+                    <button class="store-cat-btn" data-cat="vegetables" onclick="filterFarmerStoreProducts('vegetables')">🌾 Vegetables</button>
+                    <button class="store-cat-btn" data-cat="fruits" onclick="filterFarmerStoreProducts('fruits')">🍎 Fruits</button>
+                    <button class="store-cat-btn" data-cat="handmade" onclick="filterFarmerStoreProducts('handmade')">🧺 Handmade</button>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="store-products-grid" id="farmerStoreProductsGrid">
+                <!-- Injected dynamically by JS -->
+            </div>
+        </section>
+    </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <i class="fas fa-seedling"></i>
+                    <span>Farm to Fork Collective</span>
+                </div>
+                <p>Direct smallholder organic marketplace connecting verified Tamil Nadu farmers with conscious consumers.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="../index.html">Home</a>
+                <a href="products.html">Shop Catalog</a>
+                <a href="farmer-marketplace.html">Farmer Marketplace</a>
+                <a href="seed-to-plate.html">Seed to Plate Trace</a>
+            </div>
+            <div class="footer-col">
+                <h4>Farmer Guarantee</h4>
+                <p style="font-size: 0.85rem; color: var(--text-light); line-height: 1.6;">
+                    100% fair trade farm-gate prices. Zero chemical additives or intermediaries. Scan QR passport on package for live blockchain journey.
+                </p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Farm to Fork Collective. All rights reserved. 🌱</p>
+        </div>
+    </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="../js/script.js"></script>
+<script src="../js/cart.js"></script>
+<script src="../js/farmer-marketplace.js"></script>
+<script src="../js/notifications.js"></script>
+<script src="../js/i18n.js"></script>
+
+<script>
+    let activeFarmerId = 'farmer-sundaram';
+    let currentStoreLang = localStorage.getItem('ftf_lang') || 'en';
+    let activeCategoryFilter = 'all';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const farmerParam = urlParams.get('farmer');
+        if (farmerParam) {
+            activeFarmerId = farmerParam;
+        }
+
+        renderFarmerStore();
+        setStoreLanguage(currentStoreLang);
+        updateLocationDisplay();
+    });
+
+    function updateLocationDisplay() {
+        const regLoc = typeof getRegisteredCustomerLocation === 'function' ? getRegisteredCustomerLocation() : { name: 'Anna Nagar, Chennai' };
+        const el = document.getElementById('customerAddressDisplay');
+        if (el) el.textContent = regLoc.address || regLoc.name;
+    }
+
+    function promptChangeLocation() {
+        const isTa = currentStoreLang === 'ta';
+        const newLoc = prompt(isTa ? 'உங்கள் டெலிவரி முகவரி / பகுதியை உள்ளிடவும்:' : 'Enter your registered delivery location or city area (e.g. T. Nagar, Chennai):');
+        if (newLoc && newLoc.trim()) {
+            setRegisteredCustomerLocation({
+                name: newLoc.trim(),
+                district: 'Chennai',
+                address: newLoc.trim()
+            });
+            updateLocationDisplay();
+            renderFarmerStore();
+            if (typeof showNotification === 'function') {
+                showNotification(isTa ? `டெலிவரி இடம் புதுப்பிக்கப்பட்டது: ${newLoc}` : `Delivery location updated to: ${newLoc}`, 'fas fa-map-marker-alt');
+            }
+        }
+    }
+
+    function renderFarmerStore() {
+        const farmer = getFarmerById(activeFarmerId) || FARMERS_REGISTRY['farmer-sundaram'];
+        if (!farmer) return;
+
+        const isTa = currentStoreLang === 'ta';
+        const regLoc = getRegisteredCustomerLocation();
+
+        // Update Title & Breadcrumbs
+        document.title = `${isTa ? (farmer.farmerNameTa || farmer.farmerName) : farmer.farmerName} - ${isTa ? (farmer.farmNameTa || farmer.farmName) : farmer.farmName} | Farm to Fork`;
+        const breadcrumbName = document.getElementById('breadcrumbFarmerName');
+        if (breadcrumbName) breadcrumbName.textContent = isTa ? (farmer.farmerNameTa || farmer.farmerName) : farmer.farmerName;
+
+        // Populate Hero
+        const avatarEl = document.getElementById('farmerStoreAvatar');
+        if (avatarEl) avatarEl.src = farmer.farmerPhoto;
+        const coverEl = document.getElementById('farmerStoreCover');
+        if (coverEl) coverEl.src = farmer.farmPhoto || 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1200';
+
+        const nameEl = document.getElementById('farmerStoreName');
+        if (nameEl) nameEl.textContent = isTa ? (farmer.farmerNameTa || farmer.farmerName) : farmer.farmerName;
+        const farmNameEl = document.getElementById('farmerStoreFarmName');
+        if (farmNameEl) farmNameEl.innerHTML = `<i class="fas fa-tractor"></i> ${isTa ? (farmer.farmNameTa || farmer.farmName) : farmer.farmName}`;
+
+        const locEl = document.getElementById('farmerStoreLocation');
+        if (locEl) locEl.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${isTa ? (farmer.formattedLocationTa || farmer.formattedLocation) : farmer.formattedLocation}`;
+
+        const distEl = document.getElementById('farmerStoreDistance');
+        if (distEl) distEl.innerHTML = `<i class="fas fa-location-arrow"></i> <strong>${farmer.distanceKm} km</strong> ${isTa ? 'உங்கள் முகவரியிலிருந்து' : 'from registered location'} (${regLoc.name})`;
+
+        const farmTypeEl = document.getElementById('farmerStoreFarmingType');
+        if (farmTypeEl) {
+            farmTypeEl.innerHTML = `<i class="fas fa-seedling"></i> ${isTa ? 'முறை:' : 'Type:'} ${isTa ? (farmer.farmingTypeTa || farmer.farmingType) : farmer.farmingType}`;
+        }
+
+        const ratingEl = document.getElementById('farmerStoreRating');
+        if (ratingEl) ratingEl.textContent = `⭐ ${farmer.rating} (${farmer.reviewsCount} ${isTa ? 'மதிப்பீடுகள்' : 'reviews'})`;
+
+        // Details Card
+        const aboutEl = document.getElementById('farmerStoreAbout');
+        if (aboutEl) aboutEl.textContent = isTa ? (farmer.aboutTa || farmer.about) : farmer.about;
+
+        const delivAvailEl = document.getElementById('farmerStoreDeliveryAvail');
+        if (delivAvailEl) delivAvailEl.textContent = isTa ? (farmer.deliveryAvailabilityTa || farmer.deliveryAvailability) : farmer.deliveryAvailability;
+
+        const certBadgeEl = document.getElementById('farmerStoreCertBadge');
+        if (certBadgeEl) certBadgeEl.textContent = farmer.certificationBadge || 'Jaivik Bharat';
+
+        // Products Section
+        renderFarmerProductsList(farmer);
+    }
+
+    function renderFarmerProductsList(farmer) {
+        const container = document.getElementById('farmerStoreProductsGrid');
+        if (!container) return;
+
+        let items = farmer.products || [];
+        if (activeCategoryFilter !== 'all') {
+            items = items.filter(p => p.category === activeCategoryFilter);
+        }
+
+        const isTa = currentStoreLang === 'ta';
+
+        if (items.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: var(--white); border-radius: var(--radius);">
+                    <i class="fas fa-leaf" style="font-size: 2.5rem; color: var(--primary); opacity: 0.4; margin-bottom: 12px;"></i>
+                    <p style="color: var(--text-light);">${isTa ? 'இப்பிரிவில் தற்போது விளைபொருட்கள் இல்லை.' : 'No products found in this category for this farmer.'}</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = items.map(p => {
+            const rawImg = p.image || '/assets/images/products/organic-tomatoes.jpg';
+            const imgSrc = typeof getProductImagePath === 'function' ? getProductImagePath(rawImg) : ('../' + rawImg.replace(/^\/+/, ''));
+            const pName = isTa ? (p.nameTa || p.name) : p.name;
+            const pUnit = isTa ? (p.unitTa || p.unit) : p.unit;
+            const pBadge = isTa ? (p.badgeTa || p.badge) : p.badge;
+            const pHarvest = isTa ? (p.harvestDateTa || p.harvestDate) : p.harvestDate;
+
+            return `
+                <div class="store-item-card animate-scale">
+                    <div class="store-item-img-box">
+                        <img src="${imgSrc}" alt="${pName}" onerror="this.src='${p.backupImage || 'https://via.placeholder.com/300x200?text=Farm+Fresh'}'">
+                        <span class="product-badge badge-fresh" style="position: absolute; top: 12px; left: 12px; font-size: 0.75rem;">
+                            ${pBadge}
+                        </span>
+                    </div>
+
+                    <div class="store-item-body">
+                        <h3 class="store-item-name">${pName}</h3>
+                        
+                        <div class="store-item-price-box">
+                            <span class="store-price-main">₹${p.price}</span>
+                            ${p.originalPrice ? `<span class="store-price-orig">₹${p.originalPrice}</span>` : ''}
+                            <span class="store-price-unit">/${pUnit}</span>
+                        </div>
+
+                        <div class="store-item-meta">
+                            <span><i class="fas fa-cubes"></i> ${isTa ? 'இருப்பு:' : 'Stock:'} <strong>${p.stock} ${pUnit}</strong></span>
+                            <span><i class="fas fa-clock"></i> ${pHarvest}</span>
+                        </div>
+
+                        <div class="store-actions-row">
+                            <button class="btn-store-cart" onclick="addStoreProductToCart(${p.productId}, '${farmer.farmerId}')">
+                                <i class="fas fa-plus"></i> ${isTa ? 'சேர்' : 'Add to Cart'}
+                            </button>
+                            <button class="btn-store-buy" onclick="buyStoreProductNow(${p.productId}, '${farmer.farmerId}')">
+                                <i class="fas fa-bolt"></i> ${isTa ? 'உடனே வாங்கு' : 'Buy Now'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function filterFarmerStoreProducts(cat) {
+        activeCategoryFilter = cat;
+        document.querySelectorAll('.store-cat-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.cat === cat);
+        });
+        const farmer = getFarmerById(activeFarmerId) || FARMERS_REGISTRY['farmer-sundaram'];
+        renderFarmerProductsList(farmer);
+    }
+
+    function addStoreProductToCart(productId, farmerId) {
+        if (typeof selectFarmerAndAddToCart === 'function') {
+            selectFarmerAndAddToCart(productId, farmerId, 1, true);
+        } else {
+            alert('Added to cart!');
+        }
+    }
+
+    function buyStoreProductNow(productId, farmerId) {
+        if (typeof selectFarmerAndBuyNow === 'function') {
+            selectFarmerAndBuyNow(productId, farmerId, 1);
+        } else {
+            window.location.href = 'checkout.html';
+        }
+    }
+
+    function openShareStoreModal() {
+        const isTa = currentStoreLang === 'ta';
+        if (navigator.share) {
+            navigator.share({
+                title: document.title,
+                url: window.location.href
+            }).catch(() => {});
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+            if (typeof showNotification === 'function') {
+                showNotification(isTa ? 'பண்ணை இணைய இணைப்பு நகலெடுக்கப்பட்டது! 📋' : 'Farmer store link copied to clipboard! 📋', 'fas fa-copy');
+            } else {
+                alert('Store link copied to clipboard!');
+            }
+        }
+    }
+
+    function setStoreLanguage(lang) {
+        currentStoreLang = lang;
+        localStorage.setItem('ftf_lang', lang);
+
+        if (window.FTF_I18N && typeof window.FTF_I18N.apply === 'function') {
+            window.FTF_I18N.apply(lang);
+        }
+
+        const btnEn = document.getElementById('btnStoreLangEn');
+        const btnTa = document.getElementById('btnStoreLangTa');
+        if (btnEn) btnEn.classList.toggle('active', lang === 'en');
+        if (btnTa) btnTa.classList.toggle('active', lang === 'ta');
+
+        const isTa = lang === 'ta';
+
+        // Translate Navbar
+        const navHome = document.getElementById('navStoreHome');
+        const navShop = document.getElementById('navStoreShop');
+        const navMarket = document.getElementById('navStoreMarket');
+        const navWishlist = document.getElementById('navStoreWishlist');
+        const navSeed = document.getElementById('navStoreSeed');
+        const navGroup = document.getElementById('navStoreGroup');
+        const navKitchen = document.getElementById('navStoreKitchen');
+        const navLogin = document.getElementById('navStoreLogin');
+        const navSignup = document.getElementById('navStoreSignup');
+
+        if (navHome) navHome.textContent = isTa ? 'முகப்பு' : 'Home';
+        if (navShop) navShop.textContent = isTa ? 'விளைபொருட்கள்' : 'Shop';
+        if (navMarket) navMarket.textContent = isTa ? 'விவசாயிகள் சந்தை' : 'Farmer Marketplace';
+        if (navWishlist) navWishlist.textContent = isTa ? 'விருப்பப்பட்டியல்' : 'Wishlist';
+        if (navSeed) navSeed.textContent = isTa ? 'விதையிலிருந்து தட்டு வரை' : 'Seed to Plate';
+        if (navGroup) navGroup.textContent = isTa ? 'குழு கொள்முதல்' : 'Group Buying';
+        if (navKitchen) navKitchen.textContent = isTa ? 'சமுதாய சமையலறை' : 'Community Kitchen';
+        if (navLogin) navLogin.textContent = isTa ? 'உள்நுழைக' : 'Login';
+        if (navSignup) navSignup.textContent = isTa ? 'பதிவு செய்க' : 'Sign Up';
+
+        // Translate Headings
+        const aboutHead = document.getElementById('headingAboutFarm');
+        if (aboutHead) aboutHead.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> ${isTa ? 'பண்ணையைப் பற்றி' : 'About the Farm'}`;
+
+        const delivHead = document.getElementById('headingDeliveryAvail');
+        if (delivHead) delivHead.innerHTML = `<i class="fas fa-truck-clock" style="color: var(--secondary);"></i> ${isTa ? 'டெலிவரி வசதி' : 'Delivery Availability'}`;
+
+        const schedTitle = document.getElementById('deliveryScheduleTitle');
+        if (schedTitle) schedTitle.textContent = isTa ? 'நேரடி குளிர்சங்கிலி டெலிவரி' : 'Direct Cold-Chain Dispatch';
+
+        const harvestTitle = document.getElementById('farmerHarvestTitle');
+        if (harvestTitle) harvestTitle.innerHTML = `<i class="fas fa-carrot" style="color: var(--primary);"></i> ${isTa ? 'இப்பண்ணையின் புதிய அறுவடை' : 'Fresh Harvest From This Farmer'}`;
+
+        const harvestSub = document.getElementById('farmerHarvestSub');
+        if (harvestSub) harvestSub.textContent = isTa ? '100% நஞ்சில்லா இயற்கை முறையில் விளைவிக்கப்பட்டு, புதியதாக அறுவடை செய்யப்படுகிறது.' : 'All organic crops grown with love and harvested fresh on order.';
+
+        renderFarmerStore();
+    }
+</script>
+</body>
+</html>
