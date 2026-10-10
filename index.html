@@ -1285,44 +1285,44 @@
 <section class="demo-section" id="seed-to-plate">
     <div class="container">
         <div class="section-header" style="text-align: center; margin-bottom: 28px;">
-            <span class="section-tag">📱 Try It Now</span>
-            <h2>Scan & Trace Your <span class="gradient-text">Food Journey</span></h2>
-            <p style="color: var(--text-light); max-width: 680px; margin: 0 auto;">Select any organic produce below or enter a batch number to inspect its verified farm origin, harvest date, and lab purity test.</p>
+            <span class="section-tag" data-i18n="demoTag">📱 Try It Now</span>
+            <h2><span data-i18n="traceScanTitle">Scan & Trace Your</span> <span class="gradient-text" data-i18n="traceFoodJourney">Food Journey</span></h2>
+            <p style="color: var(--text-light); max-width: 680px; margin: 0 auto;" data-i18n="traceSubDesc">Select any organic produce below or enter a batch number to inspect its verified farm origin, harvest date, and lab purity test.</p>
         </div>
 
         <div class="demo-content" style="align-items: start; gap: 40px;">
             <div class="demo-text">
                 <!-- Produce Selection Chips -->
                 <div style="font-weight: 700; font-size: 0.88rem; color: var(--text); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
-                    <span>🌱 Select Produce to Trace:</span>
-                    <span style="font-size: 0.76rem; color: var(--primary); font-weight: 700;"><i class="fas fa-hand-pointer"></i> Click to Inspect</span>
+                    <span data-i18n="traceSelectProduce">🌱 Select Produce to Trace:</span>
+                    <span style="font-size: 0.76rem; color: var(--primary); font-weight: 700;" data-i18n="traceClickInspect"><i class="fas fa-hand-pointer"></i> Click to Inspect</span>
                 </div>
                 
                 <div class="trace-produce-chips" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;">
                     <button type="button" class="produce-chip active" data-crop="tomato" onclick="selectTraceProduce('tomato')">
-                        <span>🍅</span> <span>Country Tomatoes</span>
+                        <span>🍅</span> <span data-i18n="cropCountryTomatoes">Country Tomatoes</span>
                     </button>
                     <button type="button" class="produce-chip" data-crop="spinach" onclick="selectTraceProduce('spinach')">
-                        <span>🥬</span> <span>Fresh Spinach</span>
+                        <span>🥬</span> <span data-i18n="cropFreshSpinach">Fresh Spinach</span>
                     </button>
                     <button type="button" class="produce-chip" data-crop="honey" onclick="selectTraceProduce('honey')">
-                        <span>🍯</span> <span>Wild Honey</span>
+                        <span>🍯</span> <span data-i18n="cropWildHoney">Wild Honey</span>
                     </button>
                     <button type="button" class="produce-chip" data-crop="apples" onclick="selectTraceProduce('apples')">
-                        <span>🍎</span> <span>Heritage Apples</span>
+                        <span>🍎</span> <span data-i18n="cropHeritageApples">Heritage Apples</span>
                     </button>
                     <button type="button" class="produce-chip" data-crop="turmeric" onclick="selectTraceProduce('turmeric')">
-                        <span>🫚</span> <span>Salem Turmeric</span>
+                        <span>🫚</span> <span data-i18n="cropSalemTurmeric">Salem Turmeric</span>
                     </button>
                 </div>
 
                 <!-- Custom Batch Input Field -->
                 <div style="display: flex; gap: 8px; margin-bottom: 18px;">
                     <div style="flex: 1; position: relative;">
-                        <input type="text" id="demoBatchInput" value="FTF-TOM-2026-08" placeholder="e.g. FTF-SPN-2026-11" style="width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--bg); font-family: monospace; font-size: 0.88rem; outline: none;" oninput="onCustomBatchInput(this.value)" />
+                        <input type="text" id="demoBatchInput" value="FTF-TOM-2026-08" placeholder="e.g. FTF-SPN-2026-11" data-i18n-placeholder="traceBatchPlaceholder" style="width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--bg); font-family: monospace; font-size: 0.88rem; outline: none;" oninput="onCustomBatchInput(this.value)" />
                     </div>
                     <button class="btn-primary" onclick="triggerTraceModal()" style="padding: 11px 18px; border-radius: 10px; font-weight: 700; white-space: nowrap;">
-                        <i class="fas fa-search-location"></i> Trace Batch
+                        <i class="fas fa-search-location"></i> <span data-i18n="traceBatchBtn">Trace Batch</span>
                     </button>
                 </div>
 
@@ -1342,15 +1342,15 @@
                     <!-- Mini Provenance Steps -->
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; border-top: 1px dashed var(--border); padding-top: 12px; margin-top: 8px;">
                         <div>
-                            <small style="color: var(--text-light); display: block; font-size: 0.7rem; text-transform: uppercase;">🌱 Sowing / Soil</small>
+                            <small style="color: var(--text-light); display: block; font-size: 0.7rem; text-transform: uppercase;" data-i18n="traceSowingSoilLabel">🌱 Sowing / Soil</small>
                             <strong id="demoSoilText" style="font-size: 0.82rem; color: var(--text);">Panchagavya Enriched</strong>
                         </div>
                         <div>
-                            <small style="color: var(--text-light); display: block; font-size: 0.7rem; text-transform: uppercase;">📅 Harvested</small>
+                            <small style="color: var(--text-light); display: block; font-size: 0.7rem; text-transform: uppercase;" data-i18n="traceHarvestedLabel">📅 Harvested</small>
                             <strong id="demoHarvestText" style="font-size: 0.82rem; color: var(--text);">2 Days Ago (Fresh)</strong>
                         </div>
                         <div>
-                            <small style="color: var(--text-light); display: block; font-size: 0.7rem; text-transform: uppercase;">🔬 Lab Purity</small>
+                            <small style="color: var(--text-light); display: block; font-size: 0.7rem; text-transform: uppercase;" data-i18n="traceLabPurityLabel">🔬 Lab Purity</small>
                             <strong id="demoPurityText" style="font-size: 0.82rem; color: var(--primary);">0.0% Chemicals ✅</strong>
                         </div>
                     </div>
@@ -1359,17 +1359,17 @@
                 <!-- Trace CTA Buttons -->
                 <div style="display: flex; gap: 12px; flex-wrap: wrap;">
                     <button class="btn-primary btn-large" onclick="triggerTraceModal()">
-                        <i class="fas fa-qrcode"></i> Scan & Trace This Produce
+                        <i class="fas fa-qrcode"></i> <span data-i18n="traceScanBtn">Scan & Trace This Produce</span>
                     </button>
                     <a href="pages/seed-to-plate.html" class="btn-secondary btn-large" style="display: inline-flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-seedling"></i> Explore All Products in Seed to Plate →
+                        <i class="fas fa-seedling"></i> <span data-i18n="traceExploreBtn">Explore All Products in Seed to Plate →</span>
                     </a>
                 </div>
 
                 <div class="demo-features" style="margin-top: 20px;">
-                    <span><i class="fas fa-check-circle"></i> Farm GPS Coordinates</span>
-                    <span><i class="fas fa-check-circle"></i> Sowing to Harvest Log</span>
-                    <span><i class="fas fa-check-circle"></i> 100% Organic Certified</span>
+                    <span data-i18n="traceFeatureGps"><i class="fas fa-check-circle"></i> Farm GPS Coordinates</span>
+                    <span data-i18n="traceFeatureLog"><i class="fas fa-check-circle"></i> Sowing to Harvest Log</span>
+                    <span data-i18n="traceFeatureOrganic"><i class="fas fa-check-circle"></i> 100% Organic Certified</span>
                 </div>
             </div>
 
@@ -1382,9 +1382,9 @@
                         <div style="position: absolute; left: 0; right: 0; height: 3px; background: var(--primary); box-shadow: 0 0 10px #22c55e; animation: scanLine 2.5s infinite ease-in-out;"></div>
                     </div>
                     <div style="font-weight: 800; font-size: 0.95rem; color: var(--text); margin-bottom: 4px;" id="demoQrLabel">Batch: FTF-TOM-2026-08</div>
-                    <p style="color: var(--text-light); font-size: 0.78rem; margin-bottom: 16px;">Point your camera or click below to simulate instant scanner verification</p>
+                    <p style="color: var(--text-light); font-size: 0.78rem; margin-bottom: 16px;" data-i18n="traceQrCameraNotice">Point your camera or click below to simulate instant scanner verification</p>
                     <button class="btn-primary" onclick="triggerTraceModal()" style="width: 100%; justify-content: center; font-size: 0.88rem; padding: 10px;">
-                        <i class="fas fa-camera"></i> Simulate Scan
+                        <i class="fas fa-camera"></i> <span data-i18n="traceSimulateScanBtn">Simulate Scan</span>
                     </button>
                 </div>
             </div>
@@ -1786,12 +1786,100 @@
         }
     };
 
+    const traceableCropsLocale = {
+        ta: {
+            tomato: {
+                name: 'இயற்கை நாட்டு தக்காளி',
+                farmer: 'சுந்தரம் பெருமாள் (திண்டுக்கல்)',
+                location: 'பசுமை பள்ளத்தாக்கு பண்ணை • திண்டுக்கல், தமிழ்நாடு',
+                soil: 'பஞ்சகவ்யா வளம் சேர்க்கப்பட்ட மண்',
+                harvestSummary: '2 நாட்களுக்கு முன் (புதிய அறுவடை)',
+                purity: '0.0% ரசாயனம் ✅',
+                step1: 'பஞ்சகவ்யா மற்றும் இயற்கை உயிர் உரங்களால் பதப்படுத்தப்பட்ட பாரம்பரிய நாட்டு விதைகள்.',
+                step2: 'சூரிய உதயத்தில் ரசாயன பழுக்க வைக்கும் மருந்துகள் இன்றி கையால் பறிக்கப்பட்டது.',
+                step3: '0.0% பூச்சிக்கொல்லி எச்சம் பரிசோதிக்கப்பட்டது • 100% இயற்கை சான்றளிக்கப்பட்டது.',
+                step4: 'மக்கும் பெட்டிகள் & குளிர்சங்கிலி மூலம் பிராந்திய மையத்திற்கு விரைவு விநியோகம்.'
+            },
+            spinach: {
+                name: 'இயற்கை பசலைக்கீரை',
+                farmer: 'முருகன் ராமசாமி (நீலகிரி)',
+                location: 'நீலகிரி மலை இயற்கை பண்ணை • ஊட்டி, தமிழ்நாடு',
+                soil: 'ஜீவாமிர்த வண்டல் மண்',
+                harvestSummary: 'நேற்று (புதிய அறுவடை)',
+                purity: '0.0% ரசாயன எச்சம் ✅',
+                step1: 'மண்புழு உரம் மற்றும் மலைப்பனி தட்பவெப்பத்தில் வளர்க்கப்பட்ட பாரம்பரிய கீரை.',
+                step2: 'பச்சையம் மற்றும் இரும்புச்சத்தை பாதுகாக்க காலை 6 மணிக்கு முன் அறுவடை செய்யப்பட்டது.',
+                step3: 'ஆய்வக சான்றளிக்கப்பட்ட பூச்சிக்கொல்லி அற்றது • இரும்பு & ஃபோலேட் சரிபார்க்கப்பட்டது.',
+                step4: 'சுற்றுச்சூழல் காகித ஈரப்பத பேக்கிங் மூலம் 12 மணி நேரத்திற்குள் விநியோகம்.'
+            },
+            honey: {
+                name: 'இயற்கை காட்டுத் தேன் (ஜவ்வாது மலை)',
+                farmer: 'கவிதா நடராஜன் (கைவினைஞர்)',
+                location: 'ஜவ்வாது மலை பழங்குடியினர் தேன் புகலிடம் • திருவண்ணாமலை',
+                soil: 'கன்னி வன தேனீக்கூடு',
+                harvestSummary: 'சூரிய ஒளியில் வடிகட்டியது',
+                purity: 'NMR தூய்மை சான்றளிக்கப்பட்டது ✅',
+                step1: 'அடர்ந்த வன காட்டு தேனீ கூடுகளில் இருந்து வன்முறையற்ற முறையில் சேகரிப்பு.',
+                step2: 'சூடாக்காமல் மெல்லிய பருத்தி துணி கொண்டு பாரம்பரிய முறையில் வடிகட்டப்பட்டது.',
+                step3: 'NMR பரிசோதிக்கப்பட்ட 100% தூய பூந்தேன்; சர்க்கரை பாகு கலப்படம் இல்லை.',
+                step4: 'மீண்டும் பயன்படுத்தக்கூடிய கண்ணாடி பாட்டில்களில் அடைக்கப்பட்டு விநியோகம்.'
+            },
+            apples: {
+                name: 'பாரம்பரிய சிம்லா ஆப்பிள்கள்',
+                farmer: 'ராஜேஷ் தாக்கூர் (கோட்கர்)',
+                location: 'கோட்கர் பள்ளத்தாக்கு இயற்கை தோட்டம் • சிம்லா, இமாச்சல பிரதேசம்',
+                soil: 'பனிப்பாறை நீர்ப்பாசன மண்',
+                harvestSummary: 'இயற்கை குளிர் பாதுகாப்பு',
+                purity: '0.0% மெழுகு & பூஞ்சைக்கொல்லி ✅',
+                step1: 'இமயமலை பனிப்பாறை நீரால் பாசனம் செய்யப்பட்ட பாரம்பரிய ராயல் ஆப்பிள் மரங்கள்.',
+                step2: 'இயற்கை வெண்படலத்துடன் கையால் பறிக்கப்பட்டது; செயற்கை ரசாயனம் இல்லை.',
+                step3: 'அறுவடைக்குப் பிந்தைய பூஞ்சைக்கொல்லிகள் & செயற்கை மெழுகு பூச்சு அற்றது.',
+                step4: 'குளிர் போக்குவரத்தில் அடிபடாமல் இருக்க தடிமன் காகித பெட்டிகளில் பேக்கிங்.'
+            },
+            turmeric: {
+                name: 'சேலம் இயற்கை மஞ்சள்',
+                farmer: 'வேலுசாமி ஜி. (சேலம்)',
+                location: 'காவிரி ஆற்றுப் படுகை இயற்கை பண்ணை • சேலம், தமிழ்நாடு',
+                soil: 'காவிரி ஆற்று வண்டல் & உயிரி கரி உரம்',
+                harvestSummary: 'இயற்கை முறையில் பதப்படுத்தப்பட்டது',
+                purity: '5.4% உயர் குர்குமின் சத்து ✅',
+                step1: 'பாரம்பரிய தாய் மஞ்சள் கிழங்குகள் கனிம வளம் நிறைந்த காவிரி வண்டல் மண்ணில் நடப்பட்டது.',
+                step2: '9 மாத கால வளர்ச்சிக்குப் பின் இயற்கை மரச்சாம்பல் கொதிகலன்களில் பாரம்பரியமாக வேகவைக்கப்பட்டது.',
+                step3: 'NABL ஆய்வகத்தில் சோதிக்கப்பட்டு 5.4% குர்குமின் அளவு மற்றும் சாயம் அற்றது என உறுதி செய்யப்பட்டது.',
+                step4: 'குறைந்த வேகத்தில் மரச்செக்கு எந்திரத்தில் அரைக்கப்பட்டு வாசனை மாறாமல் பேக் செய்யப்பட்டது.'
+            }
+        }
+    };
+
     let activeTraceCropKey = 'tomato';
+
+    function getLocalizedCrop(cropKey, lang) {
+        const crop = traceableCrops[cropKey] || traceableCrops.tomato;
+        if (!lang || lang === 'en') return crop;
+        
+        const locMap = (traceableCropsLocale && traceableCropsLocale[lang] && traceableCropsLocale[lang][cropKey]) || {};
+        return {
+            ...crop,
+            name: locMap.name || crop.name,
+            farmer: locMap.farmer || crop.farmer,
+            location: locMap.location || crop.location,
+            soil: locMap.soil || crop.soil,
+            harvestSummary: locMap.harvestSummary || crop.harvestSummary,
+            purity: locMap.purity || crop.purity,
+            step1: locMap.step1 || crop.step1,
+            step2: locMap.step2 || crop.step2,
+            step3: locMap.step3 || crop.step3,
+            step4: locMap.step4 || crop.step4
+        };
+    }
 
     function selectTraceProduce(cropKey) {
         if (!traceableCrops[cropKey]) return;
         activeTraceCropKey = cropKey;
-        const crop = traceableCrops[cropKey];
+        const curLang = (window.FTF_I18N && typeof window.FTF_I18N.getCurrentLang === 'function')
+            ? window.FTF_I18N.getCurrentLang()
+            : (localStorage.getItem('ftf_lang') || 'en');
+        const crop = getLocalizedCrop(cropKey, curLang);
 
         // Update chips UI
         document.querySelectorAll('.produce-chip').forEach(btn => {
@@ -1839,7 +1927,10 @@
 
     function triggerTraceModal(cropKey) {
         const key = cropKey || activeTraceCropKey;
-        const crop = traceableCrops[key] || traceableCrops.tomato;
+        const curLang = (window.FTF_I18N && typeof window.FTF_I18N.getCurrentLang === 'function')
+            ? window.FTF_I18N.getCurrentLang()
+            : (localStorage.getItem('ftf_lang') || 'en');
+        const crop = getLocalizedCrop(key, curLang);
 
         const avatar = document.getElementById('modalProduceAvatar');
         if (avatar) avatar.textContent = crop.avatar;
@@ -1969,10 +2060,16 @@
     document.addEventListener('DOMContentLoaded', function() {
         loadFeaturedProducts();
         animateCounters();
+        selectTraceProduce(activeTraceCropKey);
 
-        // Listen for language change to update featured products dynamically
+        // Listen for language change to update featured products and trace cards dynamically
         window.addEventListener('languageChanged', function() {
             loadFeaturedProducts();
+            selectTraceProduce(activeTraceCropKey);
+        });
+        window.addEventListener('ftf:languageChanged', function() {
+            loadFeaturedProducts();
+            selectTraceProduce(activeTraceCropKey);
         });
 
         // Close search on ESC

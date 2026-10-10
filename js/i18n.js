@@ -306,7 +306,37 @@
             btnFilter: "வடிகட்டு",
             statusDelivered: "டெலிவரி செய்யப்பட்டது",
             statusProcessing: "செயல்பாட்டில் உள்ளது",
-            statusPending: "நிலுவையில் உள்ளது"
+            statusPending: "நிலுவையில் உள்ளது",
+            traceScanTitle: "உங்கள் உணவுப் பயணத்தை",
+            traceFoodJourney: "ஸ்கேன் செய்து கண்காணிக்கவும்",
+            traceSubDesc: "சரிபார்க்கப்பட்ட பண்ணை தோற்றம், அறுவடை தேதி மற்றும் ஆய்வக தூய்மை சோதனையை அறிய கீழே உள்ள ஏதேனும் இயற்கை விளைபொருளைத் தேர்வுசெய்யவும் அல்லது தொகுதி எண்ணை உள்ளிடவும்.",
+            traceSelectProduce: "🌱 கண்காணிக்க விளைபொருளைத் தேர்வு செய்க:",
+            traceClickInspect: "ஆய்வு செய்ய சொடுக்கவும்",
+            cropCountryTomatoes: "நாட்டுத் தக்காளி",
+            cropFreshSpinach: "புதிய பசலைக் கீரை",
+            cropWildHoney: "காட்டுத் தேன்",
+            cropHeritageApples: "பாரம்பரிய ஆப்பிள்",
+            cropSalemTurmeric: "சேலம் மஞ்சள்",
+            traceBatchPlaceholder: "எ.கா. FTF-SPN-2026-11",
+            traceBatchBtn: "தொகுதியை காண்க",
+            traceSowingSoilLabel: "🌱 விதைப்பு / மண்",
+            traceHarvestedLabel: "📅 அறுவடை",
+            traceLabPurityLabel: "🔬 ஆய்வக தூய்மை",
+            traceScanBtn: "இவ்விளைபொருளை ஸ்கேன் செய்து காண்க",
+            traceExploreBtn: "விதையிலிருந்து தட்டு வரை அனைத்து விளைபொருட்களையும் காண்க →",
+            traceFeatureGps: "பண்ணை GPS இருப்பிடம்",
+            traceFeatureLog: "விதைப்பு முதல் அறுவடை பதிவு",
+            traceFeatureOrganic: "100% சான்றளிக்கப்பட்ட இயற்கை",
+            traceQrCameraNotice: "உடனடி ஸ்கேனர் சரிபார்ப்பை அனுபவிக்க உங்கள் கேமராவைக் காட்டவும் அல்லது கீழே சொடுக்கவும்",
+            traceSimulateScanBtn: "மாதிரி ஸ்கேன் செய்",
+            floatingLangThemeBtn: "மொழி & வண்ண தீம்",
+            modalProduceTimelineTitle: "சரிபார்க்கப்பட்ட பிறப்பு முதல் டெலிவரி வரை",
+            modalStep1Title: "பாரம்பரிய விதை & மண் தயாரிப்பு",
+            modalStep2Title: "சூரிய உதய அறுவடை & தரம் பிரித்தல்",
+            modalStep3Title: "ஆய்வக தர தூய்மை சோதனை",
+            modalStep4Title: "சுற்றுச்சூழல் பேக்கிங் & பிராந்திய விநியோகம்",
+            modalViewTimelineBtn: "முழுமையான காலவரிசையைக் காண்க",
+            modalClosePreviewBtn: "முன்னோட்டத்தை மூடு"
         },
 
         // 2. ENGLISH (en) - CANONICAL MASTER DICTIONARY
@@ -562,7 +592,37 @@
             btnFilter: "Filter",
             statusDelivered: "Delivered",
             statusProcessing: "Processing",
-            statusPending: "Pending"
+            statusPending: "Pending",
+            traceScanTitle: "Scan & Trace Your",
+            traceFoodJourney: "Food Journey",
+            traceSubDesc: "Select any organic produce below or enter a batch number to inspect its verified farm origin, harvest date, and lab purity test.",
+            traceSelectProduce: "🌱 Select Produce to Trace:",
+            traceClickInspect: "Click to Inspect",
+            cropCountryTomatoes: "Country Tomatoes",
+            cropFreshSpinach: "Fresh Spinach",
+            cropWildHoney: "Wild Honey",
+            cropHeritageApples: "Heritage Apples",
+            cropSalemTurmeric: "Salem Turmeric",
+            traceBatchPlaceholder: "e.g. FTF-SPN-2026-11",
+            traceBatchBtn: "Trace Batch",
+            traceSowingSoilLabel: "🌱 Sowing / Soil",
+            traceHarvestedLabel: "📅 Harvested",
+            traceLabPurityLabel: "🔬 Lab Purity",
+            traceScanBtn: "Scan & Trace This Produce",
+            traceExploreBtn: "Explore All Products in Seed to Plate →",
+            traceFeatureGps: "Farm GPS Coordinates",
+            traceFeatureLog: "Sowing to Harvest Log",
+            traceFeatureOrganic: "100% Organic Certified",
+            traceQrCameraNotice: "Point your camera or click below to simulate instant scanner verification",
+            traceSimulateScanBtn: "Simulate Scan",
+            floatingLangThemeBtn: "Language & Theme",
+            modalProduceTimelineTitle: "Verified Born-to-Delivery Provenance",
+            modalStep1Title: "Native Seed & Soil Preparation",
+            modalStep2Title: "Sunrise Harvest & Sorting",
+            modalStep3Title: "Lab Quality Purity Test",
+            modalStep4Title: "Eco Packaging & Local Hub Delivery",
+            modalViewTimelineBtn: "View Full Interactive Born-to-Delivery Timeline",
+            modalClosePreviewBtn: "Close Preview"
         },
 
         // 3. HINDI (hi)
@@ -2209,7 +2269,116 @@
             "Create Account": "பதிவு செய்க", "Already have an account?": "ஏற்கனவே கணக்கு உள்ளதா?",
             "Wishlist": "விருப்பப்பட்டியல்", "My Organic Wishlist": "என் விருப்பப்பட்டியல்",
             "Move to Cart": "கூடையில் சேர்", "Clear All": "அனைத்தையும் நீக்கு",
-            "Theme": "வண்ண தீம்", "Language": "மொழி", "Stock": "இருப்பு", "Harvested": "அறுவடை"
+            "Theme": "வண்ண தீம்", "Language": "மொழி", "Stock": "இருப்பு", "Harvested": "அறுவடை",
+            "Scan & Trace Your Food Journey": "உங்கள் உணவுப் பயணத்தை ஸ்கேன் செய்து கண்காணிக்கவும்",
+            "Scan & Trace Your": "உங்கள் உணவுப் பயணத்தை",
+            "Food Journey": "உணவுப் பயணம்",
+            "Select any organic produce below or enter a batch number to inspect its verified farm origin, harvest date, and lab purity test.": "சான்றளிக்கப்பட்ட பண்ணை தோற்றம், அறுவடை தேதி மற்றும் ஆய்வக தூய்மை பரிசோதனையை அறிய கீழே உள்ள இயற்கை பயிரைத் தேர்ந்தெடுக்கவும் அல்லது தொகுதி எண்ணை உள்ளிடவும்.",
+            "🌱 Select Produce to Trace:": "🌱 கண்காணிக்க வேண்டிய பயிரைத் தேர்ந்தெடுக்கவும்:",
+            "Select Produce to Trace:": "கண்காணிக்க வேண்டிய பயிரைத் தேர்ந்தெடுக்கவும்:",
+            "Click to Inspect": "பார்வையிட கிளிக் செய்க",
+            "Country Tomatoes": "நாட்டு தக்காளி",
+            "Fresh Spinach": "பசலைக்கீரை",
+            "Wild Honey": "காட்டுத் தேன்",
+            "Heritage Apples": "பாரம்பரிய ஆப்பிள்",
+            "Salem Turmeric": "சேலம் மஞ்சள்",
+            "Trace Batch": "தொகுதியைத் தேடு",
+            "Organic Country Tomatoes": "இயற்கை நாட்டு தக்காளி",
+            "Sundaram Perumal (Dindigul)": "சுந்தரம் பெருமாள் (திண்டுக்கல்)",
+            "Panchagavya Enriched": "பஞ்சகவ்யா வளம் சேர்க்கப்பட்ட மண்",
+            "2 Days Ago (Fresh)": "2 நாட்களுக்கு முன் (புதிய அறுவடை)",
+            "0.0% Chemicals ✅": "0.0% ரசாயனம் ✅",
+            "0.0% Chemicals": "0.0% ரசாயனம்",
+            "🌱 Sowing / Soil": "🌱 விதைப்பு / மண்",
+            "Sowing / Soil": "விதைப்பு / மண்",
+            "SOWING / SOIL": "விதைப்பு / மண்",
+            "📅 Harvested": "📅 அறுவடை செய்யப்பட்டது",
+            "HARVESTED": "அறுவடை செய்யப்பட்டது",
+            "🔬 Lab Purity": "🔬 ஆய்வக தூய்மை",
+            "Lab Purity": "ஆய்வக தூய்மை",
+            "LAB PURITY": "ஆய்வக தூய்மை",
+            "Scan & Trace This Produce": "இப்பயிரை ஸ்கேன் செய்து கண்காணிக்கவும்",
+            "Explore All Products in Seed to Plate →": "விதையிலிருந்து தட்டு வரை அனைத்து பயிர்களையும் காண்க →",
+            "Farm GPS Coordinates": "பண்ணை ஜிபிஎஸ் இருப்பிடம்",
+            "Sowing to Harvest Log": "விதைப்பு முதல் அறுவடை வரை பதிவு",
+            "100% Organic Certified": "100% சான்றளிக்கப்பட்ட இயற்கை உணவு",
+            "Point your camera or click below to simulate instant scanner verification": "உடனடி ஸ்கேனர் சரிபார்ப்பை சோதிக்க உங்கள் கேமராவை காட்டவும் அல்லது கீழே கிளிக் செய்யவும்",
+            "Simulate Scan": "மாதிரி ஸ்கேன் செய்",
+            "Language & Theme": "மொழி & வண்ண தீம்",
+            "Change Language & Theme": "மொழி மற்றும் வண்ண தீமை மாற்றவும்",
+            "Global Preferences": "முழு பயன்பாட்டு விருப்பத்தேர்வுகள்",
+            "Select Application Language": "பயன்பாட்டு மொழியைத் தேர்ந்தெடுக்கவும்",
+            "Select Visual Theme": "வண்ண தீமைத் தேர்ந்தெடுக்கவும்",
+            "Verified Born-to-Delivery Provenance": "சரிபார்க்கப்பட்ட பிறப்பு முதல் டெலிவரி வரையிலான பயணம்",
+            "Green Valley Farm • Dindigul, Tamil Nadu": "பசுமை பள்ளத்தாக்கு பண்ணை • திண்டுக்கல், தமிழ்நாடு",
+            "View Full Interactive Born-to-Delivery Timeline": "முழு ஊடாடும் பிறப்பு முதல் டெலிவரி வரையிலான காலவரிசையைக் காண்க",
+            "Close Preview": "முன்னோட்டத்தை மூடு",
+            "Palakkad Organic Baby Spinach": "பாலக்காடு இயற்கை பசலைக்கீரை",
+            "Murugan Ramasamy (Nilgiris)": "முருகன் ராமசாமி (நீலகிரி)",
+            "Nilgiris High-Altitude Organic Farm • Ooty, Tamil Nadu": "நீலகிரி மலை இயற்கை பண்ணை • ஊட்டி, தமிழ்நாடு",
+            "Jeevamrutham Soil": "ஜீவாமிர்த வண்டல் மண்",
+            "Yesterday (Crisp & Fresh)": "நேற்று (புதிய அறுவடை)",
+            "0.0% Chemical Residues ✅": "0.0% ரசாயன எச்சம் ✅",
+            "Raw Forest Wild Honey": "இயற்கை காட்டுத் தேன்",
+            "Kavitha Natarajan (Artisan)": "கவிதா நடராஜன் (கைவினைஞர்)",
+            "Jawadhu Tribal Honey Sanctuary • Tiruvannamalai Hills": "ஜவ்வாது மலை பழங்குடியினர் தேன் புகலிடம் • திருவண்ணாமலை",
+            "Forest Canopy Flora": "கன்னி வன தேனீக்கூடு",
+            "Preserved Raw Honey": "இயற்கை முறையில் வடிகட்டியது",
+            "NMR Certified Pure ✅": "NMR தூய்மை சான்றளிக்கப்பட்டது ✅",
+            "Shimla Heritage Apples": "பாரம்பரிய சிம்லா ஆப்பிள்கள்",
+            "Rajesh Thakur (Kotgarh)": "ராஜேஷ் தாக்கூர் (கோட்கர்)",
+            "Kotgarh Valley Organic Orchards • Shimla, Himachal Pradesh": "கோட்கர் பள்ளத்தாக்கு இயற்கை தோட்டம் • சிம்லா, இமாச்சல பிரதேசம்",
+            "Glacial Spring Soil": "பனிப்பாறை நீர்ப்பாசன மண்",
+            "Cold-Stored Fresh": "இயற்கை குளிர் பாதுகாப்பு",
+            "0.0% Wax & Fungicides ✅": "0.0% மெழுகு & பூஞ்சைக்கொல்லி ✅",
+            "Velusamy G. (Salem)": "வேலுசாமி ஜி. (சேலம்)",
+            "Kaveri River Basin Organic Estate • Salem, Tamil Nadu": "காவிரி ஆற்றுப் படுகை இயற்கை பண்ணை • சேலம், தமிழ்நாடு",
+            "River Silt & Bio-char": "காவிரி ஆற்று வண்டல் & உயிரி கரி உரம்",
+            "Naturally Cured": "இயற்கை முறையில் பதப்படுத்தப்பட்டது",
+            "5.4% High Curcumin ✅": "5.4% உயர் குர்குமின் சத்து ✅",
+            "Try It Now": "உடனே சோதித்துப் பாருங்கள்",
+            "📱 Try It Now": "📱 உடனே சோதித்துப் பாருங்கள்",
+            "Native Seed & Soil Preparation": "நாட்டு விதை & மண் தயாரிப்பு",
+            "Sunrise Harvest & Sorting": "சூரிய உதய அறுவடை & தரம் பிரித்தல்",
+            "Lab Quality Purity Test": "ஆய்வக தர தூய்மை பரிசோதனை",
+            "Eco Packaging & Local Hub Delivery": "சுற்றுச்சூழல் பேக்கிங் & பிராந்திய மைய விநியோகம்",
+            "View Full Interactive Born-to-Delivery Timeline": "முழுமையான காலவரிசையைக் காண்க",
+            "View Complete Blockchain Food Journey →": "முழு பிளாக்செயின் உணவுப் பயணத்தைக் காண்க →",
+            "Change Password": "கடவுச்சொல்லை மாற்றுக",
+            "Send 6-Digit OTP": "6-இலக்க OTP அனுப்புக",
+            "Verify & Reset Password": "சரிபார்த்து கடவுச்சொல்லை மாற்றுக",
+            "Forgot Password": "கடவுச்சொல் மறந்துவிட்டதா?",
+            "Reset Password": "கடவுச்சொல்லை மீட்டமைக்க",
+            "New Password": "புதிய கடவுச்சொல்",
+            "Confirm Password": "கடவுச்சொல்லை உறுதிப்படுத்துக",
+            "Enter 6-Digit OTP": "6-இலக்க OTP குறியீட்டை உள்ளிடவும்",
+            "Back to Login": "உள்நுழைவுக்குத் திரும்பு",
+            "Or continue with Google": "அல்லது Google மூலம் தொடரவும்",
+            "Select Role": "பங்கைத் தேர்வு செய்க",
+            "Admin Portal": "நிர்வாகி தளம்",
+            "Recently Accessed": "சமீபத்தில் பார்த்தவை",
+            "Featured Organic Products": "சிறப்பு இயற்கை விளைபொருட்கள்",
+            "Quick View": "விரைவு பார்வை",
+            "Food Waste Tracker": "உணவு விரய கண்காணிப்பு",
+            "Community Kitchen Meals": "சமுதாய சமையலறை உணவுகள்",
+            "Group Buying Bulk Pools": "குழு கொள்முதல் மொத்த சேமிப்பு",
+            "Tier Discount Active": "படிநிலை தள்ளுபடி செயல்பாட்டில் உள்ளது",
+            "Kg Rescued": "கிலோ உணவு மீட்கப்பட்டது",
+            "Food Miles Saved": "மிச்சப்படுத்தப்பட்ட உணவு தூரம்",
+            "Carbon Footprint": "கார்பன் தடம்",
+            "Jaivik Bharat": "ஜைவிக் பாரத் சான்றிதழ்",
+            "India Organic": "இந்தியா ஆர்கானிக்",
+            "NABL Lab Tested": "NABL ஆய்வகத்தில் பரிசோதிக்கப்பட்டது",
+            "Cold-Chain Logged": "குளிர்சங்கிலி பதிவு செய்யப்பட்டது",
+            "Direct Farm Sourced": "நேரடி பண்ணை மூலம் பெறப்பட்டது",
+            "Free Delivery": "இலவச டெலிவரி",
+            "Order Now": "இப்போதே ஆர்டர் செய்",
+            "View Details": "விவரங்களைக் காண்க",
+            "Customer Support": "வாடிக்கையாளர் ஆதரவு",
+            "Frequently Asked Questions": "அடிக்கடி கேட்கப்படும் கேள்விகள்",
+            "Terms & Conditions": "விதிமுறைகள் மற்றும் நிபந்தனைகள்",
+            "Privacy Policy": "தனியுரிமை கொள்கை",
+            "All Rights Reserved": "அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை"
         },
         hi: {
             "Home": "होम", "Shop": "उत्पाद", "Community Kitchen": "सामुदायिक रसोई",
@@ -2627,23 +2796,109 @@
             }
         });
 
-        // 8. Direct String Scanner: Buttons, Badges, Labels, Headers
-        const activeMap = STRING_MAPS[activeLang];
-        document.querySelectorAll('button, a.btn-primary, a.btn-secondary, a.btn-signup, a.btn-login, .badge, .status-pill, h1, h2, h3, h4, label, th, .section-tag').forEach(el => {
-            if (el.querySelector('#summaryItemCount, #cartCount, #cartBadge, .cart-badge, .stat-number, #cartSubtotal, #cartTotal, #cartDelivery, #cartDiscount') || el.id === 'summaryItemCount' || el.id === 'cartCount') return;
-            if (el.children.length > 2) return;
-            const text = el.textContent.trim();
-            if (el.dataset.origText === undefined) {
-                el.dataset.origText = text;
+        // 8. Deep DOM Text Walker & Comprehensive Attribute Translator
+        const activeMap = STRING_MAPS[activeLang] || {};
+        const isEnglish = (activeLang === 'en');
+
+        // Translate text nodes recursively across the entire document
+        function walkTextNodes(root) {
+            if (!root) return;
+            const walker = document.createTreeWalker(
+                root,
+                NodeFilter.SHOW_TEXT,
+                {
+                    acceptNode: function(node) {
+                        const parent = node.parentElement;
+                        if (!parent) return NodeFilter.FILTER_REJECT;
+                        const tag = parent.tagName.toLowerCase();
+                        if (tag === 'script' || tag === 'style' || tag === 'noscript' || tag === 'textarea' || tag === 'code' || tag === 'pre') {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        if (parent.closest('.notranslate, #globalPreferencesCluster, #globalLangDropdown, #globalThemeDropdown, .lang-name, .lang-flag, .lang-code')) {
+                            return NodeFilter.FILTER_REJECT;
+                        }
+                        const val = node.nodeValue ? node.nodeValue.trim() : '';
+                        if (!val || val.length < 2) return NodeFilter.FILTER_SKIP;
+                        if (/^[₹$€\d\s.,%+\-/#:()]+$/.test(val)) return NodeFilter.FILTER_SKIP;
+                        return NodeFilter.FILTER_ACCEPT;
+                    }
+                }
+            );
+
+            const nodes = [];
+            while (walker.nextNode()) {
+                nodes.push(walker.currentNode);
             }
 
-            const baseText = el.dataset.origText;
-            if (activeLang === 'en') {
-                el.textContent = baseText;
-            } else if (activeMap && activeMap[baseText]) {
-                el.textContent = activeMap[baseText];
+            nodes.forEach(node => {
+                if (node._ftfOrigText === undefined) {
+                    node._ftfOrigText = node.nodeValue.trim();
+                    const full = node.nodeValue;
+                    const leadingMatch = full.match(/^\s*/);
+                    const trailingMatch = full.match(/\s*$/);
+                    node._ftfLeadingWs = leadingMatch ? leadingMatch[0] : '';
+                    node._ftfTrailingWs = trailingMatch ? trailingMatch[0] : '';
+                }
+
+                const orig = node._ftfOrigText;
+                if (isEnglish) {
+                    node.nodeValue = node._ftfLeadingWs + orig + node._ftfTrailingWs;
+                } else {
+                    let translated = activeMap[orig];
+                    if (!translated) {
+                        const cleanOrig = orig.replace(/^[•\s\-_:→←\(\)🌱📅🔬🍽️🛒🔥🌟📱💬🌾🍎🧺❄️]+|[•\s\-_:→←\(\)✅🌱📅🔬🍽️🛒🔥🌟📱💬🌾🍎🧺❄️]+$/g, '').trim();
+                        if (cleanOrig && activeMap[cleanOrig]) {
+                            translated = orig.replace(cleanOrig, activeMap[cleanOrig]);
+                        }
+                    }
+                    if (translated) {
+                        node.nodeValue = node._ftfLeadingWs + translated + node._ftfTrailingWs;
+                    }
+                }
+            });
+        }
+
+        walkTextNodes(document.body);
+
+        // Update input placeholders & textareas
+        document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(input => {
+            if (input._ftfOrigPlaceholder === undefined) {
+                input._ftfOrigPlaceholder = input.getAttribute('placeholder') || '';
+            }
+            const orig = input._ftfOrigPlaceholder;
+            if (isEnglish) {
+                input.setAttribute('placeholder', orig);
+            } else if (activeMap[orig]) {
+                input.setAttribute('placeholder', activeMap[orig]);
             }
         });
+
+        // Update title attributes & tooltips
+        document.querySelectorAll('[title]').forEach(el => {
+            if (el.closest('#globalPreferencesCluster, #globalLangDropdown, #globalThemeDropdown')) return;
+            if (el._ftfOrigTitle === undefined) {
+                el._ftfOrigTitle = el.getAttribute('title') || '';
+            }
+            const orig = el._ftfOrigTitle;
+            if (isEnglish) {
+                el.setAttribute('title', orig);
+            } else if (activeMap[orig]) {
+                el.setAttribute('title', activeMap[orig]);
+            }
+        });
+
+        // Explicitly update floating hub button & settings headers
+        const floatSpan = document.querySelector('#ftfFloatingSettingsTrigger span');
+        if (floatSpan) {
+            floatSpan.textContent = t.floatingLangThemeBtn || (activeMap["Language & Theme"] || "Language & Theme");
+        }
+        const modalTitle = document.querySelector('.global-settings-header h3');
+        if (modalTitle) {
+            modalTitle.innerHTML = `<i class="fas fa-sliders-h"></i> ${t.settingsTitle || 'Global Preferences'}`;
+        }
+        const langSectionTitles = document.querySelectorAll('.global-settings-title');
+        if (langSectionTitles[0]) langSectionTitles[0].innerHTML = `<i class="fas fa-globe"></i> ${t.langSettingsTitle || 'Select Application Language'}`;
+        if (langSectionTitles[1]) langSectionTitles[1].innerHTML = `<i class="fas fa-palette"></i> ${t.themeSettingsTitle || 'Select Visual Theme'}`;
 
         // 9. Update Language UI Controls
         updateLanguageControlsUI(activeLang);
@@ -2882,11 +3137,15 @@
         languages: LANGUAGES,
         themes: THEMES,
         dict: I18N,
+        translations: I18N,
         productNames: PRODUCT_NAMES,
         tamilProductNames: PRODUCT_NAMES.ta, // backwards compatibility
         stringMaps: STRING_MAPS,
         stringMapEnToTa: STRING_MAPS.ta,    // backwards compatibility
         apply: applyFullTranslation,
+        getCurrentLang: function() {
+            return getStoredLanguage();
+        },
         t: function(key, lang) {
             const current = lang || getStoredLanguage();
             return (I18N[current] && I18N[current][key]) || (I18N.en && I18N.en[key]) || key;
@@ -2911,12 +3170,53 @@
     };
 
     // ----------------------------------------------------
+    // DYNAMIC MUTATION OBSERVER (AUTO-TRANSLATE INJECTED CONTENT)
+    // ----------------------------------------------------
+    let domObserverTimeout = null;
+    let isObserverTranslating = false;
+    const domObserver = new MutationObserver(function(mutations) {
+        if (isObserverTranslating) return;
+        const currentLang = getStoredLanguage();
+        if (currentLang === 'en') return;
+
+        let hasNewContent = false;
+        for (let i = 0; i < mutations.length; i++) {
+            const m = mutations[i];
+            if (m.type === 'childList' && m.addedNodes.length > 0) {
+                for (let j = 0; j < m.addedNodes.length; j++) {
+                    const node = m.addedNodes[j];
+                    if (node.nodeType === 1 && !node.closest?.('#globalPreferencesCluster, #globalLangDropdown, #globalThemeDropdown')) {
+                        hasNewContent = true;
+                        break;
+                    }
+                }
+            }
+            if (hasNewContent) break;
+        }
+
+        if (hasNewContent) {
+            clearTimeout(domObserverTimeout);
+            domObserverTimeout = setTimeout(function() {
+                isObserverTranslating = true;
+                try {
+                    applyFullTranslation(currentLang);
+                } finally {
+                    isObserverTranslating = false;
+                }
+            }, 100);
+        }
+    });
+
+    // ----------------------------------------------------
     // BOOTSTRAP ON LOAD
     // ----------------------------------------------------
     function init() {
         applyTheme(getStoredTheme());
         injectGlobalControls();
         applyFullTranslation(getStoredLanguage());
+        if (document.body) {
+            domObserver.observe(document.body, { childList: true, subtree: true });
+        }
     }
 
     if (document.readyState === 'loading') {

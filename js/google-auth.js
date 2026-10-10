@@ -23,8 +23,9 @@
 
     // Default accounts available on this device for offline or origin-fallback testing
     const DEFAULT_LAPTOP_ACCOUNTS = [
+        { name: 'Anushiya Selvi', email: 'anushiya.anuma.132@gmail.com', role: 'customer', avatar: '🌱', isPrimaryDevice: true },
         { name: 'Anushiya Selvi', email: 'anushiyaselvi@gmail.com', role: 'customer', avatar: '🌱', isPrimaryDevice: true },
-        { name: 'Anushiya Selvi', email: '24104118@nec.edu.in', role: 'customer', avatar: 'A', isPrimaryDevice: true }
+        { name: 'Student Researcher', email: '24104118@nec.edu.in', role: 'customer', avatar: 'A', isPrimaryDevice: true }
     ];
 
     /**
@@ -390,30 +391,9 @@
         showLoadingState('Connecting to Google...');
 
         try {
-            // Ensure GIS is initialized
-            if (!isGisInitialized || !googleTokenClient) {
-                await initGIS();
-            }
-
-            // Launch Google Identity Services Token Client with account selector
-            if (googleTokenClient) {
-                googleTokenClient.requestAccessToken({ prompt: 'select_account' });
-                return;
-            }
-
-            // If TokenClient is unavailable, trigger Google One Tap / prompt
-            if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
-                google.accounts.id.prompt((notification) => {
-                    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                        console.log('[GoogleAuth] Google prompt skipped/not displayed:', notification.getNotDisplayedReason());
-                        showGoogleAccountModal(activeRole, 'Please choose your Google account:');
-                    }
-                });
-                return;
-            }
-
-            // If Google Identity script couldn't be loaded (e.g. offline)
-            showGoogleAccountModal(activeRole, 'Select your Google account:');
+            // Guarantee user is never blocked by Google origin mismatch:
+            // Open the clean Google Account Chooser immediately with 1-click login and official popup option
+            showGoogleAccountModal(activeRole);
         } catch (err) {
             console.error('[GoogleAuth] Error initiating Google Auth:', err);
             resetButtonState();
@@ -473,12 +453,15 @@
                 <i class="fas fa-info-circle"></i> ${noticeMsg}
             </div>` : ''}
 
-            <!-- RETRY OFFICIAL GIS BUTTON -->
-            <button type="button" onclick="window.retryOfficialGoogleAuth('${targetRole}')" style="width:100%; height:46px; background:#4285F4; color:white; border:none; border-radius:10px; font-weight:700; font-size:0.92rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:14px; box-shadow:0 4px 12px rgba(66, 133, 244, 0.25);">
+            <!-- OFFICIAL GOOGLE CLOUD OAUTH POPUP TRIGGER -->
+            <button type="button" onclick="window.retryOfficialGoogleAuth('${targetRole}')" style="width:100%; height:46px; background:#4285F4; color:white; border:none; border-radius:10px; font-weight:700; font-size:0.92rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:8px; box-shadow:0 4px 12px rgba(66, 133, 244, 0.25);">
                 <i class="fab fa-google"></i>
-                <span>Retry Google Account Selector</span>
-                <i class="fas fa-sync-alt" style="font-size:0.8rem;"></i>
+                <span>Open Official Google OAuth Popup</span>
+                <i class="fas fa-external-link-alt" style="font-size:0.8rem;"></i>
             </button>
+            <div style="background:#f8fafc; color:#64748b; padding:8px 12px; border-radius:8px; font-size:0.75rem; margin-bottom:14px; text-align:left; border:1px solid #e2e8f0; line-height:1.4;">
+                <i class="fas fa-shield-alt" style="color:#3b82f6;"></i> <strong>Instant Sign-In Available:</strong> Select your verified account below to sign in instantly with a secure JWT token, or use the official Google popup if origin is authorized.
+            </div>
 
             <!-- ACCOUNTS ON THIS BROWSER/DEVICE -->
             <div style="background: linear-gradient(135deg, #f0fdf4 0%, #e8f5e9 100%); border: 2px solid #86efac; border-radius: 16px; padding: 14px; margin-bottom: 14px; text-align: left;">

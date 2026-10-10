@@ -42,12 +42,12 @@
       "name": "Priya Sharma",
       "username": "priya_s",
       "email": "priya@example.com",
-      "password": "scrypt$735cd7ed2a4a6078947770b60c5c28f4$f6356f81ac41996d25b80fff22a45afc107f4e52e48a6f18e43b3f8bb742c4d65e9fc9bdc7ae6a7d0a2d1fa0e08d02a6eadc01bc03746b90d1b51d84a8d2298b",
+      "password": "scrypt$937d558e9dcda458fd299c9dffd40b15$fd883055dbaf283e0efc02c424d40306a38b7cbf3a7a6792044fbf5652ac2cf3f39130abcb7057c52d50c845c4182bc581852f4423646750a99d1763829014f2",
       "role": "customer",
       "phone": "+91 98765 43210",
       "address": "42, 4th Avenue, Anna Nagar West, Chennai - 600040",
       "createdAt": "2024-02-01T12:00:00.000Z",
-      "updatedAt": "2026-10-10T11:41:19.037Z",
+      "updatedAt": "2026-10-10T13:16:07.191Z",
       "notificationPreferences": {
         "sms": true,
         "email": true,
@@ -58,7 +58,7 @@
       "passwordResetOtpAttempts": 0,
       "passwordResetTokenHash": null,
       "passwordResetTokenExpiresAt": null,
-      "passwordResetOtpLastSentAt": "2026-10-10T11:41:13.274Z"
+      "passwordResetOtpLastSentAt": "2026-10-10T13:16:03.404Z"
     },
     {
       "id": "usr-cust-2",
@@ -105,14 +105,15 @@
       "email": "oauth_farmer_test@farmtofork.com",
       "role": "farmer",
       "oauthProvider": "google",
-      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120",
+      "avatar": "https://lh3.googleusercontent.com/a/default-user=s96-c",
       "createdAt": "2026-09-17T09:10:52.842Z",
-      "googleId": "usr-sub-1791632473077",
+      "googleId": "usr-google-1791638162928",
       "emailVerified": true,
-      "updatedAt": "2026-10-10T11:41:13.077Z",
+      "updatedAt": "2026-10-10T13:16:02.928Z",
       "firstName": "Dr.",
       "lastName": "K. Arumugam Organic",
-      "authProvider": "google"
+      "authProvider": "google",
+      "profilePicture": "https://lh3.googleusercontent.com/a/default-user=s96-c"
     },
     {
       "id": "usr-gh-1789636252869",
