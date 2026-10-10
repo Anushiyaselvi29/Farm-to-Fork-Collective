@@ -42,12 +42,12 @@
       "name": "Priya Sharma",
       "username": "priya_s",
       "email": "priya@example.com",
-      "password": "scrypt$8bd37a06ee4dcb43643efbc16dfa4096$67e0c3718e8df4bd5a40e53cc061dd6b9e0b35b0a795a9560115e49290189be6737a3ec32b7b10dd9a05e5a13f20f331438a2c374271a9023ab21ab0c299a6d5",
+      "password": "scrypt$d4c71d486fd412e7bd981a6023931901$a0e6d0e93432e08d34db442ed760a2304cdbcd786ce8eb59f138ba5abf4d15c0f3f2a8b4b0c4c0b56bde79f6d7365b6704b2b8f453e5aa4818a10f0ff3240256",
       "role": "customer",
       "phone": "+91 98765 43210",
       "address": "42, 4th Avenue, Anna Nagar West, Chennai - 600040",
       "createdAt": "2024-02-01T12:00:00.000Z",
-      "updatedAt": "2026-10-10T15:10:51.452Z",
+      "updatedAt": "2026-10-10T17:07:01.341Z",
       "notificationPreferences": {
         "sms": true,
         "email": true,
@@ -58,7 +58,7 @@
       "passwordResetOtpAttempts": 0,
       "passwordResetTokenHash": null,
       "passwordResetTokenExpiresAt": null,
-      "passwordResetOtpLastSentAt": "2026-10-10T15:10:47.444Z"
+      "passwordResetOtpLastSentAt": "2026-10-10T17:06:58.529Z"
     },
     {
       "id": "usr-cust-2",
@@ -107,9 +107,9 @@
       "oauthProvider": "google",
       "avatar": "https://lh3.googleusercontent.com/a/default-user=s96-c",
       "createdAt": "2026-09-17T09:10:52.842Z",
-      "googleId": "usr-google-1791645047277",
+      "googleId": "usr-google-1791652018257",
       "emailVerified": true,
-      "updatedAt": "2026-10-10T15:10:47.277Z",
+      "updatedAt": "2026-10-10T17:06:58.257Z",
       "firstName": "Dr.",
       "lastName": "K. Arumugam Organic",
       "authProvider": "google",
@@ -316,7 +316,7 @@
       "lastName": "Attempting Admin",
       "email": "test_security_role_escalation@gmail.com",
       "role": "customer",
-      "googleId": "usr-google-1791648674900",
+      "googleId": "usr-google-1791650896576",
       "profilePicture": "https://lh3.googleusercontent.com/a/default-user=s96-c",
       "avatar": "https://lh3.googleusercontent.com/a/default-user=s96-c",
       "authProvider": "google",
@@ -329,7 +329,7 @@
         "whatsapp": true
       },
       "createdAt": "2026-10-10T15:08:03.090Z",
-      "updatedAt": "2026-10-10T16:11:14.901Z"
+      "updatedAt": "2026-10-10T16:48:16.576Z"
     }
   ],
   "products": [
@@ -350,7 +350,7 @@
       "sellerRole": "farmer",
       "origin": "Tamil Nadu",
       "description": "Organic Brocolli produced under strict 100% organic and chemical-free guidelines.",
-      "image": "/assets/images/products/organic-tomatoes.jpg",
+      "image": "/assets/images/products/organic-broccoli.jpg",
       "freshness": "Fresh Harvest",
       "freshnessScore": 96,
       "rating": 5,
@@ -403,7 +403,7 @@
       "sellerRole": "farmer",
       "origin": "Tamil Nadu",
       "description": "Fresh Coimbatore Guavas produced under strict 100% organic and chemical-free guidelines.",
-      "image": "/assets/images/products/organic-tomatoes.jpg",
+      "image": "/assets/images/products/organic-guavas.jpg",
       "freshness": "Fresh Harvest",
       "freshnessScore": 96,
       "rating": 5,
@@ -504,7 +504,7 @@
       "sellerRole": "farmer",
       "origin": "Tamil Nadu",
       "description": "Organic Dindigul Dragon Fruit produced under strict 100% organic and chemical-free guidelines.",
-      "image": "/assets/images/products/organic-tomatoes.jpg",
+      "image": "/assets/images/products/organic-dragon-fruit.jpg",
       "freshness": "Fresh Harvest",
       "freshnessScore": 96,
       "rating": 5,
@@ -553,7 +553,7 @@
       "sellerRole": "farmer",
       "origin": "Tamil Nadu",
       "description": "Organic Cavendish Bananas produced under strict 100% organic and chemical-free guidelines.",
-      "image": "/assets/images/products/organic-tomatoes.jpg",
+      "image": "/assets/images/products/organic-bananas.jpg",
       "freshness": "Fresh Harvest",
       "freshnessScore": 96,
       "rating": 5,

@@ -42,6 +42,9 @@ async function testGoogleAuthRequirements() {
   check(!googleAuthJs.includes('manualGoogleEmail'), 'No manual Gmail input fields in js/google-auth.js');
   check(!loginHtml.includes('id="oauthModal"'), 'No #oauthModal custom markup in pages/login.html');
   check(!registerHtml.includes('id="oauthModal"'), 'No #oauthModal custom markup in pages/register.html');
+  check(!loginHtml.includes('showGoogleOriginGuide'), 'No troubleshooting guide link in pages/login.html');
+  check(!registerHtml.includes('showGoogleOriginGuide'), 'No troubleshooting guide link in pages/register.html');
+  check(!googleAuthJs.includes('Fix Google Error 400'), 'No troubleshooting panel markup in js/google-auth.js');
 
   // Requirement 2 & 3: Immediately initiate official Google OAuth 2.0 flow at accounts.google.com
   check(googleAuthJs.includes("prompt: 'select_account'"), 'Requests prompt: select_account to display Google account chooser');

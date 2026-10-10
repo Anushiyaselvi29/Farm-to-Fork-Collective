@@ -887,17 +887,12 @@
 
             <div class="divider"><span>Or continue with Google</span></div>
 
-            <!-- GOOGLE SIGN IN (REAL OAUTH 2.0 FLOW) -->
+            <!-- GOOGLE SIGN IN (OFFICIAL GOOGLE OAUTH 2.0) -->
             <div style="margin-bottom: 12px;">
                 <button type="button" class="oauth-btn google" onclick="triggerRealGoogleAuth(selectedRole)" id="btnContinueGoogle">
                     <i class="fab fa-google" style="color: #ea4335; font-size: 1.15rem;"></i>
                     <span>Continue with Google</span>
                 </button>
-                <div style="text-align: center; margin-top: 6px;">
-                    <a href="javascript:void(0)" onclick="window.showGoogleOriginGuide()" style="font-size: 0.74rem; color: #64748b; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
-                        <i class="fas fa-question-circle" style="color: #3b82f6;"></i> Need help with Google Error 400 on Vercel?
-                    </a>
-                </div>
                 <div id="googleAuthErrorNotice" style="display: none; padding: 10px 14px; background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; border-radius: 8px; font-size: 0.84rem; margin-top: 10px;"></div>
             </div>
 
