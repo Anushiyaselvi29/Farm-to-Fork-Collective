@@ -316,7 +316,7 @@
       "lastName": "Attempting Admin",
       "email": "test_security_role_escalation@gmail.com",
       "role": "customer",
-      "googleId": "usr-google-1791644883090",
+      "googleId": "usr-google-1791648674900",
       "profilePicture": "https://lh3.googleusercontent.com/a/default-user=s96-c",
       "avatar": "https://lh3.googleusercontent.com/a/default-user=s96-c",
       "authProvider": "google",
@@ -328,7 +328,8 @@
         "email": true,
         "whatsapp": true
       },
-      "createdAt": "2026-10-10T15:08:03.090Z"
+      "createdAt": "2026-10-10T15:08:03.090Z",
+      "updatedAt": "2026-10-10T16:11:14.901Z"
     }
   ],
   "products": [

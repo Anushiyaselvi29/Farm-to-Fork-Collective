@@ -384,11 +384,22 @@
     function handleGoogleAuthError(err, role) {
         resetButtonState();
         const errStr = typeof err === 'string' ? err : (err && (err.type || err.error || err.message)) || '';
+        const isHosted = typeof window !== 'undefined' && !window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1');
 
         console.warn('[GoogleAuth] Google Sign-In notice:', err);
 
+        if (errStr.includes('origin_mismatch') || errStr.includes('idpiframe_initialization_failed')) {
+            showGoogleOriginGuide();
+            return;
+        }
+
         if (errStr.includes('popup_closed') || errStr.includes('cancel') || errStr === 'access_denied') {
-            showUserFriendlyError('Google account selection was closed. Please select an account to sign in.');
+            if (isHosted) {
+                // On hosted environments (Vercel), show helpful origin guidance in case Google blocked due to origin
+                showGoogleOriginGuide();
+            } else {
+                showUserFriendlyError('Google account selection was closed. Please select an account to sign in.');
+            }
             return;
         }
 
@@ -401,15 +412,51 @@
             return;
         }
 
-        if (errStr.includes('origin_mismatch') || errStr.includes('idpiframe_initialization_failed')) {
-            const currentOrigin = window.location.origin;
-            const msg = `Google OAuth Notice: The origin '${currentOrigin}' must be added to Authorized JavaScript Origins in your Google Cloud Console for Client ID: ${cachedClientId || '939090047671-otlai1n75lvc9mgass18jd721dpp8f36'}`;
-            console.error(msg);
-            showUserFriendlyError(`Google OAuth origin configuration required: Ensure ${currentOrigin} is registered in Google Cloud Console.`);
-            return;
-        }
-
         showUserFriendlyError('Google authentication could not be completed. Please try again.');
+    }
+
+    /**
+     * Display Google Cloud Console Origin Setup Guide for Vercel & custom domains
+     */
+    function showGoogleOriginGuide() {
+        const errorContainer = document.getElementById('googleAuthErrorNotice');
+        if (!errorContainer) return;
+        const currentOrigin = window.location.origin;
+        const callbackUrl = `${currentOrigin}/pages/oauth-callback.html`;
+
+        errorContainer.innerHTML = `
+            <div style="background:#fffbeb; border:1.5px solid #fde68a; border-radius:14px; padding:16px; color:#92400e; font-size:0.86rem; text-align:left; box-shadow:0 4px 12px rgba(0,0,0,0.05); margin-top:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <strong style="color:#b45309; font-size:0.92rem; display:flex; align-items:center; gap:6px;">
+                        <i class="fas fa-shield-alt"></i> Fix Google Error 400 (origin_mismatch)
+                    </strong>
+                    <button type="button" onclick="document.getElementById('googleAuthErrorNotice').style.display='none'" style="background:none; border:none; font-size:1rem; cursor:pointer; color:#94a3b8;">✕</button>
+                </div>
+                <p style="margin:0 0 10px; color:#78350f; font-size:0.82rem; line-height:1.45;">
+                    Google OAuth requires registering this Vercel domain in your Google Cloud Console. Click the buttons below to copy:
+                </p>
+                <div style="margin-bottom:8px;">
+                    <label style="font-size:0.75rem; font-weight:700; color:#92400e; display:block; margin-bottom:3px;">1. Authorized JavaScript Origin:</label>
+                    <div style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; padding:6px 10px; display:flex; align-items:center; justify-content:space-between; gap:8px;">
+                        <code style="font-size:0.8rem; color:#1e293b; font-weight:700; word-break:break-all;">${currentOrigin}</code>
+                        <button type="button" onclick="navigator.clipboard.writeText('${currentOrigin}'); this.innerText='Copied!';" style="background:#16a34a; color:white; border:none; border-radius:6px; padding:4px 10px; font-size:0.72rem; font-weight:700; cursor:pointer; flex-shrink:0;">Copy</button>
+                    </div>
+                </div>
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:0.75rem; font-weight:700; color:#92400e; display:block; margin-bottom:3px;">2. Authorized Redirect URI:</label>
+                    <div style="background:#fff; border:1px solid #cbd5e1; border-radius:8px; padding:6px 10px; display:flex; align-items:center; justify-content:space-between; gap:8px;">
+                        <code style="font-size:0.8rem; color:#1e293b; font-weight:700; word-break:break-all;">${callbackUrl}</code>
+                        <button type="button" onclick="navigator.clipboard.writeText('${callbackUrl}'); this.innerText='Copied!';" style="background:#16a34a; color:white; border:none; border-radius:6px; padding:4px 10px; font-size:0.72rem; font-weight:700; cursor:pointer; flex-shrink:0;">Copy</button>
+                    </div>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                    <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer" style="background:#2563eb; color:white; padding:7px 14px; border-radius:8px; text-decoration:none; font-size:0.78rem; font-weight:700; display:inline-flex; align-items:center; gap:6px;">
+                        <i class="fas fa-external-link-alt"></i> Open Google Cloud Console ↗
+                    </a>
+                </div>
+            </div>
+        `;
+        errorContainer.style.display = 'block';
     }
 
     /**
@@ -481,5 +528,6 @@
 
     window.triggerRealGoogleAuth = triggerRealGoogleAuth;
     window.openOAuthModal = (provider) => triggerRealGoogleAuth();
+    window.showGoogleOriginGuide = showGoogleOriginGuide;
 
 })(window);
