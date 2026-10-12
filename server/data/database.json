@@ -3811,5 +3811,35 @@
       "createdAt": "2026-10-08T02:10:13.790Z"
     }
   ],
-  "contactMessages": []
+  "contactMessages": [],
+  "offers": [
+    {
+      "id": "ofr-1791771761666",
+      "title": "Festival Harvest 2026",
+      "code": "FESTIVAL20",
+      "discountPercent": 20,
+      "description": "20% discount on all organic harvest boxes across Tamil Nadu.",
+      "expiresAt": "2026-10-19T02:22:41.666Z",
+      "eligibleRole": "customer",
+      "sentRecipients": [
+        "priya@example.com",
+        "customer@farmtofork.com",
+        "24104118@nec.edu.in",
+        "github_developer@farmtofork.com",
+        "newuser_1789963149798@gmail.com",
+        "newuser_1789963172820@gmail.com",
+        "anu@gmail.com",
+        "notif_user_1791221378303@example.com",
+        "notif_user_1791221701115@example.com",
+        "notif_user_1791221828418@example.com",
+        "notif_user_1791223090280@example.com",
+        "notif_user_1791300151236@example.com",
+        "anushiya.anuma.132@gmail.com",
+        "anushiyaselvi@gmail.com",
+        "24104084@nec.edu.in",
+        "test_security_role_escalation@gmail.com"
+      ],
+      "createdAt": "2026-10-12T02:22:41.666Z"
+    }
+  ]
 }

@@ -152,23 +152,16 @@ router.post('/register', (req, res) => {
     db.users.push(newUser);
     writeDb(db);
 
-    // Send real welcome email to user and activity alert to admin
+    // Send real welcome email to user's registered email address
     if (emailService.isValidEmail(newUser.email)) {
-      if (notifPrefs.email === true) {
-        emailService.sendWelcomeEmail({
-          to: newUser.email,
-          name: newUser.name,
-          role: newUser.role,
-          phone: newUser.phone
-        }).catch(mailErr => {
-          console.warn('[Register] Welcome email notice:', mailErr.message);
-        });
-      } else {
-        // User opted out of marketing, still alert admin of new account registration
-        emailService.sendAdminNewUserAlert(newUser).catch(mailErr => {
-          console.warn('[Register] Admin alert notice:', mailErr.message);
-        });
-      }
+      emailService.sendWelcomeEmail({
+        to: newUser.email,
+        name: newUser.name,
+        role: newUser.role,
+        phone: newUser.phone
+      }).catch(mailErr => {
+        console.warn('[Register] Welcome email notice:', mailErr.message);
+      });
     }
 
     const safeUser = sanitizeUser(newUser);
@@ -234,6 +227,18 @@ router.post('/login', (req, res) => {
       role: safeUser.role,
       name: safeUser.name
     });
+
+    // Send login notification to registered email when enabled
+    const sendLoginAlert = user.notificationPreferences?.email !== false && user.notificationPreferences?.loginAlert !== false;
+    if (sendLoginAlert && user.email && emailService.isValidEmail(user.email)) {
+      emailService.sendLoginNotification({
+        to: user.email,
+        name: user.name,
+        timestamp: new Date()
+      }).catch(mailErr => {
+        console.warn('[Login] Login notification notice:', mailErr.message);
+      });
+    }
 
     res.json({
       success: true,
@@ -466,8 +471,10 @@ router.post('/oauth/google', async (req, res) => {
     const db = readDb();
     let user = db.users.find(u => (googleId && u.googleId === googleId) || (u.email && u.email.toLowerCase() === email));
 
+    const isNewGoogleUser = !user;
+
     // JIT (Just-In-Time) User Provisioning for Google OAuth
-    if (!user) {
+    if (isNewGoogleUser) {
       user = {
         id: 'usr-google-' + Date.now(),
         name: verifiedName,
@@ -535,16 +542,29 @@ router.post('/oauth/google', async (req, res) => {
       googleId: safeUser.googleId
     });
 
-    // Send Google Sign-In login notification email to user's verified Gmail and alert admin
+    // Send Google email notification: Welcome on first registration, Login alert on subsequent logins (if enabled)
     if (user.email && emailService.isValidEmail(user.email)) {
-      emailService.sendGoogleLoginNotification({
-        to: user.email,
-        name: user.name,
-        googleId: user.googleId || googleId,
-        timestamp: new Date().toISOString()
-      }).catch(mailErr => {
-        console.warn('[GoogleOAuth] Login notification notice:', mailErr.message);
-      });
+      if (isNewGoogleUser) {
+        emailService.sendWelcomeEmail({
+          to: user.email,
+          name: user.name,
+          role: user.role
+        }).catch(mailErr => {
+          console.warn('[GoogleOAuth] First-time welcome email notice:', mailErr.message);
+        });
+      } else {
+        const sendLoginAlert = user.notificationPreferences?.email !== false && user.notificationPreferences?.loginAlert !== false;
+        if (sendLoginAlert) {
+          emailService.sendGoogleLoginNotification({
+            to: user.email,
+            name: user.name,
+            googleId: user.googleId || googleId,
+            timestamp: new Date().toISOString()
+          }).catch(mailErr => {
+            console.warn('[GoogleOAuth] Login notification notice:', mailErr.message);
+          });
+        }
+      }
     }
 
     res.json({

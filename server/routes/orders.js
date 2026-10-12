@@ -193,6 +193,16 @@ router.patch('/:id/status', (req, res) => {
         notificationPreferences: { email: true, sms: true, whatsapp: true }
       };
 
+      // 1. Direct branded email notification on order status change
+      emailService.sendOrderStatusUpdate({
+        order,
+        customer,
+        status
+      }).catch(err => {
+        console.warn('[Orders] Email status update dispatch notice:', err.message);
+      });
+
+      // 2. Multi-channel user notification (In-app, SMS, WhatsApp)
       notificationService.notifyUser(customer, {
         title: `Order Update: ${order.id}`,
         message: `Your order status has been updated to "${status}".`,
@@ -201,7 +211,9 @@ router.patch('/:id/status', (req, res) => {
       }).catch(notifErr => {
         console.warn('[Orders] Status notification dispatch notice:', notifErr.message);
       });
-    } catch (e) {}
+    } catch (e) {
+      console.warn('[Orders] Notification trigger error on status update:', e.message);
+    }
 
     res.json({
       success: true,

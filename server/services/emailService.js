@@ -35,13 +35,13 @@ class EmailService {
   constructor() {
     this.transporter = null;
     this.activeConfigKey = null;
-    this.adminEmail = (process.env.ADMIN_EMAIL || 'anushiyaselvi06@gmail.com').trim().toLowerCase();
+    this.adminEmail = (process.env.ADMIN_EMAIL || process.env.EMAIL_USER || process.env.GMAIL_USER || 'anushiyaselvi60@gmail.com').trim().toLowerCase();
     this.dispatchLogs = []; // In-memory audit trail of dispatched emails (max 100)
   }
 
   // Official Admin Email getter
   getAdminEmail() {
-    return (process.env.ADMIN_EMAIL || this.adminEmail || 'anushiyaselvi06@gmail.com').trim().toLowerCase();
+    return (process.env.ADMIN_EMAIL || process.env.EMAIL_USER || process.env.GMAIL_USER || this.adminEmail || 'anushiyaselvi60@gmail.com').trim().toLowerCase();
   }
 
   // Validate email address format strictly (RFC 5322 compliance)
@@ -69,8 +69,8 @@ class EmailService {
   getTransporter() {
     if (!nodemailer) return null;
 
-    const gmailUser = (process.env.GMAIL_USER || process.env.ADMIN_EMAIL || 'anushiyaselvi06@gmail.com').trim();
-    const gmailPass = (process.env.GMAIL_APP_PASSWORD || '').trim().replace(/\s+/g, '');
+    const gmailUser = (process.env.EMAIL_USER || process.env.GMAIL_USER || process.env.ADMIN_EMAIL || 'anushiyaselvi60@gmail.com').trim();
+    const gmailPass = (process.env.EMAIL_APP_PASSWORD || process.env.GMAIL_APP_PASSWORD || '').trim().replace(/\s+/g, '');
     const smtpHost = (process.env.SMTP_HOST || 'smtp.gmail.com').trim();
     const smtpPort = parseInt(process.env.SMTP_PORT || '587', 10);
     const smtpSecure = process.env.SMTP_SECURE === 'true' || smtpPort === 465;
@@ -593,6 +593,7 @@ Farm to Fork Collective Security`;
 
     const detailsRows = [
       { label: 'Order ID', value: orderId, isHighlight: true },
+      { label: 'Order Date', value: order.date || this.formatTimestamp() },
       { label: 'Total Amount', value: `₹${total}`, isHighlight: true },
       { label: 'Items Ordered', value: itemsSummary || 'Fresh Organic Produce' },
       { label: 'Delivery Slot', value: order.slot || 'Morning (7:00 AM - 10:00 AM)' },
@@ -995,8 +996,230 @@ Farm to Fork Collective Security`;
     return userResult;
   }
 
+  // ----------------------------------------------------
+  // 9. STANDARD LOGIN NOTIFICATION (PASSWORD AUTH)
+  // ----------------------------------------------------
+  async sendLoginNotification({ to, name, timestamp = new Date(), ip = '', device = '' }) {
+    const greeting = name ? `Hello ${name},` : 'Hello,';
+    const subject = 'Security Alert: Account Sign-In - Farm to Fork Collective';
+
+    const detailsRows = [
+      { label: 'Account Email', value: to },
+      { label: 'Account Name', value: name || 'Valued Member' },
+      { label: 'Sign-In Method', value: 'Password Authentication', isHighlight: true },
+      { label: 'Time of Login', value: this.formatTimestamp(timestamp) },
+      ...(ip ? [{ label: 'IP Address', value: ip }] : []),
+      ...(device ? [{ label: 'Device / Browser', value: device }] : [])
+    ];
+
+    const htmlContent = this.renderEmailLayout({
+      title: subject,
+      badgeText: '🛡️ Account Sign-In',
+      badgeColor: '#2563eb',
+      badgeBg: '#eff6ff',
+      greeting,
+      introText: `A successful sign-in to your Farm to Fork Collective account was recorded.`,
+      detailsRows,
+      actionBtn: {
+        text: 'View Your Dashboard',
+        url: 'http://localhost:5173/pages/dashboard-customer.html'
+      },
+      alertBox: {
+        type: 'info',
+        title: '🔒 Was this you?',
+        text: `If you just signed in, you can safely disregard this email. If you did not sign in or suspect unauthorized access, please reset your password immediately or contact support at <a href="mailto:${this.getAdminEmail()}">${this.getAdminEmail()}</a>.`
+      },
+      recipientEmail: to
+    });
+
+    const plainText = `${greeting}
+
+A new sign-in was detected for your Farm to Fork Collective account.
+
+Sign-In Details:
+- Email: ${to}
+- Name: ${name || 'User'}
+- Time: ${this.formatTimestamp(timestamp)}
+
+If you did not initiate this sign-in, please reset your password immediately.
+
+Best regards,
+Farm to Fork Collective Security`;
+
+    return await this.sendEmail({
+      to,
+      subject,
+      text: plainText,
+      html: htmlContent
+    });
+  }
+
+  // ----------------------------------------------------
+  // 10. ORDER STATUS UPDATE NOTIFICATION
+  // ----------------------------------------------------
+  async sendOrderStatusUpdate({ order, customer, status }) {
+    if (!order) return { success: false, message: 'Order object is required.' };
+
+    const to = (order.customerEmail || (customer && customer.email) || '').trim().toLowerCase();
+    const customerName = order.customerName || (customer && customer.name) || 'Valued Customer';
+    const orderId = order.id || '#FTF-ORDER';
+    const total = order.total || 0;
+    const cleanStatus = (status || order.status || 'Updated').toUpperCase();
+
+    let badgeColor = '#2563eb';
+    let badgeBg = '#eff6ff';
+    let statusIcon = '📦';
+    let statusDesc = `Your order status has been updated to "${status}".`;
+
+    if (cleanStatus.includes('DELIVERED')) {
+      badgeColor = '#16a34a';
+      badgeBg = '#dcfce7';
+      statusIcon = '🎉';
+      statusDesc = 'Your fresh farm produce has been successfully delivered. We hope you enjoy your healthy, organic harvest!';
+    } else if (cleanStatus.includes('SHIPPED') || cleanStatus.includes('TRANSIT')) {
+      badgeColor = '#0891b2';
+      badgeBg = '#cffafe';
+      statusIcon = '🚚';
+      statusDesc = 'Your order is packed in temperature-controlled boxes and is currently on the way from the farm to your doorstep.';
+    } else if (cleanStatus.includes('CANCEL')) {
+      badgeColor = '#dc2626';
+      badgeBg = '#fee2e2';
+      statusIcon = '❌';
+      statusDesc = 'Your order has been cancelled. Any prepaid amounts will be refunded to your original payment method.';
+    } else if (cleanStatus.includes('CONFIRM')) {
+      badgeColor = '#16a34a';
+      badgeBg = '#dcfce7';
+      statusIcon = '✅';
+      statusDesc = 'Your order has been confirmed by the farmers and is being harvested and prepped for packaging.';
+    }
+
+    const subject = `${statusIcon} Order Update: ${orderId} is now ${status} - Farm to Fork Collective`;
+
+    const items = order.items || [];
+    const itemsSummary = items.map(item => 
+      `${item.name} x ${item.quantity} ${item.unit || 'kg'}`
+    ).join(', ');
+
+    const detailsRows = [
+      { label: 'Order ID', value: orderId, isHighlight: true },
+      { label: 'New Status', value: status, isHighlight: true },
+      { label: 'Items in Order', value: itemsSummary || 'Fresh Organic Produce' },
+      { label: 'Total Amount', value: `₹${total}` },
+      { label: 'Delivery Address', value: order.address || 'Standard Registered Address' },
+      { label: 'Delivery Slot', value: order.slot || 'Morning' },
+      { label: 'Update Time', value: this.formatTimestamp() }
+    ];
+
+    const htmlContent = this.renderEmailLayout({
+      title: subject,
+      badgeText: `${statusIcon} Order ${status}`,
+      badgeColor,
+      badgeBg,
+      greeting: `Hello ${customerName},`,
+      introText: statusDesc,
+      detailsRows,
+      actionBtn: {
+        text: 'View Order Details & Traceability',
+        url: 'http://localhost:5173/pages/dashboard-customer.html'
+      },
+      alertBox: {
+        type: cleanStatus.includes('CANCEL') ? 'warning' : 'success',
+        title: '🌱 100% Seed-to-Plate Traceability',
+        text: 'You can verify the entire cultivation and cold-chain journey for each product by scanning the QR code on your order.'
+      },
+      recipientEmail: to
+    });
+
+    const plainText = `Hello ${customerName},
+
+Your order ${orderId} status has been updated to: ${status}.
+
+${statusDesc}
+
+Order Summary:
+- Order ID: ${orderId}
+- Status: ${status}
+- Items: ${itemsSummary}
+- Total: ₹${total}
+- Delivery Address: ${order.address || 'Standard Delivery Address'}
+
+View your order: http://localhost:5173/pages/dashboard-customer.html
+
+Best regards,
+Farm to Fork Collective`;
+
+    return await this.sendEmail({
+      to,
+      subject,
+      text: plainText,
+      html: htmlContent
+    });
+  }
+
+  // ----------------------------------------------------
+  // 11. SPECIAL OFFER NOTIFICATION
+  // ----------------------------------------------------
+  async sendSpecialOfferEmail({ to, name, offer }) {
+    if (!offer) return { success: false, message: 'Offer object is required.' };
+
+    const greeting = name ? `Hello ${name},` : 'Hello Valued Member,';
+    const discountText = offer.discountPercent ? `${offer.discountPercent}% OFF` : (offer.discount || 'Special Discount');
+    const code = (offer.code || 'ORGANIC10').toUpperCase();
+    const subject = `🏷️ Special Offer: ${offer.title || 'Exclusive Organic Savings'} - ${discountText}! 🌱`;
+
+    const detailsRows = [
+      { label: 'Coupon Code', value: code, isHighlight: true },
+      { label: 'Discount Value', value: discountText, isHighlight: true },
+      { label: 'Offer Details', value: offer.description || 'Special discount on fresh certified organic produce.' },
+      ...(offer.expiresAt ? [{ label: 'Valid Until', value: this.formatTimestamp(offer.expiresAt) }] : []),
+      { label: 'Applicable On', value: 'All fresh harvests & artisan goods' }
+    ];
+
+    const htmlContent = this.renderEmailLayout({
+      title: subject,
+      badgeText: '🎉 Special Exclusive Offer',
+      badgeColor: '#b45309', // amber/gold
+      badgeBg: '#fef3c7',
+      greeting,
+      introText: `We have an exclusive offer for our community members! Use code <strong style="font-size: 16px; color: #15803d; letter-spacing: 1px;">${code}</strong> at checkout to claim your savings on fresh organic produce.`,
+      detailsRows,
+      actionBtn: {
+        text: 'Shop Fresh Organic Produce Now',
+        url: 'http://localhost:5173/pages/products.html'
+      },
+      alertBox: {
+        type: 'info',
+        title: '🌱 Direct from Local Farms',
+        text: 'Every order directly supports our network of 100% certified organic farmers in Tamil Nadu with fair trade pricing and zero middlemen.'
+      },
+      recipientEmail: to
+    });
+
+    const plainText = `${greeting}
+
+Special Offer for You: ${offer.title || 'Exclusive Discount'}!
+
+Use coupon code ${code} at checkout to receive ${discountText} on your next order.
+
+Offer Details:
+${offer.description || 'Fresh organic produce at special discounted rates.'}
+Valid Until: ${offer.expiresAt ? this.formatTimestamp(offer.expiresAt) : 'Limited Time'}
+
+Shop now: http://localhost:5173/pages/products.html
+
+Best regards,
+Farm to Fork Collective Team`;
+
+    return await this.sendEmail({
+      to,
+      subject,
+      text: plainText,
+      html: htmlContent
+    });
+  }
+
   // ====================================================
-  // ADMIN NOTIFICATION DISPATCHERS (TO anushiyaselvi06@gmail.com)
+  // ADMIN NOTIFICATION DISPATCHERS (TO anushiyaselvi60@gmail.com)
   // ====================================================
 
   // Generic reusable admin notification
